@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,3 +88,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </body>
 </html>
+=======
+<?php
+
+require_once 'User.php';
+require_once 'Role.php';
+
+$user = new User();
+// echo $user->index();
+
+$role = new Role("Rupesh");
+echo Role::getManagementName();
+
+// echo $role->getManagementName();
+
+
+
+
+// echo $role->getRole();
+// echo $role->index();
+
+
+
+
+>>>>>>> 40cef57 (feat: added inital phase requirement)
