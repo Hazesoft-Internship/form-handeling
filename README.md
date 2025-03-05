@@ -19,7 +19,8 @@
 	- Data set should be in csv file.
 
 - There should be constructor promotion.
-- Coding Style should strictly follow PSR-12
+- Coding Style should strictly follow PSR-12. https://www.php-fig.org/psr/psr-12/
+- Conventional Commit should strictly followed. https://www.conventionalcommits.org/en/v1.0.0/
 
 - There should be specific class to insert 10,000 rows
 	- It should be initialized by `php InsertUser.php`
