@@ -10,13 +10,16 @@
     use Validation\Formvalidation;
 
     $formData = new Formvalidation('mysql', 'user', 'password', 'mydb');
-                        require_once "connection.php";
+    require_once "connection.php";
 
-                        use Database\Connection;
+    use Database\Connection;
 
-                        $connection = new Connection('mysql', 'user', 'password', 'mydb');
+    $connection = new Connection('mysql', 'user', 'password', 'mydb');
 
-                        $conn = $connection->connect();
+    $conn = $connection->connect();
+
+    $formData->getFormData();
+    $formData->insertFormData();
     ?>
 
 

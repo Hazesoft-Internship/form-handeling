@@ -12,16 +12,16 @@ $conn = $connection->connect();
 
 class Formvalidation extends Connection
 {
-    public $fname;
-    public $mname;
-    public $lname;
-    public $address;
-    public $email;
-    public $fnameErr;
-    public $mnameErr;
-    public $lnameErr;
-    public $addressErr;
-    public $emailErr;
+    public $fname='';
+    public $mname='';
+    public $lname='';
+    public $address='';
+    public $email='';
+    public $fnameErr='';
+    public $mnameErr='';
+    public $lnameErr='';
+    public $addressErr='';
+    public $emailErr='';
 
     public function __construct($servername, $username, $password, $dbname)
     {
@@ -103,7 +103,5 @@ class Formvalidation extends Connection
 }
 
 $form = new Formvalidation('mysql', 'user', 'password', 'mydb');
-$form->getFormData();
-$form->insertFormData();
 
 ?>
