@@ -2,6 +2,12 @@
 
 require_once "connection.php";
 
+use Database\Connection;
+
+$connection = new Connection('mysql', 'user', 'password', 'mydb');
+
+$conn = $connection->connect();
+
 // Open the CSV file
 $file = fopen("sample_data.csv", "r");
 
@@ -35,5 +41,7 @@ while (($rowData = fgetcsv($file)) !== false) {
 echo "Data inserted successfully";
 
 fclose($file);
+
+$connection->disconnect();
 
 ?>

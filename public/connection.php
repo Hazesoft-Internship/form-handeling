@@ -1,23 +1,44 @@
 <?php
 
-$servername = "mysql";  
-$username = "user";         
-$password = "password";            
-$dbname = "mydb";           
+namespace Database;
 
-// Create connection - ONLY ONCE
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+class Connection {
+    private $servername;
+    private $username;
+    private $password;
+    private $dbname;
+    private $conn;
 
-    // Check connection
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
+    public function __construct($servername, $username, $password, $dbname){
+        $this->servername = $servername;
+        $this->username = $username;
+        $this->password = $password;
+        $this->dbname = $dbname;
     }
 
-// Common utility functions that can be shared across files
-function input_data($data)
-{
-    $data = trim($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
+    public function connect() {
+        $this->conn = new \mysqli($this->servername, $this->username, $this->password, $this->dbname);
+
+        if($this->conn->connect_error){
+            echo "Error connecting to database". $this->conn->connect_error;
+        }
+        $conn = $this->conn;
+        return $conn;
+    }
+
+    public function disconnect(){
+        if($this->conn){
+            $this->conn->close();
+            $this->conn = null;
+        }
+    }
+
+    public function input_data($data){
+        $data = trim($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
+} 
+
 ?>
