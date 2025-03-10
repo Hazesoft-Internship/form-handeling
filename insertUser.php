@@ -13,7 +13,7 @@ class InsertUser
         $this->dbConnection = $this->database->connectDB();
     }
 
-    private function bulkInsert(array $batchedData): void
+    private function bulkInsert(array $batchedData)
     {
         if (empty($batchedData)) {
             return;
@@ -22,10 +22,10 @@ class InsertUser
         $bulkInsertQuery = "INSERT INTO users (firstName, middleName, lastName, email, address) VALUES " . implode(', ', $batchedData);
         $insertBulkResult = mysqli_query($this->dbConnection, $bulkInsertQuery);
 
-        if (!$insertBulkResult) {
-            echo "Failed to insert csv data: " . "\n";
+        if ($insertBulkResult) {
+            return $insertBulkResult;
         } else {
-            echo "Data Insertion successful\n";
+            return false;
         }
     }
 
@@ -35,7 +35,7 @@ class InsertUser
         $batchedData = [];
         $batchSize = 500;
 
-        fgetcsv($csv, 10000, ','); // Ignore first row
+        fgetcsv($csv, 10000, ',');
 
         while (($csvData = fgetcsv($csv, 10000, ',')) !== FALSE) {
             $fullName = $csvData[0];
@@ -51,10 +51,17 @@ class InsertUser
                 mysqli_real_escape_string($this->dbConnection, $lastName) . "', '" .
                 mysqli_real_escape_string($this->dbConnection, $email) . "', '" .
                 mysqli_real_escape_string($this->dbConnection, $address) . "')";
+
+            if (count($batchedData) >= $batchSize) {
+                $bulkInsertionResult =  $this->bulkInsert($batchedData);
+                $batchedData = [];
+            }
         }
-        if (count($batchedData) >= $batchSize) {
-            $this->bulkInsert($batchedData);
-            $batchedData = [];
+
+        if ($bulkInsertionResult) {
+            echo "CSV inserted successfully \n";
+        } else {
+            echo "Failed to insert user";
         }
 
         fclose($csv);
