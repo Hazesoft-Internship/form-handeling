@@ -1,22 +1,30 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
 
-require_once 'User.php';
-require_once 'Role.php';
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Handle</title>
+</head>
 
-$user = new User();
-// echo $user->index();
+<body>
+  <form action="formHandler.php" method="post">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required /><br /><br />
 
-$role = new Role("Rupesh");
-echo Role::getManagementName();
+    <label for="middleName">Middle Name:</label>
+    <input type="text" id="middleName" name="middleName" required /><br /><br />
 
-// echo $role->getManagementName();
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required /><br /><br />
 
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" required /><br /><br />
 
+    <label for="email">Address:</label>
+    <input type="text" id="address" name="address" required /><br /><br />
+    <input type="submit" value="Submit" />
+  </form>
+</body>
 
-
-// echo $role->getRole();
-// echo $role->index();
-
-
-
-
+</html>
