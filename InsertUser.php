@@ -33,13 +33,12 @@ function generateUser(int $id): array {
     $middleName = getRandomElement($middleNames);
     $lastName = getRandomElement($lastNames);
     
-<<<<<<< HEAD
+
     $address = rand(100, 9999) . ' ' . getRandomElement($adresses);
     $email = strtolower($firstName . '.' . $lastName . $id . '@' . getRandomElement($domains));
-=======
+
     $address = getRandomElement($adresses);
     $email = strtolower($firstName . '.' . $lastName . $id . getRandomElement($adresses) . '@' . getRandomElement($domains));
->>>>>>> 6124e2b (feat: add entire project directory)
 
     return [
         'full_name' => "$firstName $middleName $lastName",
