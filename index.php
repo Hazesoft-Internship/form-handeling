@@ -1,9 +1,9 @@
 <?php
 
-include_once 'config.php';
-include_once 'Upload.php';
-include_once 'Sanitizer.php';
-include_once 'ErrorMessage.php';
+require_once("config.php");
+require_once("classes/Upload.php");
+require_once("classes/Sanitizer.php");
+require_once("classes/ErrorMessage.php");
 
 $upload = new Upload($con);
 
@@ -13,9 +13,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $ln = Sanitizer::sanitizeString($_POST["lastname"]);
     $add = Sanitizer::sanitizeString($_POST["address"]);
     $em = Sanitizer::sanitizeEmail($_POST["email"]);
+    $pw = Sanitizer::sanitizePassword($_POST["password"]);
+    $pw2 = Sanitizer::sanitizePassword($_POST["password2"]);
     
-    if($upload->register($fn, $mn, $ln, $add, $em)) {
-        echo "Data inserted successfully!";
+    if($upload->register($fn, $mn, $ln, $add, $em, $pw, $pw2)) {
+        $_SESSION["userLoggedIn"] = $em;
+        header("Location: login.php");
     } else {
         echo "Failed to insert data!";
     }
@@ -51,7 +54,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <label>Email</label>
         <input type="email" name="email" placeholder="Email" autocomplete="off" required>
         <br>
+        <?php echo $upload->getError(ErrorMessage::$passwordsDoNotMatch); ?>
+        <?php echo $upload->getError(ErrorMessage::$passwordNotAlphanumeric); ?>
+        <?php echo $upload->getError(ErrorMessage::$passwordLength); ?>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Password" autocomplete="off" required>
+        <br>
+        <label>Confirm Password</label>
+        <input type="password" name="password2" placeholder="Confirm Password" autocomplete="off" required>
+        <br>
         <input type="submit" name="submitButton" value="SUBMIT">
     </form>
+    <a href="login.php">Already have an account? Sign In Here.</a>
 </body>
 </html>

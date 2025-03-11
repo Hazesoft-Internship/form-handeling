@@ -18,12 +18,13 @@ class BulkUpload
                 $fullName = $data[0];
                 $address = $data[1];
                 $email = $data[2];
+                $password = $data[3];
 
                 list($firstName, $middleName, $lastName) = $this->splitFullName($fullName);
 
-                $query = $this->con->prepare("INSERT INTO users (firstName, middleName, lastName, address, email) 
-                                            VALUES (?, ?, ?, ?, ?)");
-                $query->bind_param("sssss", $firstName, $middleName, $lastName, $address, $email);
+                $query = $this->con->prepare("INSERT INTO users (firstName, middleName, lastName, address, email, password) 
+                                            VALUES (?, ?, ?, ?, ?, ?)");
+                $query->bind_param("ssssss", $firstName, $middleName, $lastName, $address, $email, $password);
                 $query->execute();
             }
             fclose($containsFile);
