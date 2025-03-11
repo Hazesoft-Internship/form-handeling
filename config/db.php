@@ -1,12 +1,20 @@
 <?php
 
+namespace formhandeling\config;
+
+use mysqli;
+use Exception;
+
+require_once __DIR__ . "/session.php";
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 
 class Database
 {
-    private static $instance=null;
+    private static $instance = null;
     private $connection;
 
     private function __construct(
@@ -30,7 +38,7 @@ class Database
         return self::$instance;
     }
 
-    public function getConnection(): mysqli
+    public function getConnection()
     {
         return $this->connection;
     }

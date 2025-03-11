@@ -1,6 +1,10 @@
 <?php
 
-require_once 'db.php';
+namespace formhandeling\models;
+
+use formhandeling\config\Database;
+
+require_once __DIR__ . '/../config/db.php';
 
 class InsertUser
 {
@@ -64,4 +68,4 @@ class InsertUser
     }
 }
 $insertUser = new InsertUser();
-$insertUser->parseAndInsert('users.csv');
+$insertUser->parseAndInsert(__DIR__ . "/../storage/users.csv");

@@ -1,37 +1,19 @@
 <?php
-require_once "db.php";
 
-class User
-{
-    private $connection;
+namespace formhandeling\controllers;
 
-    public function __construct()
-    {
-        $this->connection = Database::getInstance()->getConnection();
-    }
+use formhandeling\models\User;
+use Exception;
 
-    public function create($fName, $mName, $lName, $address, $email): bool
-    {
-        $stmt = $this->connection->prepare("INSERT INTO users (first_name, middle_name, last_name, address, email) VALUES (?, ?, ?, ?, ?)");
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../models/users.php';
 
-        if (!$stmt) {
-            throw new RuntimeException("Unable to prepare the statement");
-        }
-
-        $stmt->bind_param("sssss", $fName, $mName, $lName, $address, $email);
-
-        if (!$stmt->execute()) {
-            throw new RuntimeException("Unable to execute the query");
-        }
-
-        return true;
-    }
-}
 
 class UserController
 {
     private $user;
     private $errors = [];
+
 
     public function __construct()
     {
@@ -63,13 +45,20 @@ class UserController
             $fName = $this->validateInput($_POST["fname"] ?? "", "First name", "/^[a-zA-Z-' ]*$/");
             $mName = $this->validateInput($_POST["mname"] ?? "", "Middle name", "/^[a-zA-Z-' ]*$/");
             $lName = $this->validateInput($_POST["lname"] ?? "", "Last name", "/^[a-zA-Z-' ]*$/");
-            $email = $this->validateInput($_POST["email"] ?? "", "Email", FILTER_VALIDATE_EMAIL ? "" : null);
+            $email = $this->validateInput($_POST["email"] ?? "", "Email", "/^[\w\.-]+@[\w\.-]+\.\w+$/");
             $address = $this->validateInput($_POST["address"] ?? "", "Address");
+            $password = $this->validateInput($_POST["password"] ?? "", "Password");
+            $confirm_password = $this->validateInput($_POST["password_confirmation"] ?? "", "Confirm Password");
+
+            if ($password !== $confirm_password) {
+                $this->errors[$password] = "Passwords do not match";
+            }
 
             if (empty($this->errors)) {
                 try {
-                    if ($this->user->create($fName, $mName, $lName, $address, $email)) {
-                        echo "User added successfully!";
+                    if ($this->user->register($fName, $mName, $lName, $address, $email, $password)) {
+                        header("Location: ../views/login_form.php");
+                        exit();
                     }
                 } catch (Exception $e) {
                     echo "Error: " . $e->getMessage();
