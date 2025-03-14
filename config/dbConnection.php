@@ -4,7 +4,7 @@ class DatabaseConnection
 {
     private $servername = "127.0.0.1";
     private $username = "root";
-    private $database = "users";
+    private $database = "ecommerce";
     private $password = "";
 
     public function connectDB(): mysqli|string

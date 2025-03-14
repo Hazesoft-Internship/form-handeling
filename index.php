@@ -1,30 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Form Handle</title>
-</head>
+$request = $_SERVER['REQUEST_URI'];
 
-<body>
-  <form action="formHandler.php" method="post">
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required /><br /><br />
+switch ($request) {
+  case '/':
+  case '/index.php':
+    require __DIR__ . '/views/login.html';
+    break;
 
-    <label for="middleName">Middle Name:</label>
-    <input type="text" id="middleName" name="middleName" required /><br /><br />
+  case '/signup':
+    require __DIR__ . '/views/signup.html';
+    break;
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required /><br /><br />
+  case '/product-store':
+    require __DIR__ . '/views/product-store.php';
+    break;
 
-    <label for="email">Email Address:</label>
-    <input type="email" id="email" name="email" required /><br /><br />
-
-    <label for="email">Address:</label>
-    <input type="text" id="address" name="address" required /><br /><br />
-    <input type="submit" value="Submit" />
-  </form>
-</body>
-
-</html>
+  default:
+    http_response_code(404);
+    echo "404 Not Found";
+    break;
+}
