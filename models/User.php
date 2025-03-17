@@ -1,19 +1,21 @@
 <?php
+
+namespace HazeSoft\Backend\formHandeling\models;
+
 require_once '../config/dbConnection.php';
+
+use HazeSoft\Backend\formHandeling\config\DatabaseConnection;
 
 class User
 {
-
     private $dbConnection;
     public function __construct(private $database = new DatabaseConnection())
     {
-
         $this->dbConnection = $this->database->connectDB();
     }
 
     public function registerUser($fullName, $email, $password)
     {
-
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $registerUserQuery = "INSERT INTO users (fullName, email, password) VALUES ('$fullName','$email','$hashedPassword')";
 
@@ -33,7 +35,6 @@ class User
         if (mysqli_num_rows($userData) > 0) {
             $user = mysqli_fetch_assoc($userData);
             if (password_verify($password, $user['password'])) {
-
                 session_start();
                 $_SESSION['LoggedIn'] = true;
                 $_SESSION['userID'] = $user['id'];

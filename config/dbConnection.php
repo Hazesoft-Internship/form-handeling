@@ -1,4 +1,7 @@
 <?php
+namespace HazeSoft\Backend\formHandeling\config;
+use mysqli;
+use Exception;
 
 class DatabaseConnection
 {
@@ -9,12 +12,17 @@ class DatabaseConnection
 
     public function connectDB(): mysqli|string
     {
-        $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->database);
+        try {
+            $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->database);
 
-        if (!$connection) {
+            if (!$connection) {
+                throw new Exception("Failed to connect to database: " . mysqli_connect_error());
+            }
+
+            return $connection;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
             return "Failed to connect to database";
         }
-
-        return $connection;
     }
 }

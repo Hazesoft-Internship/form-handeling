@@ -2,6 +2,8 @@
 
 require_once '../config/dbConnection.php';
 
+use HazeSoft\Backend\formHandeling\config\DatabaseConnection;
+
 class Product
 {
 

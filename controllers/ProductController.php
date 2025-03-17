@@ -2,6 +2,7 @@
 
 require_once '../models/Product.php';
 
+
 $product = new Product();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
