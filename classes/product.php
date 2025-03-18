@@ -92,7 +92,7 @@ class Product
                 $errorInfo = $deleteStmt->errorInfo();
                 return "Error: " . $errorInfo[2];
             } else {
-                // Update the product
+                // Update the product if the quantity is greater than zero
                 $updateQuery = "UPDATE " . $this->table_name . " SET quantity = :quantity, price = :price, updated_at = NOW() WHERE id = :id";
                 $updateStmt = $this->conn->prepare($updateQuery);
                 $updateStmt->bindParam(':quantity', $newQuantity);

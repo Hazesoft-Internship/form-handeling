@@ -74,7 +74,7 @@ class User
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
 
-                // Update the updated_at column
+                // Update the updated_at column to show the recent login time
                 $updateQuery = "UPDATE " . $this->table_name . " SET updated_at = NOW() WHERE id = :id";
                 $updateStmt = $this->conn->prepare($updateQuery);
                 $updateStmt->bindParam(':id', $user['id']);
