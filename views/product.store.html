@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Store</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .product {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .product button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .remove-button {
+            background-color: #f44336;
+        }
+
+        .logout-button {
+            background-color: #8f11c1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .product img {
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+    <form method="POST" action="../public/index.php">
+        <input type="hidden" name="action" value="logout">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+    <?php endif; ?>
+    <h1>Product Store</h1>
+    <?php
+    $products = [
+        ['id' => 1, 'user_id' => 1, 'product_name' => 'Yoga Accessories', 'price' => 2500, 'image' => '../Images/product1.jpg'],
+        ['id' => 2, 'user_id' => 1, 'product_name' => 'Black Everyday Wear Watch', 'price' => 1000, 'image' => '../Images/product2.jpg'],
+        ['id' => 3, 'user_id' => 1, 'product_name' => 'Buddha Bead Bracelet', 'price' => 500, 'image' => '../Images/product3.jpg'],
+        ['id' => 4, 'user_id' => 1, 'product_name' => 'Gold Zipped Black Leather Bag', 'price' => 2500, 'image' => '../Images/product4.jpg'],
+        ['id' => 5, 'user_id' => 1, 'product_name' => 'Indigo T-Shirt', 'price' => 2000, 'image' => '../Images/product5.jpg'],
+    ];
+    foreach ($products as $product): ?>
+    <div class="product" id="product-<?php echo htmlspecialchars($product['id']); ?>">
+        <img src="<?php echo htmlspecialchars($product['image']); ?>"
+            alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+        <h2>
+            <?php echo htmlspecialchars($product['product_name']); ?>
+        </h2>
+        <p>Price: NPR
+            <?php echo htmlspecialchars($product['price']); ?>
+        </p>
+        <form method="POST" action="../public/index.php">
+            <input type="hidden" name="action" value="add">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['id']); ?>">
+            <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>">
+            <input type="hidden" name="price" value="<?php echo htmlspecialchars($product['price']); ?>">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit">Add to Cart</button>
+        </form>
+        <form method="POST" action="../public/index.php">
+            <input type="hidden" name="action" value="remove">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['id']); ?>">
+            <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['product_name']); ?>">
+            <input type="hidden" name="price" value="<?php echo htmlspecialchars($product['price']); ?>">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="remove-button">Remove from Cart</button>
+        </form>
+    </div>
+    <?php endforeach; ?>
+</body>
+
+</html>
