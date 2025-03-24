@@ -9,7 +9,7 @@ switch ($request) {
     break;
 
   case '/signup':
-    require __DIR__ . '/views/signup.html';
+    require __DIR__ . '/views/signup.php';
     break;
 
   case '/product-store':

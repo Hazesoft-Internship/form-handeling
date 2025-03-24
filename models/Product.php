@@ -6,10 +6,12 @@ use HazeSoft\Backend\formHandeling\config\DatabaseConnection;
 
 class Product
 {
-
     private $dbConnection;
-    public function __construct(private $database = new DatabaseConnection())
+    private $database;
+    
+    public function __construct()
     {
+        $this->database = new DatabaseConnection();
         $this->dbConnection = $this->database->connectDB();
     }
 

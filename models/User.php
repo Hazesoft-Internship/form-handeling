@@ -9,21 +9,25 @@ use HazeSoft\Backend\formHandeling\config\DatabaseConnection;
 class User
 {
     private $dbConnection;
-    public function __construct(private $database = new DatabaseConnection())
+    private $database;
+    
+    public function __construct()
     {
+        $this->database = new DatabaseConnection();
         $this->dbConnection = $this->database->connectDB();
     }
 
-    public function registerUser($fullName, $email, $password)
+    public function registerUser($fullName, $email, $password): string
     {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $registerUserQuery = "INSERT INTO users (fullName, email, password) VALUES ('$fullName','$email','$hashedPassword')";
 
         $registerUser = mysqli_query($this->dbConnection, $registerUserQuery);
         if ($registerUser) {
-            echo "User registered successfully";
+
+            return "User registered successfully";
         } else {
-            echo "Failed to register user";
+            return "Failed to register user";
         }
     }
 
@@ -47,7 +51,7 @@ class User
         }
     }
 
-    public function logOutUser()
+    public function logOutUser(): void
     {
         session_start();
         session_unset();
