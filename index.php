@@ -1,22 +1,23 @@
 <?php
 
-require_once 'User.php';
-require_once 'Role.php';
+$request = $_SERVER['REQUEST_URI'];
 
-$user = new User();
-// echo $user->index();
+switch ($request) {
+  case '/':
+  case '/index.php':
+    require __DIR__ . '/views/login.html';
+    break;
 
-$role = new Role("Rupesh");
-echo Role::getManagementName();
+  case '/signup':
+    require __DIR__ . '/views/signup.php';
+    break;
 
-// echo $role->getManagementName();
+  case '/product-store':
+    require __DIR__ . '/views/product-store.php';
+    break;
 
-
-
-
-// echo $role->getRole();
-// echo $role->index();
-
-
-
-
+  default:
+    http_response_code(404);
+    echo "404 Not Found";
+    break;
+}
