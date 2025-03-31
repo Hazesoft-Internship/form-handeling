@@ -1,5 +1,6 @@
 <?php
 
+namespace ayushtamang\FormHandeling\control;
 class Sanitizer
 {
     public static function sanitizeString($inputText): string 
@@ -13,6 +14,7 @@ class Sanitizer
     public static function sanitizeEmail($inputText): string 
     {   
         $inputText = str_replace(" ", "", $inputText);
+        $inputText = strtolower($inputText);
         return $inputText;
     }
 

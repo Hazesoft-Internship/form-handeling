@@ -7,7 +7,7 @@ class BulkUpload
         $this->con = $con;
     }
 
-    public function insertUsersFromCSV($csvFilePath): void 
+    public function insertUsersFromCSV($csvFilePath): void  
     {
         if (($containsFile = fopen($csvFilePath, "r")) !== FALSE) {
             fgetcsv($containsFile); // Skip the header row
@@ -19,6 +19,7 @@ class BulkUpload
                 $address = $data[1];
                 $email = $data[2];
                 $password = $data[3];
+                $password = hash("sha512", $password);
 
                 list($firstName, $middleName, $lastName) = $this->splitFullName($fullName);
 

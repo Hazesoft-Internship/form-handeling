@@ -1,20 +1,24 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require '../../vendor/autoload.php';
 require_once("../config.php");
-require_once("../classes/Upload.php");
-require_once("../classes/Sanitizer.php");
-require_once("../classes/ErrorMessage.php");
-require_once("../classes/User.php");
+
+use ayushtamang\FormHandeling\model\UploadProduct;
+use ayushtamang\FormHandeling\model\GetUserDetails;
 
 if (!isset($_SESSION["userLoggedIn"])) {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit();
 }
 
-$upload = new Upload($con);
+$upload = new UploadProduct($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $ui = new User($con, $_SESSION["userLoggedIn"]);
+    $ui = new GetUserDetails($con, $_SESSION["userLoggedIn"]);
     $pn = $_POST["productname"];
     $pp = $_POST["productprice"];
     $pq = $_POST["productquantity"];

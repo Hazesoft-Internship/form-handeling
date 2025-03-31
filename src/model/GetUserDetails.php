@@ -1,6 +1,8 @@
 <?php
 
-class User
+namespace ayushtamang\FormHandeling\model;
+
+class GetUserDetails
 {
     private $sqlData;
     
