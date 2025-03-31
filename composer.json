@@ -1,0 +1,17 @@
+{
+    "name": "ayushtamang/form-handeling",
+    "autoload": {
+        "psr-4": {
+            "ayushtamang\\FormHandeling\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ayush Tamang",
+            "email": "ayushtamang1995@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^5.4"
+    }
+}
