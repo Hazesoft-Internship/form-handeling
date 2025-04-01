@@ -2,12 +2,14 @@
 
 namespace App\validate;
 
+use CustomException;
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 class Validation
 {
     public $errors = [];
-    public function validator($details)
+    public function validator(array $details)
     {
         if (empty($details["firstName"])) {
             $this->errors["firstname"] = "firstName is required";
@@ -25,12 +27,8 @@ class Validation
             $this->errors["email"] = "email is required";
         }
 
-        return empty($this->errors);
-    }
-
-    public function getError(): array
-    {
-        
-        return $this->errors;
+        if (!(empty($this->errors))) {
+            throw new CustomException($this->errors);
+        }
     }
 }

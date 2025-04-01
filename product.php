@@ -1,15 +1,16 @@
 <?php
-
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-require_once("./src/App/config/database.php");
-require_once("./src/App/model/Product.php");
 
-require_once("./src/App/controller/ProductController.php");
+require_once("./vendor/autoload.php");
 
-use App\controller\ProductController;
+use App\model\Product;
+use App\config\database;
 
-
-$conn = database::connectDB();
-$user = new ProductController($conn);
-$user->addProduct();
+$db= database::getInstance();
+$conn = $db->getConnection();
+$product = new Product($conn);
+$product->getProducts();
+echo "<br/>";
+$product->getAllProducts();

@@ -2,7 +2,6 @@
 
 namespace App\controller;
 
-// require_once("/src/App/model/Product.php");
 use App\model\Product;
 
 class ProductController
@@ -13,17 +12,18 @@ class ProductController
         $this->conn = $db;
     }
 
-    public function addProduct()
+    public function addProduct(string $name, int $price, int $quantity, int $userId)
     {
-        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        echo $name, $price, $quantity;
+        if (empty($name) || empty($price) || empty($quantity)) {
             echo "something went wrong while adding product";
             return;
         } else {
-            $name = $_POST["name"];
-            $price = $_POST["price"];
-            $quantity = $_POST["quantity"];
             $product = new Product($this->conn);
-            $product->addProduct($name, $price, $quantity);
+            $product->addProduct($name, $price, $quantity, $userId);
+            header("Location: ../view/product.php");
         }
     }
+
+    public function deleteProduct() {}
 }

@@ -4,12 +4,12 @@ namespace App\controller;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-require_once("./src/App/validate/Seperator.php");
-require_once("./src/App/validate/validation.php");
+
 
 use App\validate\Seperator;
 use App\validate\Validation;
 use App\model\User;
+use CustomException;
 
 class UserController
 {
@@ -30,25 +30,27 @@ class UserController
         $fullName = $_POST["fullName"];
         $email = $_POST["email"];
         $password = $_POST["password"];
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $address = $_POST["address"];
         $result = Seperator::seperate($fullName);
         $result["email"] = $email;
         $result["address"] = $address;
-        $result["password"] = $password;
-        if ($this->validate->validator($result)) {
+        $result["password"] = $hashed_password;
+
+        try {
+            $this->validate->validator($result);
             $user = new User($this->conn);
             $user->register($result);
-        } else {
-            foreach($this->validate->getError() as $x=>$y) {
-                echo $y;
-
+        } catch (CustomException $exception) {
+            echo $exception->getMessage() . $exception->getCode();
+            foreach ($exception->getTheError() as $errorTitle => $errorMessage) {
+                echo $errorMessage;
             }
         }
     }
 
     public function login()
     {
-        echo "hello";
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             echo "something went wrong while logging in";
         } else {
@@ -57,6 +59,15 @@ class UserController
             $password = $_POST["password"];
             $user = new User($this->conn);
             $user->login($email, $password);
+        }
+    }
+
+    public function insertCsv(string $path)
+    {
+        echo "controller";
+        $csv = new User($this->conn);
+        if ($csv->insertFromCsv($path)) {
+            echo "successfully inserted";
         }
     }
 }
