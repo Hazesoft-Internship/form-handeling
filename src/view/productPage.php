@@ -7,7 +7,11 @@ error_reporting(E_ALL);
 require '../../vendor/autoload.php';
 require "../config.php";
 
-if (!isset($_SESSION["userLoggedIn"])) {
+use ayushtamang\FormHandeling\session\Session;
+
+$session = Session::getSession("userLoggedIn");
+
+if (!isset($session)) {
     header("Location: login.php");
     exit();
 }

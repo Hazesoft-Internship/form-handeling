@@ -7,18 +7,21 @@ error_reporting(E_ALL);
 require '../../vendor/autoload.php';
 require_once("../config.php");
 
-use ayushtamang\FormHandeling\model\UploadProduct;
+use ayushtamang\FormHandeling\model\Product;
 use ayushtamang\FormHandeling\model\GetUserDetails;
+use ayushtamang\FormHandeling\session\Session;
 
-if (!isset($_SESSION["userLoggedIn"])) {
+$session = Session::getSession("userLoggedIn");
+
+if (!isset($session)) {
     header("Location: login.php");
     exit();
 }
 
-$upload = new UploadProduct($con);
+$upload = new Product($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $ui = new GetUserDetails($con, $_SESSION["userLoggedIn"]);
+    $ui = new GetUserDetails($con, Session::getSession("userLoggedIn"));
     $pn = $_POST["productname"];
     $pp = $_POST["productprice"];
     $pq = $_POST["productquantity"];

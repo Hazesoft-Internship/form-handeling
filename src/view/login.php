@@ -9,6 +9,7 @@ require_once("../config.php");
 
 use ayushtamang\FormHandeling\model\Authentication;
 use ayushtamang\FormHandeling\control\Sanitizer;
+use ayushtamang\FormHandeling\session\Session;
 
 
 $upload = new Authentication($con);
@@ -19,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     
     try {
         if($upload->login($em, $pw)) {
-            $_SESSION["userLoggedIn"] = $em;
+            Session::setSession("userLoggedIn", $em);
             header("Location: productStore.php");
         } else {
             echo "Failed to login!";

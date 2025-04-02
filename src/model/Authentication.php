@@ -3,6 +3,7 @@
 namespace ayushtamang\FormHandeling\model;
 
 use ayushtamang\FormHandeling\control\Validation;
+use ayushtamang\FormHandeling\session\Session;
 
 class Authentication extends Validation
 {    
@@ -74,7 +75,7 @@ class Authentication extends Validation
 
         if($result->num_rows == 1) {
             $result = $result->fetch_assoc();
-            $_SESSION["user_id"] = $result['id'];
+            Session::setSession("userId", $result['id']);
             return true;
         } else {
             throw new \Exception("Invalid email or password.");

@@ -3,6 +3,7 @@
 namespace ayushtamang\FormHandeling\view;
 
 use ayushtamang\FormHandeling\model\GetProductDetails;
+use ayushtamang\FormHandeling\session\Session;
 
 class ProductGrid
 {
@@ -13,7 +14,9 @@ class ProductGrid
 
     public function create(): string
     {
-        if (empty($_SESSION["user_id"])) {
+        $id = Session::getSession("userId");
+
+        if (empty($id)) {
             $gridItems = $this->getAllProducts();
         } else {
             $gridItems = $this->getProducts();
@@ -22,14 +25,15 @@ class ProductGrid
         return "<div>
                     <h1>Products</h1>
                     $gridItems
-                    
                 </div>";
     }
 
     public function getProducts(): string
     {
+        $id = Session::getSession("userId");
+
         $query = $this->con->prepare("SELECT * FROM products WHERE userId != ? ORDER BY RAND()");
-        $query->bind_param("i", $_SESSION["user_id"]);
+        $query->bind_param("i", $id);
         $query->execute();
 
         $result = $query->get_result();
@@ -38,8 +42,8 @@ class ProductGrid
 
         while ($row = $result->fetch_assoc()) {
             $product = new GetProductDetails($this->con, $row);
-            $item = new ProductGridItem($product);
-            $elementHTML .= $item->create();
+            $item = new ProductGridItem($product, $this->con);
+            $elementHTML .= $item->create("productPage.php", "Buy");
         }
 
         return $elementHTML;
@@ -56,8 +60,8 @@ class ProductGrid
 
         while ($row = $result->fetch_assoc()) {
             $product = new GetProductDetails($this->con, $row);
-            $item = new ProductGridItem($product);
-            $elementHTML .= $item->create();
+            $item = new ProductGridItem($product, $this->con);
+            $elementHTML .= $item->create("productPage.php", "Buy");
         }
 
         return $elementHTML;
@@ -65,8 +69,10 @@ class ProductGrid
 
     public function getProductsByUserId(): string
     {
+        $id = Session::getSession("userId");
+
         $query = $this->con->prepare("SELECT * FROM products WHERE userId = ?");
-        $query->bind_param("i", $_SESSION["user_id"]);
+        $query->bind_param("i", $id);
         $query->execute();
 
         $result = $query->get_result();
@@ -75,15 +81,44 @@ class ProductGrid
 
         while ($row = $result->fetch_assoc()) {
             $product = new GetProductDetails($this->con, $row);
-            $item = new ProductGridItem($product);
-            $elementHTML .= $item->create();
+            $item = new ProductGridItem($product, $this->con);
+            $elementHTML .= $item->create("updateProduct.php", "ShowMore");
+        }
+
+        if (empty($elementHTML)) {
+            $elementHTML = "<span>No! products to show.</span>";
         }
 
         return "<div>
                     <h1>Products</h1>
                     $elementHTML
-                    <a href='productStore.php'>Back</a>
+                    <br><a href='productStore.php'>Back</a>
                 </div>";
     }
+
+    public function updateProduct()
+    {
+        $id = Session::getSession("userId");
+
+        $query = $this->con->prepare("SELECT * FROM products WHERE userId = ?");
+        $query->bind_param("i", $id);
+        $query->execute();
+        
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        
+        $product = new GetProductDetails($this->con, $row);
+        $item = new ProductGridItem($product, $this->con);
+        $updateHTML = $item->button("Update");
+        $elementHTML = $item->createFrom("updateProduct.php", $updateHTML);
+
+        return "<div>
+                    <h1>Update Product</h1>
+                    $elementHTML
+                    <a href='productProfile.php'>Back</a>
+                </div>";
+    }
+
+    
 }
 ?>
