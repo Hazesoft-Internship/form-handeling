@@ -13,4 +13,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $product->deleteProduct($productId);
 } else {
     echo "something went wrong";
+    
 }

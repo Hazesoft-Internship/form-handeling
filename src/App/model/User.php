@@ -5,7 +5,7 @@ namespace App\model;
 use App\validate\Seperator;
 use App\validate\Validation;
 use App\session\Session;
-use CustomException;
+use App\Exception\CustomException;
 
 class User
 {
@@ -33,8 +33,8 @@ class User
         $stmt->bind_param("ssssss", $details["firstName"], $details["middleName"], $details["lastName"], $details["email"], $details["password"], $details["address"],);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
-            echo "registered";
-            var_dump($details);
+            header("Location: /form-handeling/src/App/view/login.html");
+            
         } else {
             echo "failed";
         }

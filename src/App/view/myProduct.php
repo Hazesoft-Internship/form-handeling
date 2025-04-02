@@ -1,39 +1,26 @@
+
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require("../../../vendor/autoload.php");
-
 use App\config\Database;
 use App\model\Product;
 use App\session\Session;
 
-$session = new Session();
-$db = database::getInstance();
+$db = Database::getInstance();
 $conn = $db->getConnection();
-
-if ($session->hasSession("user_id")) {
-    $storeProduct = [];
-    $product = new Product($conn);
-    $storeProduct = $product->getProducts();
-} else {
-    $storeProduct = [];
-    $product = new Product($conn);
-    $storeProduct = $product->getAllProducts();
-}
+$myProducts = new Product($conn);
+$session = new Session();
+$user_id = $session->getSession("user_id");
+$storeProduct = $myProducts->getMyProducts($user_id);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Products</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
-
 <body>
-    <h1>Product List</h1>
+    <h1>My Products</h1>
     <?php if (!empty($storeProduct)): ?>
         <div>
             <?php foreach ($storeProduct as $product): ?>
@@ -49,7 +36,6 @@ if ($session->hasSession("user_id")) {
                             
                             <a href="./UpdateProduct.php?id=<?php echo $product["id"] ?>"><button>update</button></a>
                         
-
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -57,26 +43,16 @@ if ($session->hasSession("user_id")) {
     <?php else: ?>
         <p>No products available.</p>
     <?php endif; ?>
+    <a href="./AddProduct.html"> <button>add product</button> </a>
 
-    <?php if ($session->hasSession("user_id")): ?>
-        <!-- <a href="./AddProduct.html"> <button style=" padding:10px;">add product</button></a> -->
-        <a href="./myProduct.php"> <button style=" padding:10px;">my product</button></a>
-    <?php else: ?>
-        <a href="./login.html"><button>login</button></a>
-
-    <?php endif; ?>
-    </form>
-
-    <?php if($session->hasSession("user_id")): ?>
-    <a href="/form-handeling/logout.php"><button>Logout</button></a>
-    <?php endif; ?>
-</body>
-<script>
+    <script>
     const onSubmit=(e)=>{
-        if(!confirm("Do you really want to delete?")) {
+        if(!confirm("do you really want to delete")) {
             e.preventDefault();
         }
     }
     </script>
-
+    
+    
+</body>
 </html>

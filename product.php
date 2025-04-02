@@ -11,6 +11,5 @@ use App\config\database;
 $db= database::getInstance();
 $conn = $db->getConnection();
 $product = new Product($conn);
-$product->getProducts();
-echo "<br/>";
-$product->getAllProducts();
+$result = $product->getSingleProduct(1);
+var_dump($result);

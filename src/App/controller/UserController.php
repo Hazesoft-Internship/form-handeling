@@ -9,7 +9,7 @@ ini_set('display_errors', 1);
 use App\validate\Seperator;
 use App\validate\Validation;
 use App\model\User;
-use CustomException;
+use App\Exception\CustomException;
 
 class UserController
 {

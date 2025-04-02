@@ -1,6 +1,6 @@
 <?php
-
-class CustomException extends Exception
+namespace App\Exception;
+class CustomException extends \Exception
 {
     public function __construct(protected array $errors, protected $message = "Validation Error", protected $code = 422)
     {
