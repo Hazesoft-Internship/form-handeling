@@ -1,6 +1,15 @@
 <?php
+namespace controller;
 
-require_once "exceptionhandle.php";
+require_once '../vendor/autoload.php';
+use database\DbConnection;
+use mysqli;
+use controller\FormValidation;
+use Exception;
+
+// use Exception;
+
+// require_once "../exceptionhandle.php";
 require_once "formValidation.php";
 class Formreq
 {
@@ -16,13 +25,16 @@ class Formreq
             $Last_name = $_POST['Last_name'];
             $Address = $_POST['Address'];
             $Email = $_POST['Email'];
+            $Password = $_POST['Password'];
+            $Password = password_hash($Password, PASSWORD_BCRYPT); // Hash the password
 
             $formdataArray = [
                 $First_name,
                 $Middle_name,
                 $Last_name,
                 $Address,
-                $Email
+                $Email,
+                $Password
             ];
 
 
@@ -33,10 +45,10 @@ class Formreq
 
             if (empty($message)) //validation
             {
-                $sql = "INSERT INTO users (First_name, Middle_name, Last_name, Address, Email) VALUES (?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO users (First_name, Middle_name, Last_name, Address, Email,Password) VALUES (?, ?, ?, ?, ?,?)";
 
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("sssss", $First_name, $Middle_name, $Last_name, $Address, $Email);
+                $stmt->bind_param("ssssss", $First_name, $Middle_name, $Last_name, $Address, $Email,$Password);
 
                 if ($stmt->execute()) {
                     echo "Record inserted successfully.";

@@ -1,7 +1,10 @@
 <?php
+namespace seeder;
+use database\DbConnection;
+use mysqli;
 
 // Database connection class
-require_once "Dbconnection.php";
+require_once "./db/Dbconnection.php";
 
 // CSV File Handling Class
 class CSVHandler

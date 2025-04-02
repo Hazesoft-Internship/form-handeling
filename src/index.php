@@ -2,11 +2,11 @@
 <meta name="viewport" content="width=device-width">
 
 <head>
-    <title> form</title>
+    <title> signupform</title>
 </head>
 
 <body>
-    <form action="userform.php" method="POST">
+    <form action="./module/userform.php" method="POST">
         <label for="First_name"> First Name</label>
         <input type="text" id="First_name" name="First_name" required><br><br>
 
@@ -19,11 +19,16 @@
         <label for="Email"> Email</label>
         <input type="text" id="Email" name="Email" required><br><br>
 
+        <label for="Password"> Password</label>
+        <input type="password" id="Password" name="Password" required><br><br>
+
         <label for="Address">Address</label>
         <input type="text" id="Address" name="Address" required><br><br>
 
-        <input type="submit" value="Submit">
+        <input type="submit" value="Signup">
         <input type="reset" value="Reset">
+        <br><br>
+        <small>already signup?<a href="./loginpage.php">login</a> </small>
     </form>
 </body>
 

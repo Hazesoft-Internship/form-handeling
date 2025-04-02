@@ -1,4 +1,6 @@
 <?php
+namespace database;
+use mysqli;
 class DbConnection
 {
     private mysqli $conn;
