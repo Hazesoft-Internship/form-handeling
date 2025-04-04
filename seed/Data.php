@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Data;
+use Exception;
+
 
 class Data
 {
