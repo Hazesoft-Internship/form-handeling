@@ -5,9 +5,7 @@ namespace App\model;
 
 class Product
 {
-    public function __construct(private $conn)
-    {
-    }
+    public function __construct(private $conn) {}
 
     public function addProduct(string $name, int $price, int $quantity, int $userId)
     {
@@ -15,7 +13,7 @@ class Product
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("isii", $userId, $name, $price, $quantity);
         if ($stmt->execute()) {
-            echo "product added";
+            header("Location: /my-profile");
         } else {
             echo "something went wrong while adding a product";
         }
@@ -45,18 +43,18 @@ class Product
         while ($row = $store->fetch_assoc()) {
             $products[] = $row;
         }
-        // var_dump($products, "products");
         return $products;
     }
 
-    public function getMyProducts($id) {
+    public function getMyProducts($id)
+    {
         $products = [];
         $query = "select * from products where user_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $store = $stmt->get_result();
-        while($row = $store->fetch_assoc()) {
+        while ($row = $store->fetch_assoc()) {
             $products[] = $row;
         }
         return $products;
@@ -64,12 +62,11 @@ class Product
 
     public function deleteProduct($id)
     {
-
         $query = "delete from products where id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
-            header("Location: ../view/myProduct.php");
+            header("Location: /my-profile");
         } else {
             echo $id;
             echo "something went wrong";
@@ -87,18 +84,17 @@ class Product
         return $row;
     }
 
-    public function updateProduct($productId, $productName, $productQuantity, $productPrice) {
+    public function updateProduct($productId, $productName, $productQuantity, $productPrice)
+    {
 
         $query = "update products
                   set name = ?, price = ?, quantity = ?
-                  where id = ?"
-                   ;
+                  where id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("siii", $productName, $productPrice, $productQuantity, $productId );
-        if($stmt->execute()) {
-            header("Location: ../view/myProduct.php");
+        $stmt->bind_param("siii", $productName, $productPrice, $productQuantity, $productId);
+        if ($stmt->execute()) {
+            header("Location: /my-profile");
         } else {
-            
             echo "something went wrong while updating";
         }
     }

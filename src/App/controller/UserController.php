@@ -2,31 +2,24 @@
 
 namespace App\controller;
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-
-use App\validate\Seperator;
-use App\validate\Validation;
 use App\model\User;
-use App\Exception\CustomException;
+use App\config\Database;
+use App\validate\Seperator;
+
 
 class UserController
 {
-    private $conn;
-    private Validation $validate;
-    public function __construct($db)
+    private $userModel;
+    private $db;
+    public function __construct()
     {
-        $this->conn = $db;
-        $this->validate = new Validation();
+        $conn = Database::getInstance();
+        $this->db = $conn->getConnection();
+        $this->userModel = new User($this->db);
     }
 
     public function register()
     {
-        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            echo "something went wrong";
-            return;
-        }
         $fullName = $_POST["fullName"];
         $email = $_POST["email"];
         $password = $_POST["password"];
@@ -36,37 +29,27 @@ class UserController
         $result["email"] = $email;
         $result["address"] = $address;
         $result["password"] = $hashed_password;
-
-        try {
-            $this->validate->validator($result);
-            $user = new User($this->conn);
-            $user->register($result);
-        } catch (CustomException $exception) {
-            echo $exception->getMessage() . $exception->getCode();
-            foreach ($exception->getTheError() as $errorTitle => $errorMessage) {
-                echo $errorMessage;
-            }
-        }
+        $this->userModel->register($result);
     }
 
     public function login()
     {
-        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            echo "something went wrong while logging in";
-        } else {
-            echo "hi";
-            $email = $_POST["email"];
-            $password = $_POST["password"];
-            $user = new User($this->conn);
-            $user->login($email, $password);
-        }
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+        $this->userModel->login($email, $password);
     }
 
-    public function insertCsv(string $path)
+    public function logout()
     {
-        echo "controller";
-        $csv = new User($this->conn);
-        if ($csv->insertFromCsv($path)) {
+        session_start();
+        session_unset();
+        session_destroy();
+        header("Location: /login");
+    }
+
+    public function insertCsv()
+    {
+        if ($this->userModel->insertFromCsv(__DIR__."/../data/user.csv")) {
             echo "successfully inserted";
         }
     }

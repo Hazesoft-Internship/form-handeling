@@ -15,9 +15,6 @@ class Database
         $this->conn = new \mysqli(self::$server, self::$username, self::$password, self::$dbName);
         if ($this->conn->connect_error) {
             die("couldnot connect to database" . $this->conn->connect_error);
-        } else {
-            // echo "connected to database";
-            return $this->conn;
         }
     }
 

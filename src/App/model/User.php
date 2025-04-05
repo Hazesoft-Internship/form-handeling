@@ -20,6 +20,7 @@ class User
 
     public function register(array $details)
     {
+        var_dump($details);
         $fetchEmail = "select * from users where email = ?";
         $emailStmt = $this->conn->prepare($fetchEmail);
         $emailStmt->bind_param("s", $details["email"]);
@@ -33,8 +34,7 @@ class User
         $stmt->bind_param("ssssss", $details["firstName"], $details["middleName"], $details["lastName"], $details["email"], $details["password"], $details["address"],);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
-            header("Location: /form-handeling/src/App/view/login.html");
-            
+            header("Location: /product");
         } else {
             echo "failed";
         }
@@ -52,19 +52,18 @@ class User
         $session = new Session();
         if (password_verify($password, $user["password"])) {
             $session->setSession("user_id", $user["id"]);
-            header("Location: /form-handeling/src/App/view/product.php");
+            header("Location: /product");
         } else {
 
-            header("Location: /src/App/view/login.html");
+            header("Location: /src/App/view/login.php");
         }
     }
 
 
     public function insertFromCsv(string $path)
     {
-        echo "$path";
         if (($handle = fopen($path, "r")) !== false) {
-            fgetcsv($handle, 0, ",", '"', "\\");
+            fgetcsv($handle, 0, ",", '"', "\\");    
             $batch = 500;
             $data = [];
             $insertedRow = 0;

@@ -2,8 +2,6 @@
 
 namespace App\validate;
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 class Seperator
 {
     public static function seperate(string $fullname): array

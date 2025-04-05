@@ -1,26 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-require("../../../vendor/autoload.php");
-
-use App\config\Database;
-use App\model\Product;
-use App\session\Session;
-
-$session = new Session();
-$db = database::getInstance();
-$conn = $db->getConnection();
-
-if ($session->hasSession("user_id")) {
-    $storeProduct = [];
-    $product = new Product($conn);
-    $storeProduct = $product->getProducts();
-} else {
-    $storeProduct = [];
-    $product = new Product($conn);
-    $storeProduct = $product->getAllProducts();
-}
+use App\format\DateTimeFormatter;
 ?>
 
 <!DOCTYPE html>
@@ -33,50 +13,50 @@ if ($session->hasSession("user_id")) {
 </head>
 
 <body>
-    <h1>Product List</h1>
-    <?php if (!empty($storeProduct)): ?>
-        <div>
-            <?php foreach ($storeProduct as $product): ?>
-                <div>
-                    <strong>Name:</strong> <?php echo $product['name']; ?>
-                    <strong>Quantity:</strong> <?php echo $product['quantity']; ?>
-                    <strong>Price:</strong> $<?php echo $product['price']; ?>
-                    <?php if ($session->getSession("user_id") === $product["user_id"]): ?>
-                        <form onsubmit="onSubmit(event)" action="../controller/ProductDelete.php" method="post">
-                            <input name="id" type="hidden" value="<?php echo $product["id"] ?>" />
-                            <button id="delete" type="submit">delete</button>
-                        </form>
-                            
-                            <a href="./UpdateProduct.php?id=<?php echo $product["id"] ?>"><button>update</button></a>
-                        
+    <div class="product">
+        <h1 class="heading">Product List</h1>
+        <?php if (!empty($storeProduct)): ?>
+            <div class="container">
+                <?php foreach ($storeProduct as $product): ?>
+                    <div class="products">
+                        <strong>Name:</strong> <?php echo $product['name']; ?>
+                        <strong>Quantity:</strong> <?php echo $product['quantity']; ?>
+                        <strong>Price:</strong> $<?php echo $product['price']; ?>
+                        <strong>added on:</strong> <?php echo DateTimeFormatter::formatDateTime($product['created_at']); ?>
+                        <strong>Last updated on:</strong> <?php echo DateTimeFormatter::formatDateTime($product['updated_at']); ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p>No products available.</p>
+        <?php endif; ?>
+        <?php if ($hasSession): ?>
+            <div class="button">
+                <a href="/my-profile"><button>my product</button></a>
 
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p>No products available.</p>
-    <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-    <?php if ($session->hasSession("user_id")): ?>
-        <!-- <a href="./AddProduct.html"> <button style=" padding:10px;">add product</button></a> -->
-        <a href="./myProduct.php"> <button style=" padding:10px;">my product</button></a>
-    <?php else: ?>
-        <a href="./login.html"><button>login</button></a>
+        <?php if ($hasSession): ?>
+            <div class="button">
+                <form action="/logout" method="POST">
+                <button>logout</button>
+                </form>
 
-    <?php endif; ?>
-    </form>
+            </div>
+        <?php else: ?>
+            <div>
+                <a href="/login"><button>login</button></a>
+            </div>
+        <?php endif; ?>
 
-    <?php if($session->hasSession("user_id")): ?>
-    <a href="/form-handeling/logout.php"><button>Logout</button></a>
-    <?php endif; ?>
 </body>
 <script>
-    const onSubmit=(e)=>{
-        if(!confirm("Do you really want to delete?")) {
+    const onSubmit = (e) => {
+        if (!confirm("Do you really want to delete?")) {
             e.preventDefault();
         }
     }
-    </script>
+</script>
 
 </html>

@@ -24,7 +24,6 @@ class ProductValidation
             $this->errors["price"] = "price cannot be less than 0";
         }
 
-
         if(!empty($this->errors)) {
             throw new CustomException($this->errors);
         }
