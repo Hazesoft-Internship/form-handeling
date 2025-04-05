@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Product page</title>
+</head>
+
+<body>
+    <div class="form">
+        <form action="../ValidationControllers/product.php" method="POST">
+            <div class="input">
+                <label for="name">
+                    Product name:
+                </label>
+                <input type="text" name="productName" required>
+            </div>
+            <div class="input">
+                <label for="price">
+                    Price:
+                </label>
+                <input type="text" name="productPrice" required>
+            </div>
+            <div class="input">
+                <label for="quantity">
+                    Quantity:
+                </label>
+                <input type="text" name="productQuantity" required>
+            </div>
+            <div class="input">
+                <input type="submit" name="submit" value="Submit">
+            </div>
+        </form>
+        <form action="showproducts.php" method="POST">
+            <div class="input">
+                <input type="submit" name="showproducts" value="Show Products">
+            </div>
+        </form>
+        <form action="../" method="POST">
+            <div class="input">
+                <input type="submit" name="home" value="Home">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
