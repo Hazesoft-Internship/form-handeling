@@ -1,23 +1,26 @@
 <?php
 
-// session_start();
+session_start();
 
-// // Check if the user is logged in, if
-// // not then redirect them to the login page
-// if (!isset($_SESSION['email'])) {
-//     header("Location: ../loginpage.php");
-//     exit();
-// }
+// Check if the user is logged in, 
+if (!isset($_SESSION['email'])) {
+    header("Location: /login");
+    exit();
+}
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+
 </head>
+
 <body>
     <header>
         <h1>Welcome to the Dashboard</h1>
@@ -26,7 +29,7 @@
             <ul>
                 <li><a href="profile.php">Profile</a></li>
                 <li><a href="settings.php">Settings</a></li>
-                <li><a href="logout.php">Logout</a></li>
+                <li><a href="/logout">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -40,12 +43,17 @@
         <section>
             <h2>Quick Links</h2>
             <ul>
-                <li><a href="productadd.php">Add Products</a></li>
-                
+                <li><a href="/addproduct">Add Products</a></li>
+
+                <li><a href="/productlist"> Products List</a></li>
+
+
+
             </ul>
         </section>
     </main>
 
-   
+
 </body>
+
 </html>

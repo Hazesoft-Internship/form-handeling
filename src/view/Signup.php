@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+// Check if the user is logged in, 
+if (isset($_SESSION['email'])) {
+    header("Location: /dashboard");
+    exit();
+}
+?>
+
 <html>
 <meta name="viewport" content="width=device-width">
 
@@ -6,7 +17,7 @@
 </head>
 
 <body>
-    <form action="./module/userform.php" method="POST">
+    <form action="/signup" method="POST">
         <label for="First_name"> First Name</label>
         <input type="text" id="First_name" name="First_name" required><br><br>
 
@@ -28,7 +39,7 @@
         <input type="submit" value="Signup">
         <input type="reset" value="Reset">
         <br><br>
-        <small>already signup?<a href="./loginpage.php">login</a> </small>
+        <small>already signup?<a href="/login">login</a> </small>
     </form>
 </body>
 

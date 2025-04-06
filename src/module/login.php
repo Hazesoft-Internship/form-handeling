@@ -1,12 +1,16 @@
 <?php
 
-namespace module;
-require_once '../vendor/autoload.php';
-use database\DbConnection;
+namespace Lattefront\FormHandeling\Module;
+
+// require_once(__DIR__ . "/../../vendor/autoload.php");
+
+session_start();
+
+use Lattefront\FormHandeling\Db\DbConnection;
+use Exception;
 use mysqli;
 
-require_once "../db/Dbconnection.php";
-session_start();
+// require_once "../db/Dbconnection.php"; // auto loading not working
 
 
 class Login
@@ -23,34 +27,40 @@ class Login
             $password = $_POST['Password'];
         }
         // Prepare and execute
+        try {
+            $stmt = $this->conn->prepare("SELECT password FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
 
-        $stmt = $this->conn->prepare("SELECT password FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
+            if ($stmt->num_rows == 1) {
+                $stmt->bind_result($hashedPassword);
+                $stmt->fetch();
 
-        if ($stmt->num_rows == 1) {
-            $stmt->bind_result($hashedPassword);
-            $stmt->fetch();
+                // Verify the password
+                if (password_verify($password, $hashedPassword)) {
+                    // Start the session and redirect to the dashboard
 
-            // Verify the password
-            if (password_verify($password, $hashedPassword)) {
-                // Start the session and redirect to the dashboard
+                    $_SESSION['email'] = $email;
+                    // var_dump( $_SESSION['email']); 
 
-                $_SESSION['email'] = $email;
-                header("Location:../view/dashboard.php");
-                exit();
+                    header("Location: /");
+                    exit();
+                } else {
+                    echo "Incorrect credentials.";
+                    throw new Exception("Incorrect credentials. Please try again.");
+                }
             } else {
-                echo "Incorrect credentials. Please try again.";
-
-                exit();
+                header("Location: /signup");
+                throw new Exception("Users not found .");
             }
-        } else {
-            echo "Incorrect credentials. Please try again.";
+        } catch (Exception $excep) {
+            throw new Exception("Error: " . $excep->getMessage(),);
+        } finally {
+            // Close the statement and connection  
+            $stmt->close();
+            $this->conn->close();
         }
-
-        $stmt->close();
-        $this->conn->close();
     }
 }
-$userlogin = new Login(new DbConnection());
+// $userlogin = new Login(new DbConnection());

@@ -1,11 +1,11 @@
 <?php
-namespace module;
-require_once '../vendor/autoload.php';
-use database\DbConnection;
-use controller\Formreq;
 
-require_once "../db/Dbconnection.php";
-require_once "../controller/formreq.php";
+namespace Lattefront\FormHandeling\Module;
+
+
+use Lattefront\FormHandeling\Db\DbConnection;
+use Lattefront\FormHandeling\Controller\Formreq;
+
 class InsertUser
 {
     public function __construct()
@@ -20,4 +20,4 @@ class InsertUser
         }
     }
 }
-$insertuserform = new InsertUser();
+// $insertuserform = new InsertUser();

@@ -8,6 +8,10 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+// Get the product ID from the query string
+// if (isset($_GET['id'])) {
+//     $productId = $_GET['id'];
+// } 
 
 ?>
 <!DOCTYPE html>
@@ -16,12 +20,17 @@ if (!isset($_SESSION['email'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Add Form</title>
+    <title>update Form</title>
 </head>
 
 <body>
-    <h1>Add New Product</h1>
-    <form action="/addproduct" method="post">
+    <h1>update Product</h1>
+    <form action="/updateproduct" method="post">
+        <label for="id">Product ID:</label>
+        <!-- <input type="text" id="id" name="id" value="<?php echo htmlspecialchars($productId); ?>" readonly> -->
+        <input type="number" id="id" name="id" required>
+        <br><br>
+
         <label for="product_name">Product Name:</label>
         <input type="text" id="product_name" name="product_name" required>
         <br><br>
@@ -39,7 +48,7 @@ if (!isset($_SESSION['email'])) {
 
         <br><br>
 
-        <button type="submit">Add Product</button>
+        <button type="submit">Update Product</button>
         <input type="reset" value="Reset">
     </form>
 </body>

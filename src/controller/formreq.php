@@ -1,16 +1,18 @@
 <?php
-namespace controller;
 
-require_once '../vendor/autoload.php';
-use database\DbConnection;
+namespace Lattefront\FormHandeling\Controller;
+
+// require_once(__DIR__ . "/../../vendor/autoload.php");
+
+use Lattefront\FormHandeling\Db\DbConnection;
 use mysqli;
-use controller\FormValidation;
+use Lattefront\FormHandeling\Controller\FormValidation;
 use Exception;
 
 // use Exception;
 
 // require_once "../exceptionhandle.php";
-require_once "formValidation.php";
+// require_once "FormValidation.php";
 class Formreq
 {
     private mysqli $conn; // Store the mysqli connection
@@ -48,10 +50,13 @@ class Formreq
                 $sql = "INSERT INTO users (First_name, Middle_name, Last_name, Address, Email,Password) VALUES (?, ?, ?, ?, ?,?)";
 
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("ssssss", $First_name, $Middle_name, $Last_name, $Address, $Email,$Password);
+                $stmt->bind_param("ssssss", $First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
 
                 if ($stmt->execute()) {
                     echo "Record inserted successfully.";
+                    echo "<br>";
+                    echo "You will be redirected to the login page in 3 seconds.";
+                    header("Refresh:3; url=/login");
                 }
             } else {
 
@@ -59,12 +64,13 @@ class Formreq
                     echo $msg . "<br>";
                 }
             }
-        }  catch (Exception $excep) {
-            throw new Exception("Error: " . $excep->getMessage(), );
+            //need to check if the email already exists in the database
+            //Uncaught Exception: Error: Duplicate entry 'xotavejuqo@mailinator.com' for key 'unique_email' 
+        } catch (Exception $excep) {
+            throw new Exception("Error: " . $excep->getMessage(),);
         } finally {
-           
-                $stmt->close();
-            
+
+            $stmt->close();
         }
     }
 }
