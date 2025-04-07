@@ -21,7 +21,7 @@ $router->post('/updateproduct', [Controllers::class, 'updateproduct']);
 // $router->getId('/deleteproduct/:id', function ($id) {
 //     Controllers::deleteproduct($id);
 // });
-$router->get('/deleteproduct', [Controllers::class, 'deleteproductpage']);
+// $router->get('/deleteproduct', [Controllers::class, 'deleteproductpage']);
 $router->post('/deleteproduct', [Controllers::class, 'deleteproduct']);
 
 

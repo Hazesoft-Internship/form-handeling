@@ -26,25 +26,33 @@ if (!isset($_SESSION['email'])) {
 <body>
     <h1>update Product</h1>
     <form action="/updateproduct" method="post">
+        <?php
+        $product_id = $_GET['id'];
+        $product_name = $_GET['name'];
+        $product_description = $_GET['description'];
+        $product_quantity = $_GET['quantity'];
+        $product_price = $_GET['price'];
+        ?>
         <label for="id">Product ID:</label>
-        <!-- <input type="text" id="id" name="id" value="<?php echo htmlspecialchars($productId); ?>" readonly> -->
-        <input type="number" id="id" name="id" required>
+        <input type="number" id="id" name="id" value="<?php echo htmlspecialchars($product_id); ?>" readonly>
+
         <br><br>
 
+
         <label for="product_name">Product Name:</label>
-        <input type="text" id="product_name" name="product_name" required>
+        <input type="text" id="product_name" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>" required>
         <br><br>
 
         <label for="product_price">Price:</label>
-        <input type="number" id="product_price" name="product_price" step="0.01" required>
+        <input type="number" id="product_price" name="product_price" step="0.01" value="<?php echo htmlspecialchars($product_price); ?>" required>
         <br><br>
 
         <label for="product_description">Description:</label>
-        <textarea id="product_description" name="product_description" rows="4" cols="50" required></textarea>
+        <textarea id="product_description" name="product_description" rows="4" cols="50" required> <?php echo htmlspecialchars($product_description); ?></textarea>
         <br><br>
 
         <label for="product_quantity">Quantity:</label>
-        <input type="number" id="product_quantity" name="product_quantity" required>
+        <input type="number" id="product_quantity" name="product_quantity" value="<?php echo htmlspecialchars($product_quantity); ?>" required>
 
         <br><br>
 
@@ -54,4 +62,3 @@ if (!isset($_SESSION['email'])) {
 </body>
 
 </html>
-</body>

@@ -17,7 +17,7 @@ if (isset($_SESSION['email'])) {
 </head>
 
 <body>
-    <form action="login" method="POST">
+    <form action="/login" method="POST">
         <label for="Email"> Email</label>
         <input type="Email" id="Email" name="Email" required><br><br>
 

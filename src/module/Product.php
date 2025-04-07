@@ -119,7 +119,7 @@ class Product
 
             // Execute the query
             if ($stmt->execute()) {
-                echo "Product updated successfully.";
+                echo "Product $id updated successfully.";
                 echo "<br>";
                 echo "You will be redirected to the dashboard page in 3 seconds.";
                 header("Refresh:3; url=/dashboard");
@@ -146,8 +146,9 @@ class Product
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("i", $productID);
 
+
             if ($stmt->execute()) {
-                echo "Product deleted successfully.";
+                echo "Product {$productID} deleted successfully.";
                 echo "<br>";
                 echo "You will be redirected to the dashboard page in 3 seconds.";
                 header("Refresh:3; url=/dashboard");

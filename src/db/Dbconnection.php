@@ -2,7 +2,6 @@
 
 namespace Lattefront\FormHandeling\Db;
 
-// require_once(__DIR__ . "/../../vendor/autoload.php");
 
 use mysqli;
 

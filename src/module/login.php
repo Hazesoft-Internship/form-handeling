@@ -2,23 +2,20 @@
 
 namespace Lattefront\FormHandeling\Module;
 
-// require_once(__DIR__ . "/../../vendor/autoload.php");
-
 session_start();
 
 use Lattefront\FormHandeling\Db\DbConnection;
 use Exception;
 use mysqli;
 
-// require_once "../db/Dbconnection.php"; // auto loading not working
-
-
 class Login
 {
     private mysqli $conn;
 
     public function __construct(DbConnection $db)
+
     {
+        echo "here";
         $this->conn = $db->getConnection();
 
 
@@ -28,6 +25,7 @@ class Login
         }
         // Prepare and execute
         try {
+            print_r("here it is");
             $stmt = $this->conn->prepare("SELECT password FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -44,7 +42,7 @@ class Login
                     $_SESSION['email'] = $email;
                     // var_dump( $_SESSION['email']); 
 
-                    header("Location: /");
+                    header("Location:/dashboard");
                     exit();
                 } else {
                     echo "Incorrect credentials.";
@@ -63,4 +61,4 @@ class Login
         }
     }
 }
-// $userlogin = new Login(new DbConnection());
+$userlogin = new Login(new DbConnection());

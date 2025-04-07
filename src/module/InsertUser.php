@@ -20,4 +20,4 @@ class InsertUser
         }
     }
 }
-// $insertuserform = new InsertUser();
+$insertuserform = new InsertUser();
