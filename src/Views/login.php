@@ -114,7 +114,8 @@ if ($session->getSession('user') !== null) {
 </head>
 
 <body>
-    <form action="/login/auth" method="POST">
+    <!-- <form action="/login/auth" method="POST"> -->
+    <form action="/login" method="POST">
         <h1>Login</h1>
 
         <label for="email">Email</label>
@@ -136,7 +137,7 @@ if ($session->getSession('user') !== null) {
         <button type="submit">Login</button>
 
         <div class="signup-link">
-            <p>Don't have an account? <a href="./signup.html">Sign up here</a></p>
+            <p>Don't have an account? <a href="/signup">Sign up here</a></p>
         </div>
     </form>
 </body>

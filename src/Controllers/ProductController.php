@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Config\DataBase;
 use App\Models\ProductModel;
+use App\Sessions\Sessions;
 
 
 class ProductController
@@ -29,11 +30,13 @@ class ProductController
         $description = $_POST['description'] ?? '';
         $price = $_POST['price'] ?? '';
         $quantity = $_POST['quantity'] ?? '';
+        session_start();
+        $userId = $_SESSION['user']['user_id'];
 
 
 
         $product = new ProductModel();
-        $product->insertProduct($name, $description, $price, $quantity);
+        $product->insertProduct($name, $description, $price, $quantity, $userId);
     }
 
     public function updateProduct()
@@ -50,6 +53,7 @@ class ProductController
         $description = $_POST['description'] ?? '';
         $price = $_POST['price'] ?? '';
         $quantity = $_POST['quantity'] ?? '';
+
 
         $product = new ProductModel();
         if ($product->updateProduct($id, $name, $description, $price, $quantity)) {
@@ -78,6 +82,25 @@ class ProductController
 
         $product = new ProductModel();
         $products = $product->getAllProducts();
+        if (empty($products)) {
+            echo "No products found.";
+            return null;
+        }
+        return $products;
+    }
+
+    public function userProducts(): array|null
+    {
+        $session = new Sessions();
+        // $userId = $session->getSession('user')['id'];
+        session_start();
+        $userId = $_SESSION['user']['user_id'];
+        if ($userId === null) {
+            echo "User not logged in.";
+            return null;
+        }
+        $product = new ProductModel();
+        $products = $product->getUserProducts($userId);
         if (empty($products)) {
             echo "No products found.";
             return null;

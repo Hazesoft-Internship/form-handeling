@@ -5,8 +5,12 @@ namespace App\Sessions;
 
 class Sessions
 {
+
+    // public array $session = null;
     public function __construct()
     {
+
+
         session_start();
     }
 

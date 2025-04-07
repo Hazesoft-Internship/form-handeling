@@ -92,7 +92,7 @@
 </head>
 
 <body>
-    <form action="/signup/register" method="POST">
+    <form action="/signup" method="POST">
         <h1>Register</h1>
 
         <label for="first-name">First Name</label>

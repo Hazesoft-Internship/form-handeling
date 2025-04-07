@@ -16,6 +16,19 @@ class UserController
         $this->validation = new UserValidation();
     }
 
+
+    public function logout()
+    {
+        session_start();
+        if (!isset($_SESSION['user'])) {
+            die("You are not logged in.");
+        }
+        unset($_SESSION['user']);
+        session_destroy();
+        header("Location: /login");
+        exit();
+    }
+
     public function registerUser()
     {
 

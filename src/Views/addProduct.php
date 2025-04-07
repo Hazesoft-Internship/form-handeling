@@ -3,8 +3,14 @@
 
 use App\Sessions\Sessions;
 
-$session = new Sessions();
-if ($session->getSession('user') == null) {
+// $session = new Sessions();
+// if ($session->getSession('user') == null) {
+//     header("Location: /login");
+//     exit();
+// }
+
+session_start();
+if (!isset($_SESSION['user'])) {
     header("Location: /login");
     exit();
 }
@@ -70,7 +76,7 @@ if ($session->getSession('user') == null) {
 
 <body>
     <h1>Add Product</h1>
-    <form action="/product/add" method="post">
+    <form action="/addproduct" method="post">
         <label for="name">Product Name:</label>
         <input type="text" id="name" name="name" required><br><br>
 
