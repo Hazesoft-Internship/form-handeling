@@ -1,23 +1,13 @@
 <?php
 
-$request = $_SERVER['REQUEST_URI'];
+require_once __DIR__ . '/vendor/autoload.php';
 
-switch ($request) {
-  case '/':
-  case '/index.php':
-    require __DIR__ . '/views/login.html';
-    break;
+use ECommerce\Routers\Router;
 
-  case '/signup':
-    require __DIR__ . '/views/signup.php';
-    break;
+$request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$routes = require_once __DIR__ . '/src/Config/routes.php';
 
-  case '/product-store':
-    require __DIR__ . '/views/product-store.php';
-    break;
+$router = new Router();
 
-  default:
-    http_response_code(404);
-    echo "404 Not Found";
-    break;
-}
+$router->loadRoutes($routes);
+$router->dispatch($request);

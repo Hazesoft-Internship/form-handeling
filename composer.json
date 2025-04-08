@@ -1,0 +1,9 @@
+{
+  "name": "samaya/e-commerce",
+  "autoload": {
+    "psr-4": {
+      "ECommerce\\": "src/"
+    }
+  },
+  "require": {}
+}

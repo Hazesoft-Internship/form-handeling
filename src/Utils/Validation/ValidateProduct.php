@@ -1,7 +1,9 @@
 <?php
 
-use HazeSoft\Backend\formHandeling\utils\ValidationException;
-require_once 'formHandeling/utils/validation/Validation.php';
+namespace ECommerce\Utils\Validation;
+
+use ECommerce\Utils\Validation\Validation;
+use ECommerce\Utils\Validation\ValidationException;
 
 class ValidateProduct extends Validation
 {

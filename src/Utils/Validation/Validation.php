@@ -1,5 +1,7 @@
 <?php
 
+namespace ECommerce\Utils\Validation;
+
 abstract class Validation
 {
     protected $patternName = "/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/";

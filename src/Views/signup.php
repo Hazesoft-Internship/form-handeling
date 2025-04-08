@@ -52,15 +52,10 @@
 </head>
 
 <body>
-  <?php
-  //  require_once './formHandeling/controllers/UserController.php';
 
-  echo $errorMessage;
-
-  ?>
   <form
     class="signup-form"
-    action="../controllers/userController/SignUpController.php"
+    action="/signup-submit"
     method="post">
     <h2>Signup</h2>
     <input type="text" name="fullName" placeholder="Full Name" required />

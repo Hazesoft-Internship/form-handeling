@@ -1,7 +1,10 @@
 <?php
-session_start();
-if (!isset($_SESSION['LoggedIn'])) {
-    header("Location: /");
+
+use ECommerce\Services\Session;
+
+$session = Session::getInstance();
+if (!$session->get('userID')) {
+    header('Location: /login');
     exit;
 }
 ?>
@@ -67,7 +70,7 @@ if (!isset($_SESSION['LoggedIn'])) {
 <body>
     <div class="product-form">
         <h1>Product Store</h1>
-        <form action="../controllers/productController/ProductController.php" method="post">
+        <form action="/add-product-submit" method="post">
             <label for="productName">Product Name:</label>
             <input type="text" id="productName" name="productName" required><br><br>
 
@@ -79,7 +82,7 @@ if (!isset($_SESSION['LoggedIn'])) {
 
             <input type="submit" name="product-submit" value="Submit">
         </form>
-        <form action="../controllers/userController/LogOutController.php" method="post" class="logout-form">
+        <form action="/logout-submit" onclick="return confirm('Are you sure?');" method="post" class="logout-form">
             <input type="submit" name="logout" value="Logout">
         </form>
     </div>

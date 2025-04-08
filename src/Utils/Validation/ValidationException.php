@@ -1,6 +1,6 @@
 <?php
 
-namespace HazeSoft\Backend\formHandeling\utils;
+namespace ECommerce\Utils\Validation;
 
 use Exception;
 
