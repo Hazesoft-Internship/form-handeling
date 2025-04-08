@@ -6,6 +6,12 @@ class Router
 {
 
     protected $routes = [];
+    public function __construct()
+    {
+        // Load routes from the configuration file
+        $this->routes = require __DIR__ . '/../../config/routerConfig.php';
+       
+    }
 
     protected function add($method, $uri, $controller): void
     {
@@ -42,36 +48,26 @@ class Router
     {
         $this->add('DELETE', $uri, $controller);
     }
-    public function dispatch(): void
+    public function dispatch()
+        
     {
-        $requestUri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-
-        //  echo "Request URI: " . $requestUri . "<br>";
-        // echo "Request Method: " . $requestMethod . "<br>";
-
-        foreach ($this->routes as $route) {
-            if ($route['uri'] === '/' . $requestUri && $route['method'] ===  $requestMethod) {
-
-                if (is_callable($route['controller'])) {
-                    call_user_func($route['controller']);
-                } elseif (is_array($route['controller'])) {
-                    // Handle the controller and method if they are passed as an array
-                    list($controllerClass, $method) = $route['controller'];
-                    $controllerInstance = new $controllerClass();
-
-                    if (method_exists($controllerInstance, $method)) {
-                        call_user_func([$controllerInstance, $method]);
-                    } else {
-                        echo "Method '$method' not found in '$controllerClass'.<br>";
-                    }
-                }
-
-                return;
-            }
+        $method = $_SERVER['REQUEST_METHOD'];
+        $path = $_SERVER['REQUEST_URI'] ?? '/';
+        $path = explode('?', $path)[0];
+        
+        $callback = $this->routes[$method][$path] ?? null;
+        
+        if ($callback === null) {
+            http_response_code(404);
+            echo "404 Route Not Found";
         }
-
-        http_response_code(404);
-        echo "Route Not Found";
+        
+        if (is_array($callback)) {
+            [$class, $method] = $callback;
+            $controller = new $class();
+            return $controller->$method();
+        }
+        
+        return $callback();
     }
 }

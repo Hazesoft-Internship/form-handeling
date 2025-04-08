@@ -38,15 +38,20 @@ class Controllers
         $addproduct = new Product(new DbConnection());
         $addproduct->insertProduct();
     }
-    public function productlist(): void
+    public function myproductlist(): void
     {
 
         require __DIR__ . '/../View/Viewproduct.php';
     }
+    
+    public function getallproduct(): void
+    {
+        require __DIR__ . '/../View/viewallproduct.php';
+
+    }
     public function updateproductpage(): void
     {
-        // $updateproduct = new Product(new DbConnection());
-        // $updateproduct->updateProduct();
+       
         require __DIR__ . '/../View/updateproduct.php';
     }
     public function updateproduct(): void
@@ -54,13 +59,7 @@ class Controllers
         $updateproduct = new Product(new DbConnection());
         $updateproduct->updateProduct();
     }
-    // public static function deleteproductID($id): void //Todo work here
-    // {
-    //     //    echo $id;
-    //     //    echo"here";
-    //     // $deleteproduct = new Product(new DbConnection());
-    //     // $deleteproduct->deleteProduct($id);
-    // }
+    
 
     public static function deleteproductpage(): void
     {
@@ -74,9 +73,9 @@ class Controllers
     }
     public function logout(): void
     {
-        session_start();
-        session_destroy();
+        $session = \Lattefront\FormHandeling\session\Session::getInstance();
+        $session->logout();
         header("Location: /login");
-        exit();
+        exit;
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Lattefront\FormHandeling\Db;
 
-
-use mysqli;
+use PDO;
+use PDOException;
 
 class DbConnection
 {
-    private mysqli $conn;
+    private PDO $conn;
 
     public function __construct(
         private string $servername = "localhost",
@@ -15,13 +15,15 @@ class DbConnection
         private string $password = "lattefront",
         private string $dbname = "hazesoft"
     ) {
-        $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
-
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
-        }
+        // $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+      try {
+          $this->conn = new PDO("mysql:host={$this->servername};dbname={$this->dbname}", $this->username, $this->password);
+          $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      } catch (PDOException $e) {
+          echo("Connection failed: " . $e->getMessage());
+      }
     }
-    public function getConnection(): mysqli //  method to access the connection
+    public function getConnection(): PDO //  method to access the connection
     {
         return $this->conn;
     }

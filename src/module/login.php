@@ -2,20 +2,22 @@
 
 namespace Lattefront\FormHandeling\Module;
 
-session_start();
 
+use Lattefront\FormHandeling\session\Session;
 use Lattefront\FormHandeling\Db\DbConnection;
 use Exception;
-use mysqli;
+use PDO;
 
 class Login
 {
-    private mysqli $conn;
+    private $conn;
+    private Session $session; 
 
+    
     public function __construct(DbConnection $db)
 
     {
-        echo "here";
+        $this->session = Session::getInstance(); // Initialize the session instance
         $this->conn = $db->getConnection();
 
 
@@ -25,22 +27,19 @@ class Login
         }
         // Prepare and execute
         try {
-            print_r("here it is");
             $stmt = $this->conn->prepare("SELECT password FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email);
+            $stmt->bindValue(1, $email, PDO::PARAM_STR);
             $stmt->execute();
-            $stmt->store_result();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($stmt->num_rows == 1) {
-                $stmt->bind_result($hashedPassword);
-                $stmt->fetch();
+            if ($result && isset($result['password'])) {
+                $hashedPassword = $result['password'];
 
                 // Verify the password
                 if (password_verify($password, $hashedPassword)) {
                     // Start the session and redirect to the dashboard
-
-                    $_SESSION['email'] = $email;
-                    // var_dump( $_SESSION['email']); 
+                   
+                    $this->session->login($email);                   
 
                     header("Location:/dashboard");
                     exit();
@@ -56,8 +55,9 @@ class Login
             throw new Exception("Error: " . $excep->getMessage(),);
         } finally {
             // Close the statement and connection  
-            $stmt->close();
-            $this->conn->close();
+            $stmt = null;
+            // Close the connection
+            $this->conn = null;
         }
     }
 }

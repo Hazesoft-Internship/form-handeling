@@ -28,7 +28,7 @@ if (isset($_SESSION['email'])) {
         <input type="submit" value="Login">
         <input type="reset" value="Reset">
         <br><br>
-        <small>not signup?<a href="/signup">Signup</a> </small>
+        <small>didn't have account?<a href="/signup">Signup</a> </small>
     </form>
 </body>
 

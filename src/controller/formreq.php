@@ -2,20 +2,16 @@
 
 namespace Lattefront\FormHandeling\Controller;
 
-// require_once(__DIR__ . "/../../vendor/autoload.php");
 
 use Lattefront\FormHandeling\Db\DbConnection;
-use mysqli;
+
 use Lattefront\FormHandeling\Controller\FormValidation;
 use Exception;
 
-// use Exception;
 
-// require_once "../exceptionhandle.php";
-// require_once "FormValidation.php";
 class Formreq
 {
-    private mysqli $conn; // Store the mysqli connection
+    private  $conn; // Store the  connection
 
     public function __construct(DbConnection $dbConnection)
     {
@@ -50,7 +46,12 @@ class Formreq
                 $sql = "INSERT INTO users (First_name, Middle_name, Last_name, Address, Email,Password) VALUES (?, ?, ?, ?, ?,?)";
 
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("ssssss", $First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
+                $stmt->bindValue(1, $First_name, \PDO::PARAM_STR);
+                $stmt->bindValue(2, $Middle_name, \PDO::PARAM_STR);
+                $stmt->bindValue(3, $Last_name, \PDO::PARAM_STR);
+                $stmt->bindValue(4, $Address, \PDO::PARAM_STR);
+                $stmt->bindValue(5, $Email, \PDO::PARAM_STR);
+                $stmt->bindValue(6, $Password, \PDO::PARAM_STR);
 
                 if ($stmt->execute()) {
                     echo "Record inserted successfully.";
@@ -70,7 +71,7 @@ class Formreq
             throw new Exception("Error: " . $excep->getMessage(),);
         } finally {
 
-            $stmt->close();
+            $stmt = null;
         }
     }
 }

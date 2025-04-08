@@ -1,12 +1,16 @@
 <?php
 
-session_start();
+use Lattefront\FormHandeling\session\Session;
+
 
 // Check if the user is logged in, 
-if (!isset($_SESSION['email'])) {
+$session = Session::getInstance();
+
+if (!($session->isLoggedIn())) {
     header("Location: /login");
     exit();
 }
+
 
 
 ?>
@@ -45,7 +49,8 @@ if (!isset($_SESSION['email'])) {
             <ul>
                 <li><a href="/addproduct">Add Products</a></li>
 
-                <li><a href="/productlist"> Products List</a></li>
+                <li><a href="/productlist">My Products </a></li>
+                <li><a href="/viewallproducts"> ALL Products </a></li>
 
 
 

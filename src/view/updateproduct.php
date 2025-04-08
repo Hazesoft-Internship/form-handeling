@@ -34,7 +34,7 @@ if (!isset($_SESSION['email'])) {
         $product_price = $_GET['price'];
         ?>
         <label for="id">Product ID:</label>
-        <input type="number" id="id" name="id" value="<?php echo htmlspecialchars($product_id); ?>" readonly>
+        <input  style="cursor:none ;"type="number" id="id" name="id" value="<?php echo htmlspecialchars($product_id); ?>" readonly>
 
         <br><br>
 
