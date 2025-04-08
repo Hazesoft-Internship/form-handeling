@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
-session_start();
+
 
 use App\Config\DataBase;
+use App\Sessions\Sessions;
 use Exception;
 
 class UserModel
 {
     public object $connection;
+    public object $session;
 
     public function __construct()
     {
 
         $this->connection = DataBase::connect();
+        $this->session = new Sessions;
     }
 
 
@@ -40,7 +43,7 @@ class UserModel
                 echo "Error: " . $exception->getMessage();
                 return;
             }
-            
+
             $sql = "INSERT INTO users (first_name, middle_name, last_name, email, address,password) VALUES
         (?, ?, ?, ?, ?,?)";
 
@@ -73,7 +76,8 @@ class UserModel
             $result = $statement->get_result();
             $user = $result->fetch_assoc();
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user'] = $user;
+                $this->session->setSession('user', $user);
+                // $_SESSION['user'] = $user;
                 echo "Login successful!";
             } else {
                 throw new Exception("Invalid email or password");

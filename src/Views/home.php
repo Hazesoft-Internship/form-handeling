@@ -2,23 +2,22 @@
 
 use App\Sessions\Sessions;
 
-// $session = new Sessions();
 
-
-// if ($session->getSession('user') == null) {
-//   header("Location: /login");
-//   exit();
-// }
-
-session_start();
-if (!isset($_SESSION['user'])) {
+$session = new Sessions;
+if (!$session->hasSession('user')) {
   header("Location: /login");
   exit();
 }
 
 
-
+// echo $session->getSession('user');
 echo session_encode();
+
+
+// foreach ($session->getSession('user') as $key => $value) {
+//   echo $key . ":" . $value;
+// }
+
 
 ?>
 

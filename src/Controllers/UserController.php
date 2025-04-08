@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Sessions\Sessions;
 use App\Validation\UserValidation;
 
 
@@ -10,23 +11,31 @@ class UserController
 {
 
     public $validation;
+    public  $session;
     public function __construct()
 
     {
         $this->validation = new UserValidation();
+        $this->session = new Sessions();
     }
 
 
     public function logout()
     {
-        session_start();
-        if (!isset($_SESSION['user'])) {
+
+
+
+        if (
+
+            $this->session->hasSession('user')
+        ) {
+            $this->session->removeSession('user');
+            $this->session->clearSession();
+            header("Location: /login");
+            exit();
+        } else {
             die("You are not logged in.");
         }
-        unset($_SESSION['user']);
-        session_destroy();
-        header("Location: /login");
-        exit();
     }
 
     public function registerUser()
@@ -69,7 +78,7 @@ class UserController
         $user = new UserModel();
         $user->login($email, $password);
 
-        if (isset($_SESSION['user'])) {
+        if ($this->session->hasSession('user')) {
             header("Location: /home");
             exit();
         } else {

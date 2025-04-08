@@ -4,7 +4,7 @@ use App\Sessions\Sessions;
 
 $session = new Sessions();
 
-if ($session->getSession('user') !== null) {
+if ($session->hasSession('user') !== null) {
     header("Location: /home");
     exit();
 }
