@@ -16,20 +16,12 @@ class Router
 
     public function get(string $uri, $controller)
     {
-        $this->routes[] = [
-            'url' => $uri,
-            'controller' => $controller,
-            'method' => 'GET',
-        ];
+        $this->routes['GET'][$uri] = $controller;
     }
 
     public function post($uri, $controller)
     {
-        $this->routes[] = [
-            'url' => $uri,
-            'controller' => $controller,
-            'method' => 'POST',
-        ];
+        $this->routes['POST'][$uri] = $controller;
     }
 
     public function route()
