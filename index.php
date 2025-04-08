@@ -1,22 +1,13 @@
 <?php
 
-require_once 'User.php';
-require_once 'Role.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$user = new User();
-// echo $user->index();
+use ECommerce\Routers\Router;
 
-$role = new Role("Rupesh");
-echo Role::getManagementName();
+$request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$routes = require_once __DIR__ . '/src/Config/routes.php';
 
-// echo $role->getManagementName();
+$router = new Router();
 
-
-
-
-// echo $role->getRole();
-// echo $role->index();
-
-
-
-
+$router->loadRoutes($routes);
+$router->dispatch($request);
