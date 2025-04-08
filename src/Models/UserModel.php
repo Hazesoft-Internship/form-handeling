@@ -34,9 +34,9 @@ class UserModel
 
             if ($statement->execute()) {
 
-                $result = $statement->fetch(PDO::FETCH_ASSOC) ?? null;
+                $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-                if (!$result == null) {
+                if (!$result == false) {
                     throw new Exception("Email already exists");
                 }
             } else {
@@ -84,10 +84,10 @@ class UserModel
 
             $statement->execute();
 
-            $result = $statement->fetch(PDO::FETCH_ASSOC) ?? null;
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
 
 
-            if ($result == null) {
+            if ($result == false) {
                 throw new Exception("User not found");
             }
             if ($result && password_verify($password, $result['password'])) {

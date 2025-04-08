@@ -41,22 +41,28 @@ class Router
 
 
 
+        $route = $this->routes[$method][$requestUri] ?? null;
 
-        foreach ($this->routes as $route) {
 
-            if ($requestUri == $route['url'] && $method == $route['method']) {
 
-                $controller = $route['controller'];
-                if (is_array($controller)) {
-                    $class = $controller[0];
-                    $method = $controller[1];
-                    $instance = new $class();
-                    return $instance->$method();
-                } else {
-                    return call_user_func($controller);
-                }
+
+
+
+
+        if (!$route == null) {
+
+
+            $controller = $route;
+            if (is_array($controller)) {
+                $class = $controller[0];
+                $method = $controller[1];
+                $instance = new $class();
+                return $instance->$method();
+            } else {
+                return call_user_func($controller);
             }
         }
+
         http_response_code(404);
         echo "404 Not Found";
         exit;

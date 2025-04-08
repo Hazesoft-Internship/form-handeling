@@ -6,67 +6,28 @@ use App\Controllers\RouteController;
 use App\Controllers\ProductController;
 
 return [
-    ['url' => '/', 'controller' => [RouteController::class, 'listProductsPage'], 'method' => 'GET'],
-    [
-        'url' => '/logout',
-        'controller' => [UserController::class, 'logout'],
-        'method' => 'POST',
-    ],
-    [
-        'url' => '/login',
-        'controller' => [UserController::class, 'loginUser'],
-        'method' => 'POST',
-    ],
-    [
-        'url' => '/login',
-        'controller' => [RouteController::class, 'loginPage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/signup',
-        'controller' => [RouteController::class, 'registerPage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/signup',
-        'controller' => [UserController::class, 'registerUser'],
-        'method' => 'POST',
-    ],
-    [
-        'url' => '/home',
-        'controller' => [RouteController::class, 'homePage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/addproduct',
-        'controller' => [RouteController::class, 'addProductPage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/addproduct',
-        'controller' => [ProductController::class, 'addProduct'],
-        'method' => 'POST',
-    ],
-    [
-        'url' => '/listproducts',
-        'controller' => [RouteController::class, 'listProductsPage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/myproducts',
-        'controller' => [RouteController::class, 'myProductsPage'],
-        'method' => 'GET',
-    ],
-    [
-        'url' => '/product/delete',
-        'controller' => [ProductController::class, 'deleteProduct'],
-        'method' => 'POST',
-    ],
+    "GET" => [
+        // Add your GET routes here
+        '/home' =>  [RouteController::class, 'homePage'],
+        '/' => [RouteController::class, 'listProductsPage'],
+        '/login' => [RouteController::class, 'loginPage'],
+        '/signup' => [RouteController::class, 'registerPage'],
+        '/product' => [ProductController::class, 'productPage'],
+        '/addproduct' => [RouteController::class, 'addProductPage'],
+        '/listproducts' => [RouteController::class, 'listProductsPage'],
+        '/myproducts' => [RouteController::class, 'myProductsPage'],
 
-    [
-        'url' => '/product/update',
-        'controller' => [ProductController::class, 'updateProduct'],
-        'method' => 'POST',
     ],
+    "POST" => [
+        // Add your POST routes here
+        '/logout' => [UserController::class, 'logout'],
+        '/login' => [UserController::class, 'loginUser'],
+        '/signup' => [UserController::class, 'registerUser'],
+        '/addproduct' => [ProductController::class, 'addProduct'],
+        '/product/delete' => [ProductController::class, 'deleteProduct'],
+        '/product/update' => [ProductController::class, 'updateProduct'],
+
+    ]
+
 
 ];

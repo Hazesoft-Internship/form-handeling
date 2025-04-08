@@ -138,8 +138,10 @@ class ProductModel
             }
         } catch (\PDOException $exception) {
             echo "Error: " . $exception->getMessage();
+            return [];
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
+            return [];
         }
     }
 }
