@@ -8,7 +8,7 @@ use App\Config\DataBase;
 
 
 use Exception;
-
+use PDO;
 
 class ProductModel
 {
@@ -24,14 +24,20 @@ class ProductModel
         try {
             $sql = "INSERT INTO products (name, description, price,quantity,user_id) VALUES ( ?, ?,?,?,?)";
             $statement = $this->connection->prepare($sql);
-            $statement->bind_param("ssdii", $name, $description, $price, $quantity, $userId);
+            // $statement->bind_param("ssdii", $name, $description, $price, $quantity, $userId);
+            $statement->bindParam(1, $name, PDO::PARAM_STR);
+            $statement->bindParam(2, $description, PDO::PARAM_STR);
+            $statement->bindParam(3, $price, PDO::PARAM_INT);
+            $statement->bindParam(4, $quantity, PDO::PARAM_INT);
+            $statement->bindParam(5, $userId, PDO::PARAM_INT);
 
             if ($statement->execute()) {
                 echo "Product added successfully!";
             } else {
                 throw new Exception("Error executing query: " . $statement->error);
             }
-            $statement->close();
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
         }
@@ -42,17 +48,25 @@ class ProductModel
         try {
             $sql = "UPDATE products SET name = ?, description = ?, price = ?, quantity = ? WHERE product_id = ?";
             $statement = $this->connection->prepare($sql);
-            $statement->bind_param("ssdii", $name, $description, $price, $quantity, $id);
+            // $statement->bind_param("ssdii", $name, $description, $price, $quantity, $id);
+            $statement->bindParam(1, $name, PDO::PARAM_STR);
+            $statement->bindParam(2, $description, PDO::PARAM_STR);
+            $statement->bindParam(3, $price, PDO::PARAM_INT);
+            $statement->bindParam(4, $quantity, PDO::PARAM_INT);
+            $statement->bindParam(5, $id, PDO::PARAM_INT);
 
             if ($statement->execute()) {
-                echo "Product updated successfully!";
+
                 return true;
             } else {
                 return false;
             }
-            $statement->close();
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
+            return false;
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
+            return false;
         }
     }
 
@@ -61,15 +75,18 @@ class ProductModel
         try {
             $sql = "DELETE FROM products WHERE product_id = ?";
             $statement = $this->connection->prepare($sql);
-            $statement->bind_param("i", $id);
+            // $statement->bind_param("i", $id);
+            $statement->bindParam(1, $id, PDO::PARAM_INT);
 
             if ($statement->execute()) {
-                echo "Product deleted successfully!";
+                // echo "Product deleted successfully!";
                 return true;
             } else {
-                throw new Exception("Error executing query: " . $statement->error);
+                return false;
             }
-            $statement->close();
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
+            return false;
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
             return false;
@@ -82,15 +99,22 @@ class ProductModel
             $sql = "SELECT * FROM products";
             $statement = $this->connection->prepare($sql);
             if ($statement->execute()) {
-                $result = $statement->get_result();
-                $products = $result->fetch_all(MYSQLI_ASSOC);
-                $statement->close();
-                return $products;
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                if ($result == false) {
+                    throw new Exception("Error fetching products: " . $statement->error);
+                }
+
+
+                return $result;
             } else {
                 throw new Exception("Error executing query: " . $statement->error);
             }
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
+            return [];
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
+            return [];
         }
     }
 
@@ -99,16 +123,21 @@ class ProductModel
         try {
             $sql = "SELECT * FROM products WHERE user_id = ?";
             $statement = $this->connection->prepare($sql);
-            $statement->bind_param("i", $userId);
+            // $statement->bind_param("i", $userId);
+            $statement->bindParam(1, $userId, PDO::PARAM_INT);
 
             if ($statement->execute()) {
-                $result = $statement->get_result();
-                $products = $result->fetch_all(MYSQLI_ASSOC);
-                $statement->close();
-                return $products;
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                if ($result == false) {
+                    return [];
+                }
+                return $result;
             } else {
                 throw new Exception("Error executing query: " . $statement->error);
             }
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
         }

@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Config\DataBase;
 use App\Sessions\Sessions;
 use Exception;
+use PDO;
 
 class UserModel
 {
@@ -24,32 +25,40 @@ class UserModel
     public function signup(string $first_name, string $middle_name, string $last_name, string $email, string $address, string $password): void
     {
 
-        try {
 
-            try {
-                $sql = "SELECT * FROM users WHERE email = ?";
-                $statement = $this->connection->prepare($sql);
-                $statement->bind_param("s", $email);
-                if ($statement->execute()) {
-                    $result = $statement->get_result();
-                    if ($result->num_rows > 0) {
-                        throw new Exception("Email already exists");
-                    }
-                } else {
-                    throw new Exception("Error executing query: " . $statement->error);
+
+        try {
+            $sql = "SELECT * FROM users WHERE email = ?";
+            $statement = $this->connection->prepare($sql);
+            $statement->bindParam(1, $email, PDO::PARAM_STR);
+
+            if ($statement->execute()) {
+
+                $result = $statement->fetch(PDO::FETCH_ASSOC) ?? null;
+
+                if (!$result == null) {
+                    throw new Exception("Email already exists");
                 }
-                $statement->close();
-            } catch (Exception $exception) {
-                echo "Error: " . $exception->getMessage();
-                return;
+            } else {
+                throw new Exception("Error executing query: " . $statement->error);
             }
+
 
             $sql = "INSERT INTO users (first_name, middle_name, last_name, email, address,password) VALUES
         (?, ?, ?, ?, ?,?)";
 
             $statement = $this->connection->prepare($sql);
 
-            $statement->bind_param("ssssss", $first_name, $middle_name, $last_name, $email, $address, $password,);
+            // $statement->bind_param("ssssss", $first_name, $middle_name, $last_name, $email, $address, $password,);
+            $statement->bindParam(1, $first_name, PDO::PARAM_STR);
+            $statement->bindParam(2, $middle_name, PDO::PARAM_STR);
+            $statement->bindParam(3, $last_name, PDO::PARAM_STR);
+            $statement->bindParam(4, $email, PDO::PARAM_STR);
+            $statement->bindParam(5, $address, PDO::PARAM_STR);
+            $statement->bindParam(6, $password, PDO::PARAM_STR);
+
+
+
 
 
             if ($statement->execute()) {
@@ -57,7 +66,8 @@ class UserModel
             } else {
                 throw new Exception("Error executing query: " . $statement->error);
             }
-            $statement->close();
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
         } catch (Exception $exception) {
 
             echo "Error: " . $exception->getMessage();
@@ -69,20 +79,26 @@ class UserModel
         try {
             $sql = "SELECT * FROM users WHERE email = ?";
             $statement = $this->connection->prepare($sql);
-            $statement->bind_param("s", $email);
+            // $statement->bind_param("s", $email);
+            $statement->bindParam(1, $email, PDO::PARAM_STR);
 
             $statement->execute();
 
-            $result = $statement->get_result();
-            $user = $result->fetch_assoc();
-            if ($user && password_verify($password, $user['password'])) {
-                $this->session->setSession('user', $user);
+            $result = $statement->fetch(PDO::FETCH_ASSOC) ?? null;
+
+
+            if ($result == null) {
+                throw new Exception("User not found");
+            }
+            if ($result && password_verify($password, $result['password'])) {
+                $this->session->setSession('user', $result);
                 // $_SESSION['user'] = $user;
                 echo "Login successful!";
             } else {
                 throw new Exception("Invalid email or password");
             }
-            $statement->close();
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
         }

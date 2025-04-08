@@ -10,12 +10,12 @@ use App\Sessions\Sessions;
 class ProductController
 {
 
-    public object $connection;
+
     public Sessions $session;
 
     public function __construct()
     {
-        $this->connection = DataBase::connect();
+
         $this->session = Sessions::getInstance();
     }
 
@@ -95,9 +95,9 @@ class ProductController
     public function userProducts(): array|null
     {
 
-        $userId = $this->session->getSession('user')['user_id'];
+        $userId = $this->session->getSession('user')['user_id'] ?? null;
 
-        dd($userId);
+
 
         // $userId = $_SESSION['user']['user_id'];
         if ($userId === null) {
