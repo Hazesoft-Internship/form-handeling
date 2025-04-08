@@ -2,9 +2,9 @@
 
 use App\Sessions\Sessions;
 
-$session = new Sessions();
+$session = Sessions::getInstance();
 
-if ($session->hasSession('user') !== null) {
+if ($session->hasSession('user')) {
     header("Location: /home");
     exit();
 }

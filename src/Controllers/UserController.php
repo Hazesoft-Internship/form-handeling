@@ -16,7 +16,7 @@ class UserController
 
     {
         $this->validation = new UserValidation();
-        $this->session = new Sessions();
+        $this->session = Sessions::getInstance();
     }
 
 

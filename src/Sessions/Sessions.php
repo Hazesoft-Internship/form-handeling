@@ -7,12 +7,25 @@ class Sessions
 {
 
 
+    public static $instance = null;
+
     public function __construct()
     {
 
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
+
+    public static function getInstance(): Sessions
+    {
+
+
+        if (self::$instance === null) {
+            self::$instance = new Sessions();
+        }
+
+        return self::$instance;
     }
 
     public function setSession(string $key, array $value): void

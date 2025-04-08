@@ -59,7 +59,48 @@ if (empty($products)) {
 
         }
     </style>
-    <h1><a href="/myproducts">Click here to view your Products</a></h1>
+    <h1><a href="
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /myproducts">Click here to view your Products</a></h1>
     <h1>Product List</h1>
     <div class="product-container">
         <?php

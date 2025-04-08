@@ -3,7 +3,8 @@
 use App\Sessions\Sessions;
 
 
-$session = new Sessions;
+$session = Sessions::getInstance();
+dd($session->getSession('user'));
 if (!$session->hasSession('user')) {
   header("Location: /login");
   exit();

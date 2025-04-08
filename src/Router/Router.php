@@ -34,8 +34,11 @@ class Router
 
     public function route()
     {
-        $requestUri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $requestUri = explode('?', $requestUri)[0];
+
+
 
 
 

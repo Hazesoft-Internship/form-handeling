@@ -1,5 +1,10 @@
 <?php
 
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once  __DIR__ . "/../vendor/autoload.php";
 
 use App\Controllers\UserController;
@@ -66,6 +71,11 @@ use App\Sessions\Sessions;
 // }
 
 
+
+
+$method = $_SERVER['REQUEST_METHOD'];
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$requestUri = explode('?', $requestUri)[0];
 
 $router = new Router();
 

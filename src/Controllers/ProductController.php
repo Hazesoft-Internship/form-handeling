@@ -11,10 +11,12 @@ class ProductController
 {
 
     public object $connection;
+    public Sessions $session;
 
     public function __construct()
     {
         $this->connection = DataBase::connect();
+        $this->session = Sessions::getInstance();
     }
 
     public function addProduct(): void
@@ -30,8 +32,9 @@ class ProductController
         $description = $_POST['description'] ?? '';
         $price = $_POST['price'] ?? '';
         $quantity = $_POST['quantity'] ?? '';
-        session_start();
-        $userId = $_SESSION['user']['user_id'];
+
+        $userId = $this->session->getSession('user')['user_id'];
+
 
 
 
@@ -91,10 +94,12 @@ class ProductController
 
     public function userProducts(): array|null
     {
-        $session = new Sessions();
-        // $userId = $session->getSession('user')['id'];
-        session_start();
-        $userId = $_SESSION['user']['user_id'];
+
+        $userId = $this->session->getSession('user')['user_id'];
+
+        dd($userId);
+
+        // $userId = $_SESSION['user']['user_id'];
         if ($userId === null) {
             echo "User not logged in.";
             return null;
