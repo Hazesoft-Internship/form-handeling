@@ -1,27 +1,3 @@
-<?php
-
-use App\Sessions\Sessions;
-
-
-$session = Sessions::getInstance();
-
-if (!$session->hasSession('user')) {
-  header("Location: /login");
-  exit();
-}
-
-
-// echo $session->getSession('user');
-echo session_encode();
-
-
-// foreach ($session->getSession('user') as $key => $value) {
-//   echo $key . ":" . $value;
-// }
-
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,17 +1,3 @@
-<?php
-
-error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
-
-
-use App\Controllers\ProductController;
-
-
-
-$products = (new ProductController())->userProducts();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +5,6 @@ $products = (new ProductController())->userProducts();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Products</title>
-
     <style>
         .product-container {
             display: flex;
@@ -68,12 +53,19 @@ $products = (new ProductController())->userProducts();
         .product-card button:hover {
             background-color: #0056b3;
         }
+
+        .product-card h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
     </style>
+
+
 </head>
 
 <body>
     <h1 style="text-align: center;">Your Products</h1>
-    <a href="/addproduct" style="text-align: center; display: block; margin-bottom: 20px;">Add New Product</a>
+    <a href="/add-product" style="text-align: center; display: block; margin-bottom: 20px;">Add New Product</a>
     <div class="product-container">
         <?php if (empty($products)): ?>
             <p>No products found.</p>

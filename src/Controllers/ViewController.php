@@ -1,8 +1,11 @@
 <?php
 
+
 namespace App\Controllers;
 
-class RouteController
+use App\Controllers\ProductController;
+
+class ViewController
 {
 
     public function loginPage()
@@ -19,6 +22,14 @@ class RouteController
     }
     public function listProductsPage()
     {
+
+        $products = (new ProductController())->listProducts();
+
+        if (empty($products)) {
+            echo "No products found.";
+            return;
+        }
+
         require_once __DIR__ . '/../Views/listproducts.php';
     }
 
@@ -29,6 +40,12 @@ class RouteController
     }
     public function myProductsPage()
     {
+        $products = (new ProductController())->userProducts();
+
         require_once __DIR__ . '/../Views/myproducts.php';
+    }
+    public function productJsonPage()
+    {
+        require_once __DIR__ . '/../Views/productJson.php';
     }
 }

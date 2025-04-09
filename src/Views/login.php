@@ -1,17 +1,3 @@
-<?php
-
-use App\Sessions\Sessions;
-
-$session = Sessions::getInstance();
-
-if ($session->hasSession('user')) {
-    header("Location: /home");
-    exit();
-}
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +5,7 @@ if ($session->hasSession('user')) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Form</title>
+
     <style>
         /* Basic Reset */
         * {
@@ -114,7 +101,7 @@ if ($session->hasSession('user')) {
 </head>
 
 <body>
-    <!-- <form action="/login/auth" method="POST"> -->
+
     <form action="/login" method="POST">
         <h1>Login</h1>
 

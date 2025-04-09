@@ -33,30 +33,23 @@ class Router
 
 
 
-        $route = $this->routes[$method][$requestUri] ?? null;
+        $controller = $this->routes[$method][$requestUri] ?? null;
 
 
-
-
-
-
-
-        if (!$route == null) {
-
-
-            $controller = $route;
+        if (!$controller == null) {
             if (is_array($controller)) {
                 $class = $controller[0];
                 $method = $controller[1];
                 $instance = new $class();
                 return $instance->$method();
             } else {
+                // helps calling the function if function is returned
                 return call_user_func($controller);
             }
         }
-
         http_response_code(404);
-        echo "404 Not Found";
+        echo "<h1>404 Not Found</h1>";
+        echo "<h1><a href='/home'>Go to home page</a></h1>";
         exit;
     }
 }

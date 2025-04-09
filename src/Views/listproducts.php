@@ -1,16 +1,3 @@
-<?php
-
-use App\Controllers\ProductController;
-
-$products = (new ProductController())->listProducts();
-
-if (empty($products)) {
-    echo "No products found.";
-    return;
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,9 +5,6 @@ if (empty($products)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-
-<body>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,61 +40,50 @@ if (empty($products)) {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+        }
 
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .auth-buttons button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #0056b3;
         }
     </style>
-    <h1><a href="
+</head>
 
+<body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /myproducts">Click here to view your Products</a></h1>
+    <h1><a href="/my-products">Click here to view your Products</a></h1>
+    <div class="auth-buttons">
+        <button onclick="window.location.href='/login'">Login</button>
+        <button onclick="window.location.href='/signup'">Sign Up</button>
+    </div>
     <h1>Product List</h1>
     <div class="product-container">
         <?php
+        if (empty($products)) {
+            echo "<h1>No products found.";
+        }
         foreach ($products as $product) {
             echo "<div class='product-card'>";
             echo "<h2>" . htmlspecialchars($product['name']) . "</h2>";
             echo "<p>" . htmlspecialchars($product['description']) . "</p>";
             echo "<p>Price: $" . htmlspecialchars($product['price']) . "</p>";
             echo "<p>Quantity: " . htmlspecialchars($product['quantity']) . "</p>";
-
             echo "</div>";
         }
         ?>
