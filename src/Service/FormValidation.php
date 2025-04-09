@@ -1,6 +1,6 @@
 <?php
 
-namespace Lattefront\FormHandeling\Controller;
+namespace Lattefront\FormHandeling\Service;
 
 
 

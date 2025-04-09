@@ -4,70 +4,49 @@ namespace Lattefront\FormHandeling\Router;
 
 class Router
 {
+    protected array $routes = [];
 
-    protected $routes = [];
     public function __construct()
     {
-        // Load routes from the configuration file
-        $this->routes = require __DIR__ . '/../../config/routerConfig.php';
-       
+        $this->routes = require __DIR__ . '/../../Config/RouterConfig.php';
     }
 
-    protected function add($method, $uri, $controller): void
+    public function dispatch(): void
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => $method
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $path = explode('?', $_SERVER['REQUEST_URI'] ?? '/')[0];
 
-        ];
-    }
-
-    public function getId($uri, $controller): void
-    {
-        $uri = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_-]+)', $uri);
-        $this->add('GET', $uri, $controller);
-    }
-    public function get($uri, $controller): void
-    {
-        $this->add('GET', $uri, $controller);
-    }
-    public function post($uri, $controller): void
-    {
-        $this->add('POST', $uri, $controller);
-    }
-    public function put($uri, $controller): void
-    {
-        $this->add('PUT', $uri, $controller);
-    }
-    public function patch($uri, $controller): void
-    {
-        $this->add('PATCH', $uri, $controller);
-    }
-    public function delete($uri, $controller): void
-    {
-        $this->add('DELETE', $uri, $controller);
-    }
-    public function dispatch()
-        
-    {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $path = $_SERVER['REQUEST_URI'] ?? '/';
-        $path = explode('?', $path)[0];
-        
         $callback = $this->routes[$method][$path] ?? null;
-        
-        if ($callback === null) {
+
+        if (!$callback) {
             http_response_code(404);
-            echo "404 Route Not Found";
+            echo "404 - Route Not Found";
+            return;
         }
-        
+
+        if (is_callable($callback)) {
+            call_user_func($callback, $_REQUEST);
+            return;
+        }
+
         if (is_array($callback)) {
             [$class, $method] = $callback;
+
+            if (!class_exists($class)) {
+                http_response_code(500);
+                echo "Controller '$class' not found.";
+                return;
+            }
+
             $controller = new $class();
-            return $controller->$method();
+
+            if (!method_exists($controller, $method)) {
+                http_response_code(500);
+                echo "Method '$method' not found in controller '$class'.";
+                return;
+            }
+
+            $controller->$method($_REQUEST);
         }
-        
-        return $callback();
     }
 }

@@ -1,11 +1,3 @@
-<?php
-
-use Lattefront\FormHandeling\Db\DbConnection;
-use Lattefront\FormHandeling\Module\Product;
-
-$viewproduct = new Product(new DbConnection());
-$row = $viewproduct->getmyProducts();
-?>
 
 <!DOCTYPE html>
 <html lang="en">

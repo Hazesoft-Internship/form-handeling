@@ -1,14 +1,4 @@
-<?php
 
-use Lattefront\FormHandeling\session\Session;   
-
-// Check if the user is logged in, 
-
-if ( Session::getInstance()->isLoggedIn()) {
-    header("Location: /dashboard");
-    exit();
-}
-?>
 
 <html>
 <meta name="viewport" content="width=device-width">

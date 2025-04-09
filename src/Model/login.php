@@ -1,9 +1,9 @@
 <?php
 
-namespace Lattefront\FormHandeling\Module;
+namespace Lattefront\FormHandeling\Model;
 
 
-use Lattefront\FormHandeling\session\Session;
+use Lattefront\FormHandeling\Session\Session;
 use Lattefront\FormHandeling\Db\DbConnection;
 use Exception;
 use PDO;

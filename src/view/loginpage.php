@@ -1,14 +1,4 @@
-<?php
 
-session_start();
-
-
-// Check if the user is logged in, 
-if (isset($_SESSION['email'])) {
-    header("Location: /dashboard");
-    exit();
-}
-?>
 <html>
 <meta name="viewport" content="width=device-width">
 

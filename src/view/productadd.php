@@ -1,18 +1,4 @@
-<?php
 
-
-use Lattefront\FormHandeling\session\Session;
-
-// Check if the user is logged in, 
-$session = Session::getInstance();
-
-if (!($session->isLoggedIn())) {
-    header("Location: /login");
-    exit();
-}
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,19 +1,4 @@
-<?php
 
-session_start();
-
-// Check if the user is logged in, 
-if (!isset($_SESSION['email'])) {
-    header("Location: /login");
-    exit();
-}
-
-// Get the product ID from the query string
-// if (isset($_GET['id'])) {
-//     $productId = $_GET['id'];
-// } 
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
