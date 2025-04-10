@@ -12,11 +12,11 @@
     <h1>update Product</h1>
     <form action="/updateproduct" method="post">
         <?php
-        $product_id = $_GET['id'];
-        $product_name = $_GET['name'];
-        $product_description = $_GET['description'];
-        $product_quantity = $_GET['quantity'];
-        $product_price = $_GET['price'];
+        // $product_id = $_GET['id'];
+        // $product_name = $_GET['name'];
+        // $product_description = $_GET['description'];
+        // $product_quantity = $_GET['quantity'];
+        // $product_price = $_GET['price'];
         ?>
         <label for="id">Product ID:</label>
         <input  style="cursor:none ;"type="number" id="id" name="id" value="<?php echo htmlspecialchars($product_id); ?>" readonly>

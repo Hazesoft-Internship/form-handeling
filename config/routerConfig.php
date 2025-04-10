@@ -22,11 +22,11 @@ return [
         '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproductpage']),
     ],
     'POST' => [
-        '/signup' => [UserController::class, 'insertUser'],
+        '/signup' => [AuthController::class, 'insertUser'],
         '/login' => [AuthController::class, 'login'],
-        '/addproduct' => [ProductController::class, 'addproduct'],
-        '/updateproduct' => [ProductController::class, 'updateproduct'],
-        '/deleteproduct' => [ProductController::class, 'deleteproduct'],
+        '/addproduct' => loginCheck::wrap([ProductController::class, 'addproduct']),
+        '/updateproduct' =>loginCheck::wrap( [ProductController::class, 'updateproduct']),
+        '/deleteproduct' => loginCheck::wrap([ProductController::class, 'deleteproduct']),
     ]
 
 ];

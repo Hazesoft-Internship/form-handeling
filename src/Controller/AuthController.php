@@ -2,10 +2,14 @@
 
 namespace Lattefront\FormHandeling\Controller;
 
+
 use Lattefront\FormHandeling\Session\Session;
+use Lattefront\FormHandeling\Model\UserModel;
+use Lattefront\FormHandeling\Db\DbConnection;
+use Lattefront\FormHandeling\Service\FormValidation;
 
 class AuthController
-{ 
+{
     private Session $session;
     private function checkLoggedIn(): void
     {
@@ -20,6 +24,43 @@ class AuthController
         $this->checkLoggedIn();
         require __DIR__ . '/../View/Signup.php';
     }
+    public function insertUser(): void
+    {
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $First_name = strip_tags($_POST['First_name'],);
+            $Middle_name = strip_tags($_POST['Middle_name']);
+            $Last_name = strip_tags($_POST['Last_name']);
+            $Address = strip_tags($_POST['Address']);
+            $Email = filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
+            $Password = password_hash($_POST['Password'], PASSWORD_BCRYPT); // Hash the password
+
+
+            $userModel = new UserModel(new DbConnection());
+
+            $errors = FormValidation::validateUser([$First_name, $Middle_name, $Last_name, $Address, $Email, $Password]);
+            if ($errors) {
+                foreach ($errors as $error) {
+                    echo $error . "<br>";
+                }
+                return;
+            }
+            // Register user and handle response
+            $result = $userModel->registerUser($First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
+
+            if ($result['success']) {
+                echo $result['message'];
+                header("Refresh:2; url=/login");
+            } else {
+                echo $result['message'];
+            }
+        } else {
+            // If it's not a POST request, show the registration form
+            echo "Invalid request method. Redirecting to signup page... ";
+            header("Refresh:2; url=/signup");
+        }
+    }
 
     public function loginpage(): void
     {
@@ -28,7 +69,12 @@ class AuthController
     }
     public function login(): void
     {
-        require __DIR__ . '/../Model/Login.php';
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $email = $_POST['Email'];
+            $password = $_POST['Password'];
+            $login = new UserModel(new DbConnection());
+            $login->loginUser($email, $password);
+        }
     }
     public function logout(): void
     {
@@ -37,5 +83,4 @@ class AuthController
         header("Location: /login");
         exit;
     }
-    
 }
