@@ -1,0 +1,56 @@
+[
+    {
+        "id": 2,
+        "userId": 20017,
+        "productName": "Iphone 12 pro max",
+        "productPrice": 23435,
+        "productQuantity": 1,
+        "createdAt": "2025-03-31 16:03:06",
+        "updatedAt": "2025-03-31 16:03:06"
+    },
+    {
+        "id": 3,
+        "userId": 20019,
+        "productName": "Supra MK4",
+        "productPrice": 2345432,
+        "productQuantity": 1,
+        "createdAt": "2025-03-31 16:03:50",
+        "updatedAt": "2025-03-31 16:03:50"
+    },
+    {
+        "id": 13,
+        "userId": 20016,
+        "productName": "Ice Cream",
+        "productPrice": 1231,
+        "productQuantity": 123123,
+        "createdAt": "2025-04-02 14:49:05",
+        "updatedAt": "2025-04-02 14:49:05"
+    },
+    {
+        "id": 15,
+        "userId": 10015,
+        "productName": "MacBook Pro",
+        "productPrice": 123133451,
+        "productQuantity": 12345,
+        "createdAt": "2025-04-02 14:54:04",
+        "updatedAt": "2025-04-08 14:20:17"
+    },
+    {
+        "id": 17,
+        "userId": 30016,
+        "productName": "MT-07 (2023)",
+        "productPrice": 123123123,
+        "productQuantity": 1,
+        "createdAt": "2025-04-02 15:34:49",
+        "updatedAt": "2025-04-02 15:34:49"
+    },
+    {
+        "id": 18,
+        "userId": 10015,
+        "productName": "Acer V15",
+        "productPrice": 1234567,
+        "productQuantity": 1234,
+        "createdAt": "2025-04-03 12:53:55",
+        "updatedAt": "2025-04-03 13:45:21"
+    }
+]
