@@ -6,16 +6,15 @@ class GetUserDetails
 {
     private $sqlData;
     
-    public function __construct(private $con, $em) 
+    public function __construct(private $con, $email) 
     {
         $this->con = $con;
         
-        $query = $this->con->prepare("SELECT * FROM users WHERE email = ?");
-        $query->bind_param("s", $em);
+        $query = $this->con->prepare("SELECT * FROM users WHERE email = :em");
+        $query->bindParam(":em", $email);
         $query->execute();
 
-        $result = $query->get_result();
-        $this->sqlData = $result->fetch_assoc();
+        $this->sqlData = $query->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getUserId() 

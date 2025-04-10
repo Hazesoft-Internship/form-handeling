@@ -5,6 +5,7 @@ namespace ayushtamang\FormHandeling\session;
 class Session
 {
     private $key, $value;
+    private static $instance;
 
     public function __construct()
     {
@@ -13,12 +14,20 @@ class Session
         }
     }
 
-    public static function setSession($key, $value)
+    public static function getInstance() 
+    {
+        if (self::$instance === null) {
+            self::$instance = new Session();
+        }
+        return self::$instance;
+    }
+
+    public function setSession($key, $value)
     {
         $_SESSION[$key] = $value;
     }
 
-    public static function getSession($key)
+    public function getSession($key)
     {
         return $_SESSION[$key] ?? null;
     }

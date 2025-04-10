@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () 
-{
-  document.getElementById("registerForm").addEventListener("submit", function (e) 
-  {
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("registerForm")
+    .addEventListener("submit", function (e) {
       let password = document.getElementById("password").value;
       let confirmPassword = document.getElementById("confirmPassword").value;
       let passwordError = document.getElementById("passwordError");

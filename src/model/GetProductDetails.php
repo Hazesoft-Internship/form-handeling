@@ -13,12 +13,11 @@ class GetProductDetails
         if (is_array($input)) {
             $this->sqlData = $input;
         } else {
-            $query = $this->con->prepare("SELECT * FROM products WHERE id = ?");
-            $query->bind_param("i", $input);
+            $query = $this->con->prepare("SELECT * FROM products WHERE id = :id");
+            $query->bindParam(":id", $input);
             $query->execute();
 
-            $result = $query->get_result();
-            $this->sqlData = $result->fetch_assoc();
+            $this->sqlData = $query->fetch(\PDO::FETCH_ASSOC);
         }
     }
 
@@ -46,9 +45,18 @@ class GetProductDetails
     {
         $query = $this->con->prepare("SELECT * FROM products");
         $query->execute();
-        $result = $query->get_result();
 
-        return $result->num_rows;
+        return $query->rowCount();
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->sqlData["createdAt"];
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->sqlData["updatedAt"];
     }
 }
 ?>

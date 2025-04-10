@@ -1,25 +1,25 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require '../../vendor/autoload.php';
-require '../config.php';
-
-use ayushtamang\FormHandeling\view\ProductGrid;
+use ayushtamang\FormHandeling\controls\product_controls\ProductGrid;
 use ayushtamang\FormHandeling\session\Session;
+use ayushtamang\FormHandeling\database\Database;
+
+$db = Database::getInstance();
+$con = $db->getConnection();
 
 $productGrid = new ProductGrid($con);
 echo $productGrid->create();
 
-$session = Session::getSession("userLoggedIn");
+$session = Session::getInstance();
+$user = $session->getSession("userLoggedIn");
 
-if (isset($session)) {
-    echo "<a href='addProduct.php'>Add Product</a>
-        <a href='../control/logout.php'>LogOut</a>
-        <a href='productProfile.php'>Profile</a>";
+if (isset($user)) {
+    echo "<a href='/product/add'>Add Product</a>
+        <a href='/logout'>LogOut</a>
+        <a href='/product/profile'>Profile</a>";
 } else {
-    echo "<a href='../control/logout.php'>LogIn</a>";
+    echo "<a href='/login'>LogIn</a>";
 }
+
+echo "<br><a href='api.php'>Check PRoduct API</a>";
 ?>

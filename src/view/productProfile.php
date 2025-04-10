@@ -1,36 +1,21 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require '../../vendor/autoload.php';
-require "../config.php";
-
-use ayushtamang\FormHandeling\view\ProductGrid;
+use ayushtamang\FormHandeling\controls\product_controls\ProductGrid;
 use ayushtamang\FormHandeling\model\Product;
 use ayushtamang\FormHandeling\session\Session;
+use ayushtamang\FormHandeling\database\Database;
 
-$session = Session::getSession("userLoggedIn");
+$db = Database::getInstance();
+$con = $db->getConnection();
 
-if (!isset($session)) {
-    header("Location: login.php");
+$session = Session::getInstance();
+$user = $session->getSession("userLoggedIn");
+
+if (!isset($user)) {
+    header("Location: /login");
     exit();
 }
 
 $productGrid = new ProductGrid($con);
 echo $productGrid->getProductsByUserId();
-
-$delete = new Product($con);
-
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = Session::getSession("productId");
-    // dd($id);
-
-    if($delete->deleteProduct($id)) {
-        header("Location: productProfile.php");
-    } else {
-        echo "Failed to delete product!";
-    }
-}
 ?>

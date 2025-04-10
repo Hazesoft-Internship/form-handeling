@@ -1,6 +1,6 @@
 <?php
 
-namespace ayushtamang\FormHandeling\control;
+namespace ayushtamang\FormHandeling\controls;
 class Sanitizer
 {
     public static function sanitizeString($inputText): string 
@@ -21,6 +21,13 @@ class Sanitizer
     public static function sanitizePassword($inputText) 
     {
         $inputText = str_replace(" ", "", $inputText);
+        return $inputText;
+    }
+
+    public static function sanitizeInteger($inputText): int
+    {
+        $inputText = str_replace(" ", "", $inputText);
+        $inputText = (int)$inputText;
         return $inputText;
     }
 }

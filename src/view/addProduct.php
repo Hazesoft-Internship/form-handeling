@@ -1,39 +1,15 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require '../../vendor/autoload.php';
-require_once("../config.php");
-
-use ayushtamang\FormHandeling\model\Product;
-use ayushtamang\FormHandeling\model\GetUserDetails;
 use ayushtamang\FormHandeling\session\Session;
 
-$session = Session::getSession("userLoggedIn");
+$session = Session::getInstance();
+$user = $session->getSession("userLoggedIn");
 
-if (!isset($session)) {
-    header("Location: login.php");
+if (!isset($user)) {
+    header("Location: /login");
     exit();
 }
-
-$upload = new Product($con);
-
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $ui = new GetUserDetails($con, Session::getSession("userLoggedIn"));
-    $pn = $_POST["productname"];
-    $pp = $_POST["productprice"];
-    $pq = $_POST["productquantity"];
-    
-    if($upload->addProduct($ui->getUserId(),  $pn, $pp, $pq)) {
-        header("Location: productStore.php");
-    } else {
-        echo "Failed to add product!";
-    }
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +19,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Product</title>
 </head>
 <body>
-    <form action="addProduct.php" method="POST">
+    <form action="/product/addSubmit" method="POST">
         <label>Product Name</label>
         <input type="text" name="productname" placeholder="Product Name" autocomplete="off" required>
         <br>
@@ -55,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <button type="submit" name="submitButton" value="SUBMIT">Add Product</button>
     </form>
-    <a href="productStore.php">Back</a>
+    <a href="/product">Back</a>
 </body>
 </html>
 

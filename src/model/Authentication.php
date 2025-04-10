@@ -2,7 +2,7 @@
 
 namespace ayushtamang\FormHandeling\model;
 
-use ayushtamang\FormHandeling\control\Validation;
+use ayushtamang\FormHandeling\controls\Validation;
 use ayushtamang\FormHandeling\session\Session;
 
 class Authentication extends Validation
@@ -12,73 +12,77 @@ class Authentication extends Validation
         $this->con = $con;
     }
 
-    public function insertUserDetails($fn, $mn, $ln, $add, $em, $pw): mixed 
+    public function insertUserDetails($firstName, $middleName, $lastName, $address, $email, $password): mixed 
     {
-        $pw = hash("sha512", $pw);
+        $password = hash("sha512", $password);
 
         $query = $this->con->prepare("INSERT INTO users (firstName, middleName, lastName, address, email, password) 
-                                    VALUES (?, ?, ?, ?, ?, ?)");
-        
-        $query->bind_param("ssssss", $fn, $mn, $ln, $add, $em, $pw);
+                                    VALUES (:fn, :mn, :ln, :add, :em, :pw)");
+        $query->bindParam(":fn", $firstName);
+        $query->bindParam(":mn", $middleName);
+        $query->bindParam(":ln", $lastName);
+        $query->bindParam(":add", $address);
+        $query->bindParam(":em", $email);
+        $query->bindParam(":pw", $password);
         
         return $query->execute();
     }
 
-    public function register($fn, $mn, $ln, $add, $em, $pw): mixed 
+    public function register($firstName, $middleName, $lastName, $address, $email, $password): mixed 
     {
         try {
-            $this->validateString($fn, "First Name");
-            $this->validateString($mn, "Middle Name");
-            $this->validateString($ln, "Last Name");
-            $this->validateString($add, "Address");
-            $this->validateEmail($em);
+            $this->validateString($firstName, "First Name");
+            $this->validateString($middleName, "Middle Name");
+            $this->validateString($lastName, "Last Name");
+            $this->validateString($address, "Address");
+            $this->validateEmail($email);
             
             //Unique Email
-            $query = $this->con->prepare("SELECT * FROM users WHERE email = ?");
-            $query->bind_param("s", $em);
+            $query = $this->con->prepare("SELECT * FROM users WHERE email = :em");
+            $query->bindParam(":em", $email);
             $query->execute();
-            $result = $query->get_result();
 
-            if($result->num_rows != 0) {
-                throw new \Exception("Email already exists.");
+            if($query->rowCount() != 0) {
+                throw new \PDOException("Email already exists.");
             }
 
             if(empty($this->errorArray)) {
-                return $this->insertUserDetails($fn, $mn, $ln, $add, $em, $pw);
+                return $this->insertUserDetails($firstName, $middleName, $lastName, $address, $email, $password);
             } else {
                 return false;
             }
-        } catch (\Exception $e) {
-            throw new \Exception("Registration failed: " . $e->getMessage());
+        } catch (\PDOException $e) {
+            throw new \PDOException("Registration failed: " . $e->getMessage());
         }
     }
 
-    public function login($em, $pw)
+    public function login($email, $password)
     {
-        //Check if user exist
-        $query = $this->con->prepare("SELECT * FROM users WHERE email = ?");
-        $query->bind_param("s", $em);
-        $query->execute();
-        $result = $query->get_result();
-
-        if($result->num_rows == 0) {
-            throw new \Exception("User not found.");
-        }
-
-        //Check if input is correct
-        $pw = hash("sha512", $pw);
+        $session = Session::getInstance();
         
-        $query = $this->con->prepare("SELECT * FROM users WHERE email = ? AND password = ?");
-        $query->bind_param("ss", $em, $pw);
+        //Check if user exist
+        $query = $this->con->prepare("SELECT * FROM users WHERE email = :em");
+        $query->bindParam(":em", $email);
         $query->execute();
-        $result = $query->get_result();
+        
+        if($query->rowCount() == 0) {
+            throw new \PDOException("User not found.");
+        }
+        
+        //Check if input is correct
+        $password = hash("sha512", $password);
+        
+        $query = $this->con->prepare("SELECT * FROM users WHERE email = :em AND password = :pw");
+        $query->bindParam(":em", $email);
+        $query->bindParam(":pw", $password);
+        $query->execute();
 
-        if($result->num_rows == 1) {
-            $result = $result->fetch_assoc();
-            Session::setSession("userId", $result['id']);
+        if($query->rowCount() == 1) {
+            $result = $query->fetch(\PDO::FETCH_ASSOC);
+            $session->setSession("userId", $result['id']);
             return true;
         } else {
-            throw new \Exception("Invalid email or password.");
+            throw new \PDOException("Invalid email or password.");
         }
     }
 }

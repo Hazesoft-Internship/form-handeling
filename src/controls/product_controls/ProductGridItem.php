@@ -1,11 +1,13 @@
 <?php
 
-namespace ayushtamang\FormHandeling\view;
+namespace ayushtamang\FormHandeling\controls\product_controls;
 
 use ayushtamang\FormHandeling\session\Session;
+use ayushtamang\FormHandeling\traits\DateTimeFormatter;
 
 class ProductGridItem
 {
+    use DateTimeFormatter;
     private $products;
 
     public function __construct($products, private $con)
@@ -30,6 +32,8 @@ class ProductGridItem
         $productName = $this->products->getProductName();
         $productQuantity = $this->products->getProductQuantity();
         $productPrice = $this->products->getProductPrice();
+        $createdAt = $this->convertTime($this->products->getCreatedAt());
+        $updatedAt = $this->convertTime($this->products->getUpdatedAt());
 
         return "<div>
                     <label>Name: </label>
@@ -38,6 +42,10 @@ class ProductGridItem
                     $productQuantity
                     <label>Price: </label>
                     $productPrice
+                    <label>CreatedAt: </label>
+                    $createdAt
+                    <label>UpdatedAt: </label>
+                    $updatedAt
                     <br>
                 </div>";
     }
@@ -49,20 +57,21 @@ class ProductGridItem
     
     public function fetchSingleProduct($name)
     {
+        $session = Session::getInstance();
+
         if (!isset($_GET["id"])) {
             return "Error: ID parameter is missing.";
         }
 
         $id = $_GET["id"];
-        Session::setSession("productId", $id);
+        $session->setSession("productId", $id);
 
-        $query = $this->con->prepare("SELECT * FROM products WHERE id=?");
-        $query->bind_param("i", $id);
+        $query = $this->con->prepare("SELECT * FROM products WHERE id = :id");
+        $query->bindParam(":id", $id);
         $query->execute();
 
-        $result = $query->get_result();
         $sqlData = [];
-        $sqlData = $result->fetch_assoc();
+        $sqlData = $query->fetch(\PDO::FETCH_ASSOC);
 
         if (!$sqlData) {
             return "Error: Product not found.";
@@ -77,6 +86,9 @@ class ProductGridItem
         $productQuantity = $this->updateProductQuantity($this->fetchSingleProduct("productQuantity"));
         $productPrice = $this->updateProductPrice($this->fetchSingleProduct("productPrice"));
         $deleteButton = $this->button("Delete");
+
+        $createdAt = $this->convertTime($this->products->getCreatedAt());
+        $updatedAt = $this->convertTime($this->products->getUpdatedAt());
         
         return "<form onsubmit='onUpdate(event)' action='$action' method='POST'>
                     <label>Name: </label>
@@ -85,10 +97,14 @@ class ProductGridItem
                     $productQuantity
                     <label>Price: </label>
                     $productPrice
+                    <label>CreatedAt: </label>
+                    $createdAt
+                    <label>UpdatedAt: </label>
+                    $updatedAt
                     <br>
                     $button
                 </form>
-                <form onsubmit='onDelete(event)' action='productProfile.php' method='POST'>
+                <form onsubmit='onDelete(event)' action='/product/profile/deleteSubmit' method='POST'>
                     $deleteButton
                 </form>";
     }
