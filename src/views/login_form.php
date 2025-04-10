@@ -1,7 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/session.php';
 
-if (isset($_SESSION['id'])) {
+use Hazesoft\Formhandeling\Services\Session;
+
+$session = Session::getInstance();
+
+$session->start();
+
+if (Session::checkLogin()) {
     header("Location: products.php");
     exit();
 }
@@ -17,7 +22,7 @@ if (isset($_SESSION['id'])) {
 </head>
 
 <body>
-    <form action="../controllers/login.php" method="POST">
+    <form action="/login" method="POST">
         <label for="email">Email</label>
         <input type="email" name="email" required>
 

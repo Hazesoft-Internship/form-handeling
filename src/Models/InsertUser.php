@@ -1,10 +1,9 @@
 <?php
 
-namespace formhandeling\models;
+namespace Hazesoft\Formhandeling\Models;
 
-use formhandeling\config\Database;
-
-require_once __DIR__ . '/../config/db.php';
+use PDOException;
+use Hazesoft\Formhandeling\Services\Database;
 
 class InsertUser
 {
@@ -40,7 +39,7 @@ class InsertUser
         return [$firstName, $middleName, $lastName];
     }
 
-    private function insertData(array $nameParts, array $data)
+    private function insertData(array $nameParts, array $data): bool|string
     {
         $firstName = $nameParts[0];
         $middleName = $nameParts[1];
@@ -48,22 +47,25 @@ class InsertUser
         $address = $data[1];
         $email = $data[2];
 
-        $stmt = $this->connection->prepare(
-            'INSERT INTO users (first_name, middle_name, last_name, address, email) VALUES (?, ?, ?, ?, ?)'
-        );
+        try {
+            $stmt = $this->connection->prepare(
+                'INSERT INTO users (first_name, middle_name, last_name, address, email) 
+                 VALUES (:first_name, :middle_name, :last_name, :address, :email)'
+            );
 
-        if ($stmt) {
-            $stmt->bind_param('sssss', $firstName, $middleName, $lastName, $address, $email);
+            $stmt->bindParam(':first_name', $firstName);
+            $stmt->bindParam(':middle_name', $middleName);
+            $stmt->bindParam(':last_name', $lastName);
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':email', $email);
 
             if ($stmt->execute()) {
                 return true;
             } else {
-                return 'Error inserting record: ' . $stmt->error;
+                return 'Error inserting record.';
             }
-
-            $stmt->close();
-        } else {
-            return 'Error preparing statement: ' . $this->connection->error;
+        } catch (PDOException $e) {
+            return 'Error inserting record: ' . $e->getMessage();
         }
     }
 }
