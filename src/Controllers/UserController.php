@@ -19,12 +19,33 @@ class UserController
         $this->session = Sessions::getInstance();
     }
 
+    public function homePage()
+    {
+        require_once __DIR__ . '/../Views/home.php';
+    }
+
+    public function landingPage()
+    {
+        $loggedIn = (Sessions::getInstance())->hasSession('user');
+        $products = (new ProductController())->listProducts();
+
+        if (empty($products)) {
+            echo "No products found.";
+            return;
+        }
+        require_once __DIR__ . '/../Views/landingPage.php';
+    }
+    public function loginPage()
+    {
+        require_once __DIR__ . '/../Views/login.php';
+    }
+    public function registerPage()
+    {
+        require_once __DIR__ . '/../Views/signup.php';
+    }
 
     public function logout()
     {
-
-
-
         if (
 
             $this->session->hasSession('user')

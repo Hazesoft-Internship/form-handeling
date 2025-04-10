@@ -68,10 +68,23 @@
 <body>
 
     <h1><a href="/my-products">Click here to view your Products</a></h1>
-    <div class="auth-buttons">
-        <button onclick="window.location.href='/login'">Login</button>
-        <button onclick="window.location.href='/signup'">Sign Up</button>
-    </div>
+    <h1><a href="/home">Home</a></h1>
+    <?php
+    if (!$loggedIn) {
+
+        echo " <div class='auth-buttons'>";
+        echo " <button onclick=window.location.href='/login'>Login</button>";
+        echo " <button onclick=window.location.href='/signup'>Sign Up</button>";
+        echo " </div>";
+    } else {
+        echo " <div class='auth-buttons'>";
+        echo "<form method='POST' action='/logout'>";
+        echo " <button type='submit'>Logout</button>";
+        echo "</form>";
+        echo " </div>";
+    }
+
+    ?>
     <h1>Product List</h1>
     <div class="product-container">
         <?php

@@ -2,21 +2,39 @@
 
 namespace App\Controllers;
 
-use App\Config\DataBase;
+
 use App\Models\ProductModel;
 use App\Sessions\Sessions;
-
+use App\Validation\ProductValidation;
 
 class ProductController
 {
 
 
     public Sessions $session;
+    public ProductValidation $validation;
 
     public function __construct()
     {
 
         $this->session = Sessions::getInstance();
+        $this->validation = new ProductValidation();
+    }
+
+    public function addProductPage()
+    {
+        require_once __DIR__ . '/../Views/addProduct.php';
+    }
+    
+    public function myProductsPage()
+    {
+        $products = (new ProductController())->userProducts();
+
+        require_once __DIR__ . '/../Views/myproducts.php';
+    }
+    public function productJsonPage()
+    {
+        require_once __DIR__ . '/../Views/productJson.php';
     }
 
     public function addProduct(): void
@@ -36,7 +54,7 @@ class ProductController
         $userId = $this->session->getSession('user')['user_id'];
 
 
-
+        $this->validation->insertProduct($name, $description, $price, $quantity, $userId);
 
         $product = new ProductModel();
         $product->insertProduct($name, $description, $price, $quantity, $userId);
@@ -57,6 +75,7 @@ class ProductController
         $price = $_POST['price'] ?? '';
         $quantity = $_POST['quantity'] ?? '';
 
+        $this->validation->updateProduct($name, $description, $price, $quantity);
 
         $product = new ProductModel();
         if ($product->updateProduct($id, $name, $description, $price, $quantity)) {
