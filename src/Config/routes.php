@@ -1,30 +1,26 @@
 <?php
 
-use ECommerce\Controllers\ProductController\ProductController;
-use ECommerce\Controllers\UserController\LogInController;
-use ECommerce\Controllers\UserController\LogOutController;
-use ECommerce\Controllers\UserController\SignUpController;
+use Hazesoft\Backend\Controllers\UserController\LogInController;
+use Hazesoft\Backend\Controllers\ProductController\ProductController;
+use Hazesoft\Backend\Controllers\UserController\SignUpController;
+use Hazesoft\Backend\Controllers\Frontend\HomePageController;
 
 return [
     "GET" => [
-        '/' => function () {
-            echo "Hello from index";
-        },
+        '/' => [HomePageController::class, 'getHomepage'],
         '/login' => [LogInController::class, 'getLoginPage'],
-        '/signup' => [SignUpController::class, 'getSignUpPage'],
-        '/add-products' => [ProductController::class, 'getAddProductPage'],
-        '/update-products' => [ProductController::class, 'getUpdateProductPage'],
-        '/allproducts' => [ProductController::class, 'getAllProductPage'],
-        '/myproducts' => [ProductController::class, 'getMyProductPage']
-    ],
+        '/signup' => [LogInController::class, 'getSignUpPage'],
+        '/products' => [ProductController::class, 'getProductsPage'],
+        '/products/create' => [ProductController::class, 'getAddProductPage'],
+        '/products/update' => [ProductController::class, 'getUpdateProductPage'],
+        ],
+        
     "POST" => [
-        '/login-submit' => [LogInController::class, 'handleLoginForm'],
-        '/signup-submit' => [SignUpController::class, 'handleSignUpForm'],
-        '/add-product-submit' => [ProductController::class, 'handleAddProductForm'],
-        '/update-product-submit' => [ProductController::class, 'handleUpdateProductForm'],
-        '/view-allproducts-submit' => [ProductController::class, 'handleListAllProduct'],
-        '/view-myproducts-submit' => [ProductController::class, 'handleListMyProduct'],
-        '/delete-product-submit' => [ProductController::class, 'handleDeleteProduct'],
-        '/logout-submit' => [LogOutController::class, 'handleLogOut']
-    ]
+        '/login' => [LogInController::class, 'handleLoginForm'],
+        '/signup' => [SignUpController::class, 'handleSignUpForm'],
+        '/products' => [ProductController::class, 'handleAddProductForm'],  // products url => add-product
+        '/products/update' => [ProductController::class, 'handleUpdateProductForm'],
+        '/products/delete' => [ProductController::class, 'handleDeleteProduct'],
+        '/logout' => [LogInController::class, 'handleLogout']
+    ],
 ];

@@ -1,44 +1,50 @@
 <?php
 
-namespace ECommerce\Routers;
+namespace Hazesoft\Backend\Routers;
 
-class Router
-{
-    private $routes = [];
-    public function get(string $path, callable|array $callback)
+class Router {
+    private array $routes = [];
+
+    public function get(string $path, callable|array $callback): void
     {
         $this->routes['GET'][$path] = $callback;
     }
 
-    public function post(string $path, callable|array $callback)
+    public function post(string $path, callable|array $callback): void
     {
         $this->routes['POST'][$path] = $callback;
     }
 
-    public function loadRoutes($routes)
+    public function loadRoutes($routes): void
     {
-        foreach ($routes["GET"] ?? [] as $path => $controller) {
+        foreach ($routes["GET"] ?? [] as $path => $controller){
             $this->get($path, $controller);
         }
-        foreach ($routes["POST"] ?? [] as $path => $controller) {
+
+        foreach ($routes["POST"] ?? [] as $path => $controller){
             $this->post($path, $controller);
         }
     }
 
-    public function dispatch(string $path)
+    public function resolve()
     {
-        $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $callback = $this->routes[$requestMethod][$path] ?? null;
+        $method = $_SERVER['REQUEST_METHOD'];
+        $path = $_SERVER['REQUEST_URI'];
+        $path = explode('?', $path)[0];
 
-        if ($callback === null) {
+        $callback = $this->routes[$method][$path] ?? null;
+
+        if($callback === null) {
             http_response_code(404);
-            return "404 NOT FOUND";
+            return "404 Not Found";
         }
-        if (is_array($callback)) {
+
+        if(is_array($callback)){
             [$class, $method] = $callback;
-            $controller = new $class();
+            $controller = new $class;
             return $controller->$method();
         }
+
         return $callback();
     }
 }

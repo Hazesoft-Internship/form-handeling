@@ -1,16 +1,19 @@
 <?php
 
-namespace ECommerce\Services;
+namespace Hazesoft\Backend\Services;
 
 class Session
 {
     private static $instance = null;
+
     private function __construct()
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
-    public static function getInstance()
+    public static function getInstance(): ?Session
     {
         if (self::$instance === null) {
             self::$instance = new Session();
@@ -18,20 +21,29 @@ class Session
         return self::$instance;
     }
 
-    public function set($key, $value)
+    public function setSession($key, $value): void
     {
         $_SESSION[$key] = $value;
     }
 
-    public function get($key)
+    public function getSession($key): mixed
     {
-        return $_SESSION[$key];
+        return $_SESSION[$key] ?? null;
     }
 
-    public function destroy()
+    public function hasSession($key): bool
+    {
+        return isset($_SESSION[$key]);
+    }
+
+    public function removeSession($key): void
+    {
+        $_SESSION[$key] = null;
+    }
+
+    public function destroySession(): void  // For logout page
     {
         session_unset();
         session_destroy();
-        return true;
     }
 }

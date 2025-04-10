@@ -1,151 +1,129 @@
 <?php
 
-namespace ECommerce\Controllers\ProductController;
+namespace Hazesoft\Backend\Controllers\ProductController;
 
-use ECommerce\Services\Session;
-use ECommerce\Models\Product;
-use ECommerce\Utils\Validation\ValidateProduct;
+use Exception;
+use Hazesoft\Backend\Models\Product;
+use Hazesoft\Backend\Validations\ProductValidation;
+use Hazesoft\Backend\Validations\ValidationException;
 
 class ProductController
 {
     private $product;
-    private $session;
-    private $validateProduct;
+    private $productValidator;
 
     public function __construct()
     {
         $this->product = new Product();
-        $this->session = Session::getInstance();
-        $this->validateProduct = new ValidateProduct();
+        $this->productValidator = new ProductValidation();
     }
 
-    public function handleAddProductForm()
+    public function handleUpdateProductForm(): void
     {
-        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product-submit'])) {
-            $productName = $_POST["productName"];
-            $productPrice = $_POST["productPrice"];
-            $productQuantity = $_POST["productQuantity"];
-            $userID = $this->session->get("userID");
+        if (isset($_POST['id'])) {
+            $productId = $_POST['id'];
+        } else {
+            echo "Error updating product from ProductController";
+            exit;
+        }
 
-            $sanitizedUserInput = $this->validateProduct->validateUserInput([$productName, $productPrice, $productQuantity]);
+        if ($_SERVER["REQUEST_METHOD"] === 'POST') {
+            try {
+                $product = [
+                    $_POST['productName'] ?? '',
+                    $_POST['productPrice'] ?? '',
+                    $_POST['productQuantity'] ?? ''
+                ];
 
-            if (isset($sanitizedUserInput["error"])) {
-                echo $sanitizedUserInput["error"];
+                // Sanitization of inputArray
+                $sanitizedProductArray = $this->productValidator->sanitizeArray($product);
+                $isProductValid = $this->productValidator->validateUserInput($sanitizedProductArray);
+
+                if ($isProductValid) {
+                    echo "Product validation successful <br>";
+
+                    $updateProductObject = new Product();
+
+                    $updateProductObject->updateProduct($productId, $product);
+                    header("Location: /products");
+                } else {
+                    echo "Product validation failed <br>";
+                }
+            } catch (Exception $exception) {
+                echo "Error: " . $exception->getMessage();
             }
-            $addProductResult = $this->product->addProduct($sanitizedUserInput[0], $sanitizedUserInput[1], $sanitizedUserInput[2], $userID);
-            if ($addProductResult) {
-                echo "Product added successfully";
-                header('Location: /myproducts');
-                exit();
-            }
-            echo "Failed to add products";
+        } else {
+            echo "Error updating product <br>";
         }
     }
 
-    public function handleUpdateProductForm()
+    public function handleDeleteProduct(): void
     {
-        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product-update'])) {
-            $productID = $_GET['id'];
-            $productName = $_POST['productName'] ?? null;
-            $productPrice = $_POST['productPrice'] ?? null;
-            $productQuantity = $_POST['productQuantity'] ?? null;
-
-            $updateFields = [];
-            $params = [];
-
-            if ($productName !== null) {
-                $updateFields[] = "name = :name";
-                $params[':name'] = $productName;
-            }
-            if ($productPrice !== null && $productPrice !== '') {
-                $updateFields[] = "price = :price";
-                $params[':price'] = $productPrice;
-            }
-            if ($productQuantity !== null && $productQuantity !== '') {
-                $updateFields[] = "quantity = :quantity";
-                $params[':quantity'] = $productQuantity;
-            }
-
-            if (empty($updateFields)) {
-                echo "Please update at least one field.";
-                return;
-            }
-
-            $params[':productID'] = $productID;
-
-            $updateResult = $this->product->updateProduct($updateFields, $params);
-
-            if ($updateResult) {
-                echo "Product updated successfully";
-                header('Location: /myproducts');
-                exit();
-            }
-
-            echo "Failed to update product";
+        if (isset($_POST['id'])) {
+            $productId = $_POST['id'];
+            $this->product->deleteProduct($productId);
+            header("Location: /products");
+        } else {
+            echo "Error deleting product from ProductController";
         }
     }
 
-    public function handleListAllProduct()
+    public function handleAddProductForm(): void
     {
-        if ($_SERVER["REQUEST_METHOD"] === "GET") {
-            $userID = $this->session->get('userID');
-            $allProducts = $this->product->listAllProduct($userID);
 
-            if (!$allProducts) {
-                return null;
+        if ($_SERVER["REQUEST_METHOD"] === 'POST') {
+            try {
+                // Capture form data
+                $inputArray = [
+                    $_POST['productName'] ?? '',
+                    $_POST['productPrice'] ?? '',
+                    $_POST['productQuantity'] ?? ''
+                ];
+            } catch (Exception $exception) {
+                throw new ValidationException($exception->getMessage());
             }
-            return $allProducts;
-        }
-    }
 
-    public function handleListMyProduct()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "GET") {
-            $userID = $this->session->get('userID');
-            $myProducts = $this->product->listMyProduct($userID);
+            try {
+                // Sanitization of inputArray
+                $sanitizedInputArray = $this->productValidator->sanitizeArray($inputArray);
+                $isProductValid = $this->productValidator->validateUserInput($sanitizedInputArray);
 
-            if (!$myProducts) {
-                return null;
+                if ($isProductValid) {
+                    echo "Product validation successful <br>";
+
+                    // send data to db
+                    $insertProductObject = new Product();
+                    $result = $insertProductObject->insertProductDetails($inputArray);
+                    if ($result) {
+                        echo "Product added successfully";
+                        header("Location: /products");
+                    } else {
+                        echo "Product addition failed";
+                    }
+                } else {
+                    throw new ValidationException("Product validation error");
+                }
+            } catch (Exception $exception) {
+                throw new ValidationException("Product validation error: " . $exception->getMessage());
             }
-            return $myProducts;
         }
     }
 
-    public function handleDeleteProduct()
+    public function getAddProductPage()
     {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $productID = $_GET['id'];
-            $deleteProductResult = $this->product->deleteProduct($productID);
-            if ($deleteProductResult) {
-                echo "Product Deleted successfully";
-                header('Location: /myproducts');
-            }
-            return "Failed to delete product";
-        }
-    }
-    public function getProductByID($productID)
-    {
-        $productArray = $this->product->getUpdateProductByID($productID);
-        if ($productArray) {
-            return $productArray;
-        }
-        return null;
+        return require_once(__DIR__ . '/../../Views/product-form.html');
     }
 
-    public  function getAddProductPage()
+    public function getUpdateProductPage()
     {
-        return require_once __DIR__ . '/../../Views/add-products.php';
+        return require_once(__DIR__ . '/../../Views/update-product-form.php');
     }
-    public  function getUpdateProductPage()
+
+    public function getProductsPage()
     {
-        return require_once __DIR__ . '/../../Views/update-products.php';
-    }
-    public  function getAllProductPage()
-    {
-        return require_once __DIR__ . '/../../Views/view-allproducts.php';
-    }
-    public  function getMyProductPage()
-    {
-        return require_once __DIR__ . '/../../Views/view-myproducts.php';
+        return require_once(__DIR__ . '/../../Views/show-products.php');
     }
 }
+
+
+

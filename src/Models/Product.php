@@ -1,115 +1,146 @@
 <?php
 
-namespace ECommerce\Models;
+namespace Hazesoft\Backend\Models;
 
-use ECommerce\Services\DatabaseConnection;
-use PDO;
-use PDOException;
+use Exception;
+use Hazesoft\Backend\Services\Connection;
+use Hazesoft\Backend\Services\Session;
 
-final class Product
+class Product
 {
-    private $dbConnection;
+    private $conn;
 
     public function __construct()
     {
-        $this->dbConnection = DatabaseConnection::getInstance();
+        $this->conn = Connection::getConnection();
     }
-
-    public function addProduct($productName, $productPrice, $productQuantity, $userID)
+    public function insertProductDetails($inputArray)
     {
         try {
-            $addProductQuery = "INSERT INTO products (userID, name, price, quantity) VALUES (:userID, :productName, :productPrice, :productQuantity)";
-            $statement = $this->dbConnection->prepare($addProductQuery);
-            $statement->bindParam(':productName', $productName);
-            $statement->bindParam(':productPrice', $productPrice);
-            $statement->bindParam(':productQuantity', $productQuantity);
-            $statement->bindParam(':userID', $userID);
+            [$productName, $productPrice, $productQuantity] = $inputArray;
+            $session = Session::getInstance();
+            $created_at = date('Y-m-d H:i:s');
+            $updated_at = date('Y-m-d H:i:s');
+            $user_id = (int)$session->getSession("userId") ?? '';
 
-            return $statement->execute();
-        } catch (PDOException $e) {
-            return $e->getMessage();
+            $sql = "INSERT INTO `products` (`user_id`, `name`, `price`, `quantity`, `created_at`, `updated_at`) VALUES (:user_id, :name, :price, :quantity, :created_at, :updated_at)";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->bindParam(':name', $productName);
+            $stmt->bindParam(':price', $productPrice);
+            $stmt->bindParam(':quantity', $productQuantity);
+            $stmt->bindParam(':created_at', $created_at);
+            $stmt->bindParam(':updated_at', $updated_at);
+
+            return $stmt->execute();
+
+        } catch (Exception $exception) {
+            echo ("Error inserting product " . $exception->getMessage());
+            return false;
         }
     }
 
-    public function updateProduct($updateFields, $params)
+    public function getAllProducts()
     {
         try {
+            $query = "SELECT * from products";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
 
-            $updateProductQuery = "UPDATE products SET " . implode(", ", $updateFields) . " WHERE id = :productID";
-            $statement = $this->dbConnection->prepare($updateProductQuery);
+            return $stmt->fetchAll(); // Return products array
+        } catch (Exception $exception) {
+            echo($exception->getMessage());
+        }
+    }
 
-            foreach ($params as $key => $value) {
-                $statement->bindValue($key, $value);
+    public function getUserProducts($userId)
+    {
+        try {
+            $query = "SELECT * FROM products WHERE user_id = :user_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+
+            return $stmt->fetchAll();
+
+        } catch (Exception $exception) {
+            echo($exception->getMessage());
+        }
+    }
+    public function getOtherProducts($userId)
+    {
+        // returns all product except for user's
+        try {
+            $query = "SELECT * FROM products WHERE user_id != :user_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+
+            return $stmt->fetchAll();
+
+        } catch (Exception $exception) {
+            echo($exception->getMessage());
+        }
+    }
+
+    public function getProductById($productId)
+    {
+        try {
+            $query = "SELECT * FROM products WHERE id = :product_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':product_id', $productId);
+            $stmt->execute();
+
+            return $stmt->fetch();
+
+        } catch (Exception $exception) {
+            echo "Error: " . $exception->getMessage();
+        }
+    }
+
+    public function deleteProduct($productId)
+    {
+        try {
+            $query = "DELETE FROM products WHERE id = :product_id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':product_id', $productId);
+            $result = $stmt->execute();
+
+            if ($result) {
+                header("Location: /products");
+            } else {
+                echo "Product deletion went wrong";
             }
-
-            return $statement->execute();
-        } catch (PDOException $e) {
-            return $e->getMessage();
+        } catch (Exception $exception) {
+            echo($exception->getMessage());
         }
     }
 
-
-    public function getUpdateProductByID($productID)
+    public function updateProduct($productId, array $product)
     {
         try {
-            $getProductByIDQuery = "SELECT* FROM products WHERE id = :productID";
-            $statement = $this->dbConnection->prepare($getProductByIDQuery);
-            $statement->bindParam(':productID', $productID);
-            $statement->execute();
+            [$productName, $productPrice, $productQuantity] = $product;
 
-            $productByID = $statement->fetch(PDO::FETCH_ASSOC);
-            if ($productByID) {
-                return $productByID;
+            $updated_at = date('Y-m-d H:i:s');
+            $query = "UPDATE products SET name = :product_name, price = :product_price, quantity = :product_quantity, updated_at = :updated_at WHERE id = :product_id";
+
+            $stmt = $this->conn->prepare($query);
+
+            $stmt->bindParam(':product_name', $productName);
+            $stmt->bindParam(':product_price', $productPrice);
+            $stmt->bindParam(':product_quantity', $productQuantity);
+            $stmt->bindParam(':updated_at', $updated_at);
+            $stmt->bindParam(':product_id', $productId);
+
+            $result = $stmt->execute();
+
+            if (!$result) {
+                echo "Error updating product, Product Name: {$productName}";
             }
-            return null;
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function deleteProduct($productID)
-    {
-        try {
-            $deleteProductQuery = "DELETE FROM products WHERE id = :productID";
-            $statement = $this->dbConnection->prepare($deleteProductQuery);
-            $statement->bindParam(':productID', $productID);
-            return $statement->execute();
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function listAllProduct($userID)
-    {
-        try {
-            $listProductQuery = "SELECT * FROM products WHERE NOT userID = :userID";
-            $statement = $this->dbConnection->prepare($listProductQuery);
-            $statement->bindParam(':userID', $userID);
-            $statement->execute();
-
-            $products = $statement->fetchAll(PDO::FETCH_ASSOC);
-            if ($products) {
-                return $products;
-            }
-            return null;
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-    public function listMyProduct($userID)
-    {
-        try {
-            $listProductQuery = "SELECT * FROM products WHERE userID = :userID";
-            $statement = $this->dbConnection->prepare($listProductQuery);
-            $statement->bindParam(':userID', $userID);
-            $statement->execute();
-
-            $myProducts = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-            if ($myProducts) return $myProducts;
-            return null;
-        } catch (PDOException $e) {
-            return $e->getMessage();
+        } catch (Exception $exception) {
+            echo($exception->getMessage());
         }
     }
 }
