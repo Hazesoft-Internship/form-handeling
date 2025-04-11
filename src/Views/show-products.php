@@ -1,24 +1,3 @@
-<?php
-
-use Hazesoft\Backend\Models\Product;
-use Hazesoft\Backend\Services\Session;
-
-// Initialize session
-$session = Session::getInstance();
-if (!$session->hasSession("isLoggedIn")) {
-    header("Location: /");
-    exit("Authentication failed");
-}
-
-$productObject = new Product();
-
-$userId = $session->getSession("userId");
-$myProducts = $productObject->getUserProducts($userId);
-
-$otherProducts = $productObject->getOtherProducts($userId);
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

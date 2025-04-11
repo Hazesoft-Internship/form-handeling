@@ -6,6 +6,7 @@ use Exception;
 use Hazesoft\Backend\Models\Product;
 use Hazesoft\Backend\Validations\ProductValidation;
 use Hazesoft\Backend\Validations\ValidationException;
+use Hazesoft\Backend\Services\Session;
 
 class ProductController
 {
@@ -80,7 +81,7 @@ class ProductController
                     $_POST['productQuantity'] ?? ''
                 ];
             } catch (Exception $exception) {
-                throw new ValidationException($exception->getMessage());
+                echo($exception->getMessage());
             }
 
             try {
@@ -101,12 +102,52 @@ class ProductController
                         echo "Product addition failed";
                     }
                 } else {
-                    throw new ValidationException("Product validation error");
+                    echo("Product validation error");
                 }
             } catch (Exception $exception) {
-                throw new ValidationException("Product validation error: " . $exception->getMessage());
+                echo("Product validation error: " . $exception->getMessage());
             }
         }
+    }
+
+    public function handleUpdateProductData(): array
+    {
+        if (isset($_GET['id'])) {
+            $productId = $_GET['id'];
+            $currentProduct = $this->product->getProductById($productId);
+
+            return [
+                'productId' => $productId,
+                'currentProduct' => $currentProduct
+            ];
+        } else {
+            echo "Error updating product";
+            exit;
+        }
+    }
+    public function handleProductsData(): array
+    {
+        // Get session instance
+        $session = Session::getInstance();
+
+        // Authentication check
+        if (!$session->hasSession("isLoggedIn")) {
+            header("Location: /");
+            exit("Authentication failed");
+        }
+
+        $userId = $session->getSession("userId");
+
+        // Get products data
+        $myProducts = $this->product->getUserProducts($userId);
+        $otherProducts = $this->product->getOtherProducts($userId);
+
+        return [
+            'session' => $session,
+            'userId' => $userId,
+            'myProducts' => $myProducts,
+            'otherProducts' => $otherProducts
+        ];
     }
 
     public function getAddProductPage()
@@ -116,11 +157,15 @@ class ProductController
 
     public function getUpdateProductPage()
     {
+        $viewData = $this->handleUpdateProductData();
+        extract($viewData);
         return require_once(__DIR__ . '/../../Views/update-product-form.php');
     }
 
     public function getProductsPage()
     {
+        $viewData = $this->handleProductsData();
+        extract($viewData);
         return require_once(__DIR__ . '/../../Views/show-products.php');
     }
 }
