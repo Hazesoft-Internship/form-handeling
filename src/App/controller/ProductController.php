@@ -2,54 +2,112 @@
 
 namespace App\controller;
 
-use App\model\Product;
-use App\config\Database;
+use App\traits\DatetimeFormatter;
+
 use App\session\Session;
 use App\Exception\CustomException;
+use App\controller\Constructor;
+use App\controller\CartController;
 
-class ProductController
+class ProductController extends Constructor
 {
+    use DatetimeFormatter;
 
-    private $productModel;
-
-    public function __construct()
+    public function displayProducts()
     {
-        $conn = Database::getInstance();
-        $db = $conn->getConnection();
-        $this->productModel = new Product($db);
+        include(__DIR__ . "/../view/product.php");
     }
+
+    public function displayAddProduct()
+    {
+        include(__DIR__ . "/../view/AddProduct.php");
+    }
+
 
     public function getAllProducts()
     {
         $storeProduct = $this->productModel->getAllProducts();
-        $session = new Session();
+        $session = Session::getInstance();
+        $getSession = $session->getSession("user_id");
+        $hasSession = $session->hasSession("user_id");
+        $storeProduct = [];
+        if ($hasSession) {
+            $cart = new CartController();
+            $formattedProduct = [];
+            $storeProduct = $this->productModel->getProducts();
+            foreach ($storeProduct as $singleProduct) {
+                $singleProduct["inCart"] = $cart->productExistInCart($singleProduct["id"]);
+                $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
+                $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
+                $formattedProduct[] = $singleProduct;
+            }
+        } else {
+            $storeProduct = $this->productModel->getAllProducts();
+            foreach ($storeProduct as $singleProduct) {
+                $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
+                $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
+                $formattedProduct[] = $singleProduct;
+            }
+        }
+        include(__DIR__ . "/../view/product.php");
+
+    }
+
+    public function getAllProductsJson()
+    {
+        $storeProduct = $this->productModel->getAllProducts();
+        $session = Session::getInstance();
 
         $hasSession = $session->hasSession("user_id");
 
 
+        $storeProduct = [];
+        header("Content-Type: application/json");
+
         if ($hasSession) {
-            $storeProduct = [];
+            $formattedProduct = [];
             $storeProduct = $this->productModel->getProducts();
+            foreach ($storeProduct as $singleProduct) {
+
+                $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
+                $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
+                $formattedProduct[] = $singleProduct;
+            }
+
+            $formattedProduct = json_encode($formattedProduct, JSON_PRETTY_PRINT);
         } else {
-            $storeProduct = [];
             $storeProduct = $this->productModel->getAllProducts();
+            foreach ($storeProduct as $singleProduct) {
+
+                $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
+                $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
+                $formattedProduct[] = $singleProduct;
+            }
+            $formattedProduct = json_encode($formattedProduct, JSON_PRETTY_PRINT);
         }
-        include(__DIR__ . "/../view/product.php");
+
+        include(__DIR__ . "/../view/allJsonProduct.php");
     }
 
     public function getUserProducts()
     {
-        $session = new Session();
 
-        $id = $session->getSession("user_id");
+        $id = $this->getSession("user_id");
         $storeProduct = $this->productModel->getMyProducts($id);
+        foreach ($storeProduct as $singleProduct) {
+
+            $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
+            $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
+            $formattedProduct[] = $singleProduct;
+        }
         include(__DIR__ . "/../view/myProduct.php");
     }
 
+
+
     public function addProduct()
     {
-        $session = new Session();
-        $userId = $session->getSession("user_id");
+        $userId = $this->getSession("user_id");
         $name = $_POST["name"];
         $price = $_POST["price"];
         $quantity = $_POST["quantity"];
@@ -95,4 +153,6 @@ class ProductController
             }
         }
     }
+
+    public function addToCart() {}
 }

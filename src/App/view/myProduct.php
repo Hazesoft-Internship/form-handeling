@@ -1,8 +1,3 @@
-<?php
-
-use App\format\DateTimeFormatter;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,15 +10,15 @@ use App\format\DateTimeFormatter;
 <body>
     <div class="product">
         <h1 class="heading">Product List</h1>
-        <?php if (!empty($storeProduct)): ?>
+        <?php if (!empty($formattedProduct)): ?>
             <div class="container">
-                <?php foreach ($storeProduct as $product): ?>
+                <?php foreach ($formattedProduct as $product): ?>
                     <div class="products">
                         <strong>Name:</strong> <?php echo $product['name']; ?>
                         <strong>Quantity:</strong> <?php echo $product['quantity']; ?>
                         <strong>Price:</strong> $<?php echo $product['price']; ?>
-                        <strong>added on:</strong> <?php echo DateTimeFormatter::formatDateTime($product['created_at']); ?>
-                        <strong>Last updated on:</strong> <?php echo DateTimeFormatter::formatDateTime($product['updated_at']); ?>
+                        <strong>added on:</strong> <?php echo $product['created_at']; ?>
+                        <strong>Last updated on:</strong> <?php echo $product['updated_at']; ?>
                     </div>
                     <?php if ($id === $product["user_id"]): ?>
                         <div class="button">

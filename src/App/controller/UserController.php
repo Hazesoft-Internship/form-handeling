@@ -1,21 +1,21 @@
 <?php
 
 namespace App\controller;
-
-use App\model\User;
-use App\config\Database;
 use App\validate\Seperator;
+use App\controller\Constructor;
 
 
-class UserController
+class UserController extends Constructor
 {
-    private $userModel;
-    private $db;
-    public function __construct()
+
+    public function displayRegister()
     {
-        $conn = Database::getInstance();
-        $this->db = $conn->getConnection();
-        $this->userModel = new User($this->db);
+        include(__DIR__ . "/../view/register.php");
+    }
+
+    public function displayLogin()
+    {
+        include(__DIR__ . "/../view/login.php");
     }
 
     public function register()
@@ -42,8 +42,8 @@ class UserController
     public function logout()
     {
         session_start();
-        session_unset();
         session_destroy();
+        session_unset();
         header("Location: /login");
     }
 

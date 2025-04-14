@@ -1,7 +1,6 @@
 <?php
 
 namespace App\validate;
-require("../Exception/Exception.php");
 use App\Exception\CustomException;
 
 class ProductValidation

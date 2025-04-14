@@ -21,19 +21,23 @@ class User
     public function register(array $details)
     {
         var_dump($details);
-        $fetchEmail = "select * from users where email = ?";
+        $fetchEmail = "select * from users where email = :email";
         $emailStmt = $this->conn->prepare($fetchEmail);
-        $emailStmt->bind_param("s", $details["email"]);
+        $emailStmt->bindValue(':email', $details["email"]);
         $emailStmt->execute();
-        $emailStore = $emailStmt->get_result();
-        if ($emailStore->fetch_assoc() > 0) {
+        if ($emailStmt->fetch(\PDO::FETCH_ASSOC)) {
             die("user with this email already existed");
         }
-        $query = "insert into users (firstName,middleName,lastName,email,password,address) values (?,?,?,?,?,?)";
+        $query = "insert into users (firstName,middleName,lastName,email,password,address) values (:firstName,:middleName,:lastName,:email,:password,:address)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssssss", $details["firstName"], $details["middleName"], $details["lastName"], $details["email"], $details["password"], $details["address"],);
+        $stmt->bindValue(":firstName", $details["firstName"]);
+        $stmt->bindValue(":middleName", $details["middleName"]);
+        $stmt->bindValue(":lastName", $details["lastName"]);
+        $stmt->bindValue(":email", $details["email"]);
+        $stmt->bindValue(":password", $details["password"]);
+        $stmt->bindValue(":address", $details["address"]);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
+        if ($stmt->rowCount() > 0) {
             header("Location: /product");
         } else {
             echo "failed";
@@ -42,20 +46,20 @@ class User
 
     public function login(string $email, string $password)
     {
-        $query = "select id,email,password from users where email = ?";
+        $query = "select id,email,password from users where email = :email";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $email);
+        $stmt->bindValue(":email", $email);
         $stmt->execute();
-        $store = $stmt->get_result();
-        $user = $store->fetch_assoc();
+
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         var_dump($user["id"]);
-        $session = new Session();
+        $session = Session::getInstance();
         if (password_verify($password, $user["password"])) {
             $session->setSession("user_id", $user["id"]);
             header("Location: /product");
         } else {
 
-            header("Location: /src/App/view/login.php");
+            header("Location: /login");
         }
     }
 
@@ -63,7 +67,7 @@ class User
     public function insertFromCsv(string $path)
     {
         if (($handle = fopen($path, "r")) !== false) {
-            fgetcsv($handle, 0, ",", '"', "\\");    
+            fgetcsv($handle, 0, ",", '"', "\\");
             $batch = 500;
             $data = [];
             $insertedRow = 0;
@@ -113,7 +117,7 @@ class User
     public function batchInsert($stmt, array $datas)
     {
         foreach ($datas as $singleData) {
-            $stmt->bind_param("ssssss", $singleData[0], $singleData[1], $singleData[2], $singleData[3], $singleData[4], $singleData[4]);
+            $stmt->bindValue("ssssss", $singleData[0], $singleData[1], $singleData[2], $singleData[3], $singleData[4], $singleData[4]);
             $stmt->execute();
         }
     }

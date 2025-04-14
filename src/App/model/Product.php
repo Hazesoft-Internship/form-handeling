@@ -2,16 +2,26 @@
 
 namespace App\model;
 
+use App\Exception\CustomException;
+use App\validate\ProductValidation;
 
 class Product
 {
-    public function __construct(private $conn) {}
+    private $validate;
+    public function __construct(private $conn)
+    {
+
+        $this->validate = new ProductValidation();
+    }
 
     public function addProduct(string $name, int $price, int $quantity, int $userId)
     {
-        $query = "insert into products (user_id,name,price,quantity) values (?,?,?,?)";
+        $query = "insert into products (user_id,name,price,quantity) values (:userId,:name,:price,:quantity)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("isii", $userId, $name, $price, $quantity);
+        $stmt->bindValue(":userId", $userId);
+        $stmt->bindValue(":name", $name);
+        $stmt->bindValue(":price", $price);
+        $stmt->bindValue(":quantity", $quantity);
         if ($stmt->execute()) {
             header("Location: /my-profile");
         } else {
@@ -22,12 +32,11 @@ class Product
     public function getProducts(): array
     {
         $products = [];
-        $query = "select * from products where user_id != ?";
+        $query = "select * from products where user_id != :userId";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $_SESSION["user_id"]);
+        $stmt->bindValue(":userId", $_SESSION["user_id"]);
         $stmt->execute();
-        $Storedproducts = $stmt->get_result();
-        while ($row = $Storedproducts->fetch_assoc()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $products[] = $row;
         }
         return $products;
@@ -39,8 +48,7 @@ class Product
         $query = "select * from products";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        $store = $stmt->get_result();
-        while ($row = $store->fetch_assoc()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $products[] = $row;
         }
         return $products;
@@ -49,12 +57,12 @@ class Product
     public function getMyProducts($id)
     {
         $products = [];
-        $query = "select * from products where user_id = ?";
+        $query = "select * from products where user_id = :userId";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id);
+        $stmt->bindValue(":userId", $id);
         $stmt->execute();
-        $store = $stmt->get_result();
-        while ($row = $store->fetch_assoc()) {
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $products[] = $row;
         }
         return $products;
@@ -62,9 +70,9 @@ class Product
 
     public function deleteProduct($id)
     {
-        $query = "delete from products where id = ?";
+        $query = "delete from products where id = :userId";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id);
+        $stmt->bindValue(":userId", $id);
         if ($stmt->execute()) {
             header("Location: /my-profile");
         } else {
@@ -75,27 +83,35 @@ class Product
 
     public function getSingleProduct(int $id): array
     {
-        $query = "select * from products where id = ?";
+        $query = "select * from products where id = :userId";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id);
+        $stmt->bindValue(":userId", $id);
         $stmt->execute();
-        $store = $stmt->get_result();
-        $row = $store->fetch_assoc();
+
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $row;
     }
 
     public function updateProduct($productId, $productName, $productQuantity, $productPrice)
     {
-
-        $query = "update products
-                  set name = ?, price = ?, quantity = ?
-                  where id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("siii", $productName, $productPrice, $productQuantity, $productId);
-        if ($stmt->execute()) {
-            header("Location: /my-profile");
-        } else {
-            echo "something went wrong while updating";
+        try {
+            $arr = ["name" => $productName, "quantity" => $productQuantity, "price" => $productPrice];
+            $this->validate->validator($arr);
+            $query = "update products
+                  set name = :name, price = :price, quantity = :quantity
+                  where id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(":name", $productName);
+            $stmt->bindValue(":id", $productId);
+            $stmt->bindValue(":price", $productPrice);
+            $stmt->bindValue(":quantity", $productQuantity);
+            if ($stmt->execute()) {
+                header("Location: /my-profile");
+            } else {
+                echo "something went wrong while updating";
+            }
+        } catch (CustomException $exception) {
+            var_dump($exception->getTheError());
         }
     }
 }

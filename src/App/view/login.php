@@ -17,6 +17,9 @@
     <input type="password" name="password" />
     <button type="submit">submit</button>
   </form>
+  <a href="/"><button>register</button></a>
+
+  <a href="/product"><button>continue as guest</button></a>
 </body>
 
 </html>

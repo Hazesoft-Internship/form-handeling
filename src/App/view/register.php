@@ -34,6 +34,10 @@
     <input id="confirmPassword" type="password" />
     <button type="submit">submit</button>
   </form>
+  <a href="/login"><button>login</button></a>
+  <a href="/product"><button>continue as guest</button></a>
+
+
 </body>
 
 </html>
