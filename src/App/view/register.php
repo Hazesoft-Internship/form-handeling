@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <script>
+    const onSubmit = (e) => {
+      const password = document.getElementById("password").value;
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        e.preventDefault();
+        return;
+      }
+    };
+  </script>
+</head>
+
+<body>
+  <h1>Register</h1>
+  <form action="/register" method="post" onsubmit="onSubmit(event)">
+    <label>fullname</label>
+    <input type="text" name="fullName" />
+    <label>email</label>
+    <input type="email" name="email" />
+    <label>address</label>
+    <input type="text" name="address" />
+    <label>password</label>
+    <input id="password" type="password" name="password" />
+    <label>confirm Password</label>
+    <input id="confirmPassword" type="password" />
+    <button type="submit">submit</button>
+  </form>
+  <a href="/login"><button>login</button></a>
+  <a href="/product"><button>continue as guest</button></a>
+
+
+</body>
+
+</html>
