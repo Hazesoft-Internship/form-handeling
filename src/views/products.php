@@ -36,10 +36,10 @@ if (!Session::checkLogin()) {
         } else {
             echo "<p>No products available.</p>";
         }
-        
+
         ?>
-      
-        <a href="/cart/<?php echo $cartId?>">View cart</a>
+
+        <a href="/cart/<?php echo $cartId ?>">View cart</a>
         <a href="/my_products">My Products</a>
     </div>
 </body>

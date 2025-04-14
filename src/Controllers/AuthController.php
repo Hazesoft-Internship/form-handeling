@@ -68,8 +68,6 @@ class AuthController
                 if (empty($email) || empty($password)) {
                     throw new ValidationException("Email and password are required.");
                 }
-
-                // Assuming the login method properly checks the password
                 $user = $this->user->login($email, $password);
 
                 if ($user && password_verify($password, $user['password'])) {

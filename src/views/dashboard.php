@@ -1,11 +1,6 @@
 <?php
 
-use Hazesoft\Formhandeling\Controllers\ProductController;
 use Hazesoft\Formhandeling\Services\Session;
-
-ini_set('display_errors', 1);
-ini_set("display_startup_errors", 1);
-error_reporting(E_ALL);
 
 $session = Session::getInstance();
 
@@ -15,8 +10,6 @@ if (Session::checkLogin()) {
   header("Location: /products");
   exit();
 }
-
-
 
 ?>
 <!DOCTYPE html>

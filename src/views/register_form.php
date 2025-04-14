@@ -55,7 +55,7 @@ if (Session::checkLogin()) {
         <br><br>
 
         <label for="address">Address</label>
-        <textarea name="address" id="address" required><?= htmlspecialchars($postData['address'] ?? '') ?></textarea>
+        <input name="address" id="address" value="<?= htmlspecialchars($postData['address'] ?? '') ?>" required>
         <br><br>
 
         <label for="email">Email</label>
@@ -76,19 +76,14 @@ if (Session::checkLogin()) {
 
     <script>
         document.getElementById("userForm").addEventListener("submit", function(event) {
-            // Get the values of the password and confirm password fields         
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("password_confirmation").value;
-            // Get the error message span         
             var passwordMessage = document.getElementById("passwordMessage");
 
-            // Check if passwords match         
             if (password !== confirmPassword) {
-                // Display error message and prevent form submission             
                 passwordMessage.textContent = "Passwords do not match!";
-                event.preventDefault(); // Prevent form submission         
+                event.preventDefault();
             } else {
-                // Clear the error message             
                 passwordMessage.textContent = "";
             }
         });

@@ -23,7 +23,6 @@ class Product
         $this->userid = $_SESSION['id'] ?? null;
     }
 
-
     public function addProduct($productname, $productquantity, $productprice)
     {
         try {
@@ -41,7 +40,6 @@ class Product
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
-
 
     public function getProductsForDashboard()
     {
@@ -68,9 +66,6 @@ class Product
         }
     }
 
-
-
-
     public function getUserProducts()
     {
         try {
@@ -84,8 +79,6 @@ class Product
         }
     }
 
-
-    // Read – Get a single product by id.
     public function getProductById($productId)
     {
         try {
@@ -98,7 +91,6 @@ class Product
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
-
 
     public function updateProduct($id, $name, $quantity, $price)
     {

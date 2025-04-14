@@ -37,7 +37,7 @@ class User
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
-            // 23000 is the SQLSTATE for integrity constraint violation (e.g. duplicate email)
+            //23000 means for duplication 
             if ($e->getCode() === '23000') {
                 throw new Exception("Email already exists. Please use a different email.");
             } else {

@@ -7,7 +7,6 @@ error_reporting(E_ALL);
 use Hazesoft\Formhandeling\Core\Router;
 use Hazesoft\Formhandeling\Core\Request;
 
-
 require_once '../vendor/autoload.php';
 
 $request = new Request();

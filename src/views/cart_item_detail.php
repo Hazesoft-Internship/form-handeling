@@ -1,3 +1,16 @@
+<?php
+
+use Hazesoft\Formhandeling\Services\Session;
+
+$session = Session::getInstance();
+
+$session->start();
+
+if (!Session::checkLogin()) {
+    header("Location: login_form.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

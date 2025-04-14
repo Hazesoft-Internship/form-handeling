@@ -1,8 +1,6 @@
 <?php
 
-
 use Hazesoft\Formhandeling\Services\Session;
-use Hazesoft\Formhandeling\Controllers\ProductController;
 
 $session = Session::getInstance();
 
@@ -12,7 +10,6 @@ if (!Session::checkLogin()) {
   header("Location: login_form.php");
   exit();
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

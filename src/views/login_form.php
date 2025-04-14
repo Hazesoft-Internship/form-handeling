@@ -24,7 +24,7 @@ if (Session::checkLogin()) {
 
 <body>
 
-<?php
+    <?php
     if ($error !== '') {
         echo "<p style='color: red;'>$error</p>";
     }

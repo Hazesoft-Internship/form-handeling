@@ -25,7 +25,7 @@ if (!Session::checkLogin()) {
 
     <a href="/add_product">Add Product</a>
     <a href="/products">Others Products</a>
-    <a href="/logout">Logout</a> 
+    <a href="/logout">Logout</a>
 
     <h1>My Products</h1>
     <div class="product-list">

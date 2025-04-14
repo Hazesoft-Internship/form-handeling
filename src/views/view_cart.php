@@ -22,8 +22,6 @@ if (!Session::checkLogin()) {
 </head>
 
 <body>
-
-
     <a href="/logout">Logout</a>
 
     <h1>My Cart Items</h1>
@@ -38,6 +36,7 @@ if (!Session::checkLogin()) {
             echo "<p>No cartItems available.</p>";
         }
         ?>
+        <a href="/products">Back to Products</a>
 </body>
 
 </html>

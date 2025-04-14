@@ -43,17 +43,12 @@ if (!Session::checkLogin()) {
           <button type="submit">Add to Cart</button>
         </form>
 
-        <!-- Button to trigger quantity input visibility -->
         <button id="showQuantityBtn">Add to Cart</button>
       <?php
       } else { ?>
         <a href="/product/<?php echo $product['productid'] ?>/update_product">Edit Product</a>
-        <!-- Form for deleting the product -->
         <form action="/product/<?php echo $product['productid'] ?>/delete_product" method="POST">
-          <!-- Hidden field with the product ID -->
           <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['productid']) ?>">
-
-          <!-- Confirmation prompt on button click -->
           <button type="submit" onclick="return confirm('Are you sure you want to delete this product?')">Delete Product</button>
         </form>
     <?php  }
@@ -64,14 +59,11 @@ if (!Session::checkLogin()) {
     }
     ?>
     <script>
-      // Get elements
       const showQuantityBtn = document.getElementById('showQuantityBtn');
       const cartForm = document.getElementById('cartForm');
-
-      // Show form and quantity input when "Add to Cart" button is clicked
       showQuantityBtn.addEventListener('click', function() {
-        cartForm.style.display = 'block'; // Show the form
-        showQuantityBtn.style.display = 'none'; // Hide the original button
+        cartForm.style.display = 'block';
+        showQuantityBtn.style.display = 'none';
       });
     </script>
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Hazesoft\Formhandeling\Core;
 
 class Router
