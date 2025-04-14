@@ -2,15 +2,16 @@
 
 use Hazesoft\Formhandeling\Controllers\ProductController;
 use Hazesoft\Formhandeling\Controllers\AuthController;
+use Hazesoft\Formhandeling\Controllers\CartController;
 
-//Authentication route
+//Authentication routes
 $router->get('/register', [AuthController::class, 'register']);
 $router->post('/register', [AuthController::class, 'register']);
 $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'login']);
 $router->get('/logout', [AuthController::class, 'handleLogout']);
 
-// Product Route
+// Product Routes
 $router->get('/', [ProductController::class, 'dashboard']);
 $router->get('/products', [ProductController::class, 'products']);
 $router->get('/my_products', [ProductController::class, 'myProducts']);
@@ -21,3 +22,9 @@ $router->get('/product/{id}/update_product', [ProductController::class, 'updateP
 $router->post('/product/{id}/update_product', [ProductController::class, 'updateProduct']);
 $router->post('/product/{id}/delete_product', [ProductController::class, 'deleteProduct']);
 $router->get('/api/products', [ProductController::class, 'getAllProducts']);
+
+//Cart Routes
+$router->get('/cart/{id}',[CartController::class, 'viewCart']);
+$router->post('/cart/addItems',[CartController::class, 'addtoCart']);
+$router->get('/cartitem/{id}',[CartController::class, 'cartItemDetail']);
+

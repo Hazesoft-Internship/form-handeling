@@ -31,19 +31,15 @@ if (!Session::checkLogin()) {
         <?php
         if (!empty($products)) {
             foreach ($products as $product) {
-                echo "<div class='product'>";
-                echo "<h3>" . htmlspecialchars($product['name']) . "</h3>";
-                echo "<p><strong>Quantity:</strong> " . htmlspecialchars($product['quantity']) . "</p>";
-                echo "<p><strong>Price:</strong> $" . htmlspecialchars($product['price']) . "</p>";
-                echo "<p><strong>Created:</strong> " . htmlspecialchars($product['created_at']) . "</p>";
-                echo "<p><strong>Updated:</strong> " . htmlspecialchars($product['updated_at']) . "</p>";
-                echo "</div>";
+                echo "<h3><a href='/product/" . $product['productid'] . "'>" . htmlspecialchars($product['name']) . "</a></h3>";
             }
         } else {
             echo "<p>No products available.</p>";
         }
+        
         ?>
-
+      
+        <a href="/cart/<?php echo $cartId?>">View cart</a>
         <a href="/my_products">My Products</a>
     </div>
 </body>

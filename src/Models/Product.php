@@ -27,10 +27,8 @@ class Product
     public function addProduct($productname, $productquantity, $productprice)
     {
         try {
-            $stmt = $this->connection->prepare("
-            INSERT INTO products (name, quantity, price, userid) 
-            VALUES (:name, :quantity, :price, :userid)
-        ");
+            $stmt = $this->connection->prepare("INSERT INTO products (name, quantity, price, userid) 
+            VALUES (:name, :quantity, :price, :userid)");
 
             $stmt->bindParam(':name', $productname);
             $stmt->bindParam(':quantity', $productquantity, PDO::PARAM_INT);
@@ -43,6 +41,7 @@ class Product
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
+
 
     public function getProductsForDashboard()
     {
@@ -104,11 +103,9 @@ class Product
     public function updateProduct($id, $name, $quantity, $price)
     {
         try {
-            $stmt = $this->connection->prepare("
-            UPDATE products 
+            $stmt = $this->connection->prepare(" UPDATE products 
             SET name = :name, quantity = :quantity, price = :price 
-            WHERE productid = :productid AND userid = :userid
-        ");
+            WHERE productid = :productid AND userid = :userid");
 
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);

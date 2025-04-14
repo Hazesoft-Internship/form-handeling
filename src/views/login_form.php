@@ -10,6 +10,7 @@ if (Session::checkLogin()) {
     header("Location: products.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +23,13 @@ if (Session::checkLogin()) {
 </head>
 
 <body>
+
+<?php
+    if ($error !== '') {
+        echo "<p style='color: red;'>$error</p>";
+    }
+    ?>
+
     <form action="/login" method="POST">
         <label for="email">Email</label>
         <input type="email" name="email" required>

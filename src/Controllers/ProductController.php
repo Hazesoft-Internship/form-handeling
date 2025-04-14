@@ -4,6 +4,7 @@ namespace Hazesoft\Formhandeling\Controllers;
 
 use Exception;
 use Hazesoft\Formhandeling\Models\Product;
+use Hazesoft\Formhandeling\Models\Cart;
 use Hazesoft\Formhandeling\Services\Session;
 use Hazesoft\Formhandeling\Services\View;
 use Hazesoft\Formhandeling\Services\DateFormatter;
@@ -19,10 +20,14 @@ class ProductController
 {
     use DateFormatter;
     private $productModel;
+    private $cartModel;
+    public $userid;
 
     public function __construct()
     {
         $this->productModel = new Product();
+        $this->cartModel = new Cart();
+        $this->userid = $_SESSION['id'] ?? null;
     }
 
     public function addProduct(): void
@@ -71,11 +76,8 @@ class ProductController
     public function products()
     {
         $products = $this->productModel->getOtherUsersProducts();
-        foreach ($products as &$product) {
-            $product['created_at'] = $this->convertDateTime($product['created_at']);
-            $product['updated_at'] = $this->convertDateTime($product['updated_at']);
-        }
-        View::render('products', ['products' => $products]);
+        $cartId =  $this->cartModel->getOrCreateCart($this->userid);
+        View::render('products', ['products' => $products, 'cartId' => $cartId]);
     }
 
     public function myProducts()
@@ -87,10 +89,16 @@ class ProductController
     public function productDetail($id)
     {
         $product = $this->productModel->getProductById($id);
+
+        $isOwnProduct = ($product['userid'] == $this->userid);
+
         $product['created_at'] = $this->convertDateTime($product['created_at']);
         $product['updated_at'] = $this->convertDateTime($product['updated_at']);
 
-        View::render('product_detail', ['product' => $product]);
+        View::render('product_detail', [
+            'product' => $product,
+            'isOwnProduct' => $isOwnProduct
+        ]);
     }
 
     public function updateProduct($id): void

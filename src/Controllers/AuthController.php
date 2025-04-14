@@ -58,7 +58,6 @@ class AuthController
             echo "Unexpected error: " . $e->getMessage();
         }
     }
-
     public function login(): void
     {
         try {
@@ -66,9 +65,14 @@ class AuthController
                 $email = $_POST["email"];
                 $password = $_POST["password"];
 
+                if (empty($email) || empty($password)) {
+                    throw new ValidationException("Email and password are required.");
+                }
+
+                // Assuming the login method properly checks the password
                 $user = $this->user->login($email, $password);
 
-                if ($user) {
+                if ($user && password_verify($password, $user['password'])) {
                     $_SESSION['id'] = $user['id'];
                     header("Location: /products");
                     exit();
@@ -76,7 +80,7 @@ class AuthController
                     throw new ValidationException("Invalid email or password.");
                 }
             } else {
-                View::render("login_form");
+                View::render("login_form", ['error' => '']);
             }
         } catch (ValidationException $validationException) {
             View::render("login_form", [
@@ -85,6 +89,7 @@ class AuthController
             ]);
         }
     }
+
 
     public function handleLogout()
     {
