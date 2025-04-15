@@ -5,7 +5,7 @@ namespace Hazesoft\Backend\Models;
 use Exception;
 use Hazesoft\Backend\Services\Connection;
 use Hazesoft\Backend\Services\Session;
-use Hazesoft\Backend\Services\Migration;
+use Hazesoft\Backend\Services\TableCreation;
 
 class User
 {

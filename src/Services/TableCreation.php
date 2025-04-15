@@ -5,7 +5,7 @@ namespace Hazesoft\Backend\Services;
 use Exception;
 use Hazesoft\Backend\Services\Connection;
 
-class Migration
+class TableCreation
 {
     private $conn;
     private static $instance = null;

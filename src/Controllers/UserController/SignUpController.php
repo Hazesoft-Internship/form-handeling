@@ -54,10 +54,7 @@ class SignUpController
                         $result = $this->insertUser->insertUser($sanitizedInputArray);
 
                         if ($result) {
-                            echo "User created successfully <br>";
-                            echo '
-                        <a href="/login">Go to login page</a>
-                    ';
+                            header("Location: /login");
                         } else {
                             echo "User creation failed <br>";
                         }

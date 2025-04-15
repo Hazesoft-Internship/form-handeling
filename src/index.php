@@ -3,12 +3,12 @@
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 use Hazesoft\Backend\Routers\Router;
-use Hazesoft\Backend\Services\Migration;
+use Hazesoft\Backend\Services\TableCreation;
 
-$migration = Migration::getInstance();
-$migration->createUsersTableIfNotExists();
-$migration->createProductsTableIfNotExists();
-$migration->createCartItemsTableIfNotExists();
+$table = TableCreation::getInstance();
+$table->createUsersTableIfNotExists();
+$table->createProductsTableIfNotExists();
+$table->createCartItemsTableIfNotExists();
 
 // $request = $_SERVER['REQUEST_URI'];
 
