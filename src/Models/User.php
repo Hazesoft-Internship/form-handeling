@@ -15,8 +15,6 @@ class User
     public function __construct()
     {
         $this->conn = Connection::getConnection();
-        $migration = Migration::getInstance();
-        $migration->createUsersTableIfNotExists();
     }
 
     public function checkUser($inputArray): bool
@@ -81,6 +79,7 @@ class User
 
         } catch (Exception $exception) {
             echo("Error inserting userdata into database " . $exception->getMessage());
+            return false;
         }
     }
 
@@ -103,6 +102,7 @@ class User
             }
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return false;
         }
     }
 }

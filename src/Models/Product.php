@@ -13,9 +13,7 @@ class Product
 
     public function __construct()
     {
-        $this->conn = Connection::getConnection();
-        $migration = Migration::getInstance();
-        $migration->createProductsTableIfNotExists();
+        $this->conn = Connection::getConnection();;
     }
     public function insertProductDetails($inputArray)
     {

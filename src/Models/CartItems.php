@@ -13,8 +13,6 @@ class CartItems
 
     public function __construct(){
         $this->conn = Connection::getConnection();
-        $migration = Migration::getInstance();
-        $migration->createCartItemsTableIfNotExists();
     }
 
     public function insertCartItems($productId, $productQuantity, $userId){
