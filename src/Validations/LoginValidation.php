@@ -26,6 +26,7 @@ class LoginValidation extends Validation
             }
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return false;
         }
     }
 
@@ -42,6 +43,7 @@ class LoginValidation extends Validation
             return 1;
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 
@@ -59,6 +61,7 @@ class LoginValidation extends Validation
             return 1;
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 }

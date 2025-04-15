@@ -23,7 +23,7 @@
             <label for="quantity">
                 Quantity:
             </label>
-            <input type="text" name="quantity" value="<?= isset($cart['quantity']) ? $cart['quantity'] : 1 ?>" required>
+            <input type="number" name="quantity" min="1" max="<?= isset($product['quantity']) ? $product['quantity'] : 100000 ?>" value="<?= isset($cart['quantity']) ? $cart['quantity'] : 1 ?>" required>
             <br>
             <input type="submit" name="submit" value="submit">
         </form>
