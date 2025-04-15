@@ -1,0 +1,17 @@
+{
+    "name": "samir/xstore",
+    "autoload": {
+        "psr-4": {
+            "Hazesoft\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Samir Dumre",
+            "email": "samirdumre234@gmail.com"
+        }
+    ],
+    "require": {
+      "ext-pdo": "*"
+    }
+}
