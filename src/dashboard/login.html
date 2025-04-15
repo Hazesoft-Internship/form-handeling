@@ -1,0 +1,72 @@
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Handling and Post</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: black;
+            color: white;
+        }
+
+        h1 {
+            padding-top: 12vh;
+        }
+        input {
+            margin: 5px;
+            border-radius: 10px;
+            text-align: left;
+            height: 40px;
+            width: 30%;
+            border: 10px double black;
+        }
+
+        button {
+            text-align: center;
+            position: absolute;
+            left: 35%;
+            margin: 1em;
+        }
+
+        .container {
+            height: 45vh;
+            width: 100vw;
+            padding-top: 10vh;
+        }
+        #upload_10K {
+            left : 46.5vw;
+        }
+
+        #signup {
+            top: 50%;
+            left: 60%;        }
+
+        #signuptext {
+            position: absolute;
+            top: 50%;
+            left: 51%;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Log-in Page</h1>
+        <div class="container">
+        <form action="/login" method="POST">
+        <br>
+        <input type='email' required name="email" placeholder="Enter you email/username"><br>
+        <input type='password' required name="password" placeholder="Enter you password"><br>
+
+        <button name="login" type="submit">Submit</button>
+        </form>
+
+        <form action="/signup">
+            <button type="submit" id="signup">Sign-Up</button>
+        </form>
+        </div>
+            <p id='signuptext'>Dont have an account?</p>
+            <button id = "upload_10K">Upload 10K</button>
+</body>
+</html>
