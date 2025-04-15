@@ -28,6 +28,7 @@ class SignupValidation extends Validation
             }
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return false;
         }
     }
 
@@ -38,13 +39,16 @@ class SignupValidation extends Validation
             $name = $this->sanitizeData($name);
             if (empty($name) && $type != "Middle Name") {
                 echo("{$type} is required");
+                return 0;
             }
             if (!preg_match("/^[a-zA-Z\s]+$/", $name) && $type != "Middle Name") {
                 echo("{$type} can contain only letters and spaces.");
+                return 0;
             }
             return 1; // No error
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 
@@ -54,13 +58,16 @@ class SignupValidation extends Validation
             $address = $this->sanitizeData($address);
             if (empty($address)) {
                 echo("Address is required.");
+                return 0;
             }
             if (strlen($address) < 5) {
                 echo("Address must be at least 5 characters long.");
+                return 0;
             }
             return 1;
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 
@@ -70,13 +77,16 @@ class SignupValidation extends Validation
             $email = $this->sanitizeData($email);
             if (empty($email)) {
                 echo("Email is required.");
+                return 0;
             }
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 echo("Invalid email format.");
+                return 0;
             }
             return 1;
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 
@@ -88,16 +98,20 @@ class SignupValidation extends Validation
 
             if (empty($password) || empty($confirmPassword)) {
                 echo("Password and confirmation are required.");
+                return 0;
             }
             if ($password !== $confirmPassword) {
                 echo("Passwords do not match.");
+                return 0;
             }
             if (strlen($password) < 8) {
                 echo("Password must be at least 8 characters long.");
+                return 0;
             }
             return 1;
         } catch (Exception $exception) {
             echo($exception->getMessage());
+            return 0;
         }
     }
 }

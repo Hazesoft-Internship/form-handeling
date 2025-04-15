@@ -1,5 +1,6 @@
 <?php
 
+use Hazesoft\Backend\Controllers\CartController\CartController;
 use Hazesoft\Backend\Controllers\UserController\LogInController;
 use Hazesoft\Backend\Controllers\ProductController\ProductController;
 use Hazesoft\Backend\Controllers\UserController\SignUpController;
@@ -13,6 +14,9 @@ return [
         '/products' => [ProductController::class, 'getProductsPage'],
         '/products/create' => [ProductController::class, 'getAddProductPage'],
         '/products/update' => [ProductController::class, 'getUpdateProductPage'],
+        '/cart/insert' => [CartController::class, 'getInsertCartProductPage'],
+        '/cart/update' => [CartController::class, 'getInsertCartProductPage'],
+        '/cart/details' => [CartController::class, 'getCartDetailsPage'],
         ],
         
     "POST" => [
@@ -21,6 +25,8 @@ return [
         '/products' => [ProductController::class, 'handleAddProductForm'],  // products url => add-product
         '/products/update' => [ProductController::class, 'handleUpdateProductForm'],
         '/products/delete' => [ProductController::class, 'handleDeleteProduct'],
-        '/logout' => [LogInController::class, 'handleLogout']
+        '/logout' => [LogInController::class, 'handleLogout'],
+        '/cart/insert' => [CartController::class, 'handleInsertCartProductPage'],
+        '/cart/delete' => [CartController::class, 'handleDeleteCartItem']
     ],
 ];

@@ -5,6 +5,7 @@ namespace Hazesoft\Backend\Models;
 use Exception;
 use Hazesoft\Backend\Services\Connection;
 use Hazesoft\Backend\Services\Session;
+use Hazesoft\Backend\Services\Migration;
 
 class Product
 {
@@ -13,6 +14,8 @@ class Product
     public function __construct()
     {
         $this->conn = Connection::getConnection();
+        $migration = Migration::getInstance();
+        $migration->createProductsTableIfNotExists();
     }
     public function insertProductDetails($inputArray)
     {
@@ -97,6 +100,23 @@ class Product
 
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
+        }
+    }
+
+    public function getProductQuantity($productId)
+    {
+        try {
+            $query = "SELECT quantity from products WHERE id = :product_id";
+
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':product_id', $productId);
+            $stmt->execute();
+
+            $result = $stmt->fetch();
+            return $result['quantity'];
+        } catch (Exception $exception) {
+            echo ("Eror: " . $exception->getMessage());
+            return [];
         }
     }
 

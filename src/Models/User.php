@@ -5,6 +5,7 @@ namespace Hazesoft\Backend\Models;
 use Exception;
 use Hazesoft\Backend\Services\Connection;
 use Hazesoft\Backend\Services\Session;
+use Hazesoft\Backend\Services\Migration;
 
 class User
 {
@@ -14,6 +15,8 @@ class User
     public function __construct()
     {
         $this->conn = Connection::getConnection();
+        $migration = Migration::getInstance();
+        $migration->createUsersTableIfNotExists();
     }
 
     public function checkUser($inputArray): bool

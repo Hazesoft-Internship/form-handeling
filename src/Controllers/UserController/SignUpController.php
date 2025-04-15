@@ -51,7 +51,7 @@ class SignUpController
                         echo "Signup validation successful <br>";
 
                         // send data to db
-                        $result = $this->insertUser->insertUser($inputArray);
+                        $result = $this->insertUser->insertUser($sanitizedInputArray);
 
                         if ($result) {
                             echo "User created successfully <br>";
