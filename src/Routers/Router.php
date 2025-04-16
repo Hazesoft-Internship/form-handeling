@@ -28,17 +28,47 @@ class Router
     public function dispatch(string $path)
     {
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $callback = $this->routes[$requestMethod][$path] ?? null;
-
-        if ($callback === null) {
+        $route = $this->routes[$requestMethod][$path] ?? null;
+    
+        if ($route === null) {
             http_response_code(404);
-            return "404 NOT FOUND";
+            echo "404 NOT FOUND";
+            return;
         }
-        if (is_array($callback)) {
-            [$class, $method] = $callback;
+    
+        // Case 1: If route has middleware and handler
+        if (is_array($route) && isset($route['handler'])) {
+            $handler = $route['handler'];
+            $middlewares = $route['middleware'] ?? [];
+    
+            foreach ($middlewares as $middlewareClass) {
+                $middleware = new $middlewareClass();
+                if (!$middleware->handle()) {
+                    return;
+                }
+            }
+    
+            // Execute controller
+            if (is_array($handler)) {
+                [$class, $method] = $handler;
+                $controller = new $class();
+                return $controller->$method();
+            } elseif (is_callable($handler)) {
+                return $handler();
+            }
+        }
+    
+        // Case 2: Regular controller or closure (no middleware)
+        if (is_array($route)) {
+            [$class, $method] = $route;
             $controller = new $class();
             return $controller->$method();
         }
-        return $callback();
+    
+        // Case 3: Closure
+        if (is_callable($route)) {
+            return $route();
+        }
     }
+    
 }

@@ -1,16 +1,3 @@
-<?php
-
-use ECommerce\Controllers\ProductController\ProductController;
-use ECommerce\Services\Session;
-
-$session = Session::getInstance();
-$product = new ProductController();
-$productID = isset($_GET['id']) ? $_GET['id'] : null;
-
-$productByID = $product->getProductByID($productID);
-
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +68,7 @@ $productByID = $product->getProductByID($productID);
     <div class="product-form">
 
         <h1>Update Product</h1>
-        <form action="/update-product-submit?id=<?php echo htmlspecialchars($productID) ?>" method="post">
+        <form action="/update-product-submit?id=<?php echo htmlspecialchars($productID); ?>" method="post">
             <label for="productName">Product Name:</label>
             <input type="text" id="productName" name="productName" value=<?php echo $productByID['name'] ?>><br><br>
 

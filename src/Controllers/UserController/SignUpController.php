@@ -18,7 +18,7 @@ class SignUpController
 
     public function getSignUpPage()
     {
-        return require_once __DIR__ . '/../../Views/signup.php';
+        return require_once __DIR__ . '/../../Views/signup.html';
     }
 
     public function handleSignUpForm()

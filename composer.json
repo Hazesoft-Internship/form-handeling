@@ -5,5 +5,7 @@
       "ECommerce\\": "src/"
     }
   },
-  "require": {}
+  "require": {
+    "symfony/var-dumper": "^6.4"
+  }
 }

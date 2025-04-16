@@ -48,7 +48,6 @@ final class Product
         }
     }
 
-
     public function getUpdateProductByID($productID)
     {
         try {
@@ -82,7 +81,7 @@ final class Product
     public function listAllProduct($userID)
     {
         try {
-            $listProductQuery = "SELECT * FROM products WHERE NOT userID = :userID";
+            $listProductQuery = "SELECT id,userID,name,price,quantity FROM products WHERE NOT userID = :userID";
             $statement = $this->dbConnection->prepare($listProductQuery);
             $statement->bindParam(':userID', $userID);
             $statement->execute();

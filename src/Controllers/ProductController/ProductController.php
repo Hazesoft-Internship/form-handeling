@@ -134,18 +134,35 @@ class ProductController
 
     public  function getAddProductPage()
     {
-        return require_once __DIR__ . '/../../Views/add-products.php';
+        return require_once __DIR__ . '/../../Views/add-products.html';
     }
     public  function getUpdateProductPage()
     {
+        $productByID = $this->getProductByID($_GET['id']);
         return require_once __DIR__ . '/../../Views/update-products.php';
     }
     public  function getAllProductPage()
     {
-        return require_once __DIR__ . '/../../Views/view-allproducts.php';
+        $products = $this->handleListAllProduct();
+        return require_once __DIR__ . '/../../Views/view-allproducts.html';
     }
     public  function getMyProductPage()
     {
-        return require_once __DIR__ . '/../../Views/view-myproducts.php';
+        $products = $this->handleListMyProduct();
+        return require_once __DIR__ . '/../../Views/view-myproducts.html';
+    }
+
+    public  function getAllProduct()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "GET") {
+            header('Content-Type: application/json');
+            $userID =  $this->session->get('userID');
+            $allProducts = $this->product->listAllProduct($userID);
+
+            if ($allProducts) {
+                echo json_encode($allProducts);
+            }
+            return  JSON_ERROR_NONE;
+        }
     }
 }

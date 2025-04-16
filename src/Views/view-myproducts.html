@@ -1,18 +1,3 @@
-<?php
-
-use ECommerce\Controllers\ProductController\ProductController;
-use ECommerce\Services\Session;
-
-$session = Session::getInstance();
-if (!$session->get('userID')) {
-    header('Location: /login');
-    exit;
-}
-
-$product = new ProductController();
-$products = $product->handleListMyProduct();
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
