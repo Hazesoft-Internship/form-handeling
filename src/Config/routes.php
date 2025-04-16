@@ -5,6 +5,7 @@ use App\Controllers\UserController;
 use App\Controllers\ViewController;
 use App\Controllers\ProductController;
 use App\Sessions\Sessions;
+use App\Controllers\CartController;
 
 function isAuthenticated()
 {
@@ -32,6 +33,9 @@ return [
         '/my-products' => isAuthenticated() ? [ProductController::class, 'myProductsPage'] : function () {
             header('Location:/login');
         },
+        '/cart' => isAuthenticated() ? [CartController::class, 'cartPage'] : function () {
+            header('Location:/login');
+        },
         '/api/product' => [ProductController::class, 'productJsonPage']
 
     ],
@@ -48,6 +52,15 @@ return [
                 header('Location:/login');
             },
         '/update-product' => isAuthenticated() ? [ProductController::class, 'updateProduct'] : function () {
+            header('Location:/login');
+        },
+        '/cart' => isAuthenticated() ? [CartController::class, 'addToCart'] : function () {
+            header('Location:/login');
+        },
+        '/remove-from-cart' => isAuthenticated() ? [CartController::class, 'removeFromCart'] : function () {
+            header('Location:/login');
+        },
+        '/update-cart' => isAuthenticated() ? [CartController::class, 'updateCartQuantity'] : function () {
             header('Location:/login');
         },
 

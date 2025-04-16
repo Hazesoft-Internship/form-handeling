@@ -69,6 +69,7 @@
 
     <h1><a href="/my-products">Click here to view your Products</a></h1>
     <h1><a href="/home">Home</a></h1>
+    <button onclick="window.location.href='/cart'">View Cart</button>
     <?php
     if (!$loggedIn) {
 
@@ -97,6 +98,10 @@
             echo "<p>" . htmlspecialchars($product['description']) . "</p>";
             echo "<p>Price: $" . htmlspecialchars($product['price']) . "</p>";
             echo "<p>Quantity: " . htmlspecialchars($product['quantity']) . "</p>";
+            echo "<form method='POST' action='/cart'>";
+            echo "<input type='hidden' name='product_id' value='" . htmlspecialchars($product['product_id']) . "'>";
+            echo " <button type='submit'>Add to Cart</button>";
+            echo "</form>";
             echo "</div>";
         }
         ?>

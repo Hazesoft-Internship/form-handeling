@@ -3,20 +3,19 @@
 namespace App\Models;
 
 use App\Config\DataBase;
-
-
-
-
+use App\Sessions\Sessions;
 use Exception;
 use PDO;
 
 class ProductModel
 {
     public object $connection;
+    public Sessions $session;
 
     public function __construct()
     {
         $this->connection = DataBase::connect();
+        $this->session = Sessions::getInstance();
     }
 
     public function insertProduct(string $name,  string $description, float $price, int $quantity, int $userId): void
@@ -96,6 +95,23 @@ class ProductModel
     public function getAllProducts(): array
     {
         try {
+
+
+            if ($this->session->hasSession('user')) {
+                $user_id = $this->session->getSession('user')['user_id'];
+                $sql = "SELECT * FROM products WHERE user_id <> ?";
+                $statement = $this->connection->prepare($sql);
+                $statement->bindParam(1, $user_id, PDO::PARAM_INT);
+                if ($statement->execute()) {
+                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    if ($result == false) {
+                        throw new Exception("Error fetching products: " . $statement->error);
+                    }
+                    return $result;
+                } else {
+                    throw new Exception("Error executing query: " . $statement->error);
+                }
+            }
             $sql = "SELECT * FROM products";
             $statement = $this->connection->prepare($sql);
             if ($statement->execute()) {
