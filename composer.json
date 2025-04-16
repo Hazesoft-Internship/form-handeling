@@ -1,0 +1,11 @@
+{
+  "name": "samaya/e-commerce",
+  "autoload": {
+    "psr-4": {
+      "ECommerce\\": "src/"
+    }
+  },
+  "require": {
+    "symfony/var-dumper": "^6.4"
+  }
+}
