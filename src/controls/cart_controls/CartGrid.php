@@ -48,7 +48,7 @@ class CartGrid
                                 <label>Price: </label>
                                 {$item['price']}
                                 <br>
-                                <a href='/tempo/php/Form/form-handeling/public/product/cart/update?id={$item['id']}' style='text-decoration: none;'>
+                                <a href='/product/cart/update?id={$item['id']}' style='text-decoration: none;'>
                                     <input type='submit' name='Update' value='Update'>
                                 </a>
                                 <a href='#'>
@@ -64,7 +64,7 @@ class CartGrid
         return "<div>
                     <h1>Cart Item</h1>
                     $elementHTML
-                    <a href='/tempo/php/Form/form-handeling/public/product'>Back</a>
+                    <a href='/product'>Back</a>
                 </div>";
     }
 
@@ -89,7 +89,7 @@ class CartGrid
         $quantity = $cartItem["quantity"];
 
         return "<h1>Update Cart Item</h1>
-                <form onsubmit='onUpdate(event)' method='POST' action='/tempo/php/Form/form-handeling/public/product/cart/updateSubmit?id=$id'>
+                <form onsubmit='onUpdate(event)' method='POST' action='/product/cart/updateSubmit?id=$id'>
                     <label>Product Name: </label>
                     $productName
                     <br>
@@ -101,10 +101,10 @@ class CartGrid
                     <br>
                     <input type='submit' name='updateCart' value='Update'>
                 </form>
-                <form onsubmit='onDelete(event)' method='POST' action='/tempo/php/Form/form-handeling/public/product/cart/deleteSubmit?id=$id'>
+                <form onsubmit='onDelete(event)' method='POST' action='/product/cart/deleteSubmit?id=$id'>
                     <input type='submit' name='deleteCart' value='Delete'>
                 </form>
-                <a href='/tempo/php/Form/form-handeling/public/product/cart'>Back</a>";
+                <a href='/product/cart'>Back</a>";
     }
 
 }
