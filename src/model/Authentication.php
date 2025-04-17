@@ -8,6 +8,7 @@ use ayushtamang\FormHandeling\session\Session;
 class Authentication extends Validation
 {    
     public function __construct(private $con) 
+  
     {
         $this->con = $con;
     }
@@ -46,11 +47,7 @@ class Authentication extends Validation
                 throw new \PDOException("Email already exists.");
             }
 
-            if(empty($this->errorArray)) {
-                return $this->insertUserDetails($firstName, $middleName, $lastName, $address, $email, $password);
-            } else {
-                return false;
-            }
+            return $this->insertUserDetails($firstName, $middleName, $lastName, $address, $email, $password);
         } catch (\PDOException $e) {
             throw new \PDOException("Registration failed: " . $e->getMessage());
         }

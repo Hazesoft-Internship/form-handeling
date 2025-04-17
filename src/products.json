@@ -33,7 +33,7 @@
         "productPrice": 123133451,
         "productQuantity": 12345,
         "createdAt": "2025-04-02 14:54:04",
-        "updatedAt": "2025-04-08 14:20:17"
+        "updatedAt": "2025-04-10 14:21:33"
     },
     {
         "id": 17,
@@ -47,10 +47,10 @@
     {
         "id": 18,
         "userId": 10015,
-        "productName": "Acer V15",
+        "productName": "Acerv15",
         "productPrice": 1234567,
         "productQuantity": 1234,
         "createdAt": "2025-04-03 12:53:55",
-        "updatedAt": "2025-04-03 13:45:21"
+        "updatedAt": "2025-04-10 17:30:06"
     }
 ]

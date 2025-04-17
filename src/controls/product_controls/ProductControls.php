@@ -49,7 +49,7 @@ class ProductControls
 
     public function addProductSubmit()
     {
-        if($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $ui = new GetUserDetails($this->con, $this->session->getSession("userLoggedIn"));
             $pn = Sanitizer::sanitizeString($_POST["productname"]);
             $pp = Sanitizer::sanitizeInteger($_POST["productprice"]);
@@ -69,7 +69,7 @@ class ProductControls
 
     public function updateProductSubmit()
     {
-        if($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $userId = $this->session->getSession("userId");
             $productName = Sanitizer::sanitizeString($_POST["productname"]);
             $productPrice =Sanitizer::sanitizeInteger($_POST["productprice"]);
@@ -90,7 +90,7 @@ class ProductControls
 
     public function deleteProductSubmit()
     {
-        if($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $id = $this->session->getSession("productId");
         
             if($this->product->deleteProduct($id)) {

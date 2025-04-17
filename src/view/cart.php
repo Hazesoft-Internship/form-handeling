@@ -4,7 +4,7 @@ namespace ayushtamang\FormHandeling\view;
 
 use ayushtamang\FormHandeling\session\Session;
 use ayushtamang\FormHandeling\database\Database;
-use ayushtamang\FormHandeling\controls\product_controls\ProductGrid;
+use ayushtamang\FormHandeling\controls\cart_controls\CartGrid;
 
 $db = Database::getInstance();
 $con = $db->getConnection();
@@ -17,6 +17,6 @@ if (!isset($user)) {
     exit();
 }
 
-$productGrid = new ProductGrid($con);
-echo $productGrid->getBuyProduct();
+$cartGrid = new CartGrid($con);
+echo $cartGrid->getCartsOfUser();
 ?>

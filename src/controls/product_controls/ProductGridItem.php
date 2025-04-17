@@ -124,7 +124,7 @@ class ProductGridItem
             $value = "";
         }
 
-        return "<input type='text' name='productquantity' placeholder='Product Quantity' value='$value'>";
+        return "<input type='number' name='productquantity' placeholder='Product Quantity' value='$value'>";
     }
 
     public function updateProductPrice($value): string
@@ -133,7 +133,31 @@ class ProductGridItem
             $value = "";
         }
 
-        return "<input type='text' name='productprice' placeholder='Product Price' value='$value'>";
+        return "<input type='number' name='productprice' placeholder='Product Price' value='$value'>";
+    }
+
+    public function buyProduct($button)
+    {
+        $productName = $this->fetchSingleProduct("productName");
+        $productQuantity = $this->fetchSingleProduct("productQuantity");
+        $productPrice = $this->fetchSingleProduct("productPrice");
+
+        $id = $_GET["id"];
+
+        return "<div>
+                    <label>Name: </label>
+                    $productName
+                    <br>
+                    <label>Quantity: </label>
+                    $productQuantity
+                    <br>
+                    <label>Price: </label>
+                    $productPrice
+                    <form action='/product/buy/addcartsubmit?id=$id' method='POST'>
+                        <input type='number' name='quantity' min='1' max='$productQuantity' value='1'>
+                        $button
+                    </form>
+                </div>";
     }
 }
 ?>

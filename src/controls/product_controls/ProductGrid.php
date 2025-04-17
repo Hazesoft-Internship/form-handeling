@@ -88,7 +88,7 @@ class ProductGrid
                 </div>";
     }
 
-    public function updateProduct()
+    public function updateProduct(): string
     {
         $query = $this->con->prepare("SELECT * FROM products WHERE userId = :ui");
         $query->bindParam(":ui", $this->id);
@@ -106,6 +106,28 @@ class ProductGrid
                     $elementHTML
                     <a href='/product/profile'>Back</a>
                 </div>";
-    }  
+    }
+
+    public function getBuyProduct(): string
+    {
+        $query = $this->con->prepare("SELECT * FROM products WHERE userId = :ui");
+        $query->bindParam(":ui", $this->id);
+        $query->execute();
+
+        $product = new GetProductDetails($this->con, $query->fetch(\PDO::FETCH_ASSOC));
+        $item = new ProductGridItem($product, $this->con);
+        $button = $item->button("Add Cart");
+        $elementHTML = $item->buyProduct($button);
+
+        if (empty($elementHTML)) {
+            $elementHTML = "<span>No! products to show.</span>";
+        }
+
+        return "<div>
+                    <h1>Product</h1>
+                    $elementHTML
+                    <a href='/product'>Back</a>
+               </div>";
+    }
 }
 ?>

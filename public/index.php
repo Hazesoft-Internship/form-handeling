@@ -16,9 +16,15 @@ $con = $db->getConnection();
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+$segments = explode('/', $requestUri);
+
+$publicIndex = array_search('public', $segments);
+$routeSegments = array_slice($segments, $publicIndex + 1);
+$route = '/' . implode('/', $routeSegments);
+
 $routes = require __DIR__ . '/../src/config/routes.php';
 
 $router = new Router();
 
 $router->getRoutes($routes);
-$router->resolve($requestUri);
+$router->resolve($route);

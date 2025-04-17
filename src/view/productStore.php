@@ -16,10 +16,11 @@ $user = $session->getSession("userLoggedIn");
 if (isset($user)) {
     echo "<a href='/product/add'>Add Product</a>
         <a href='/logout'>LogOut</a>
-        <a href='/product/profile'>Profile</a>";
+        <a href='/product/profile'>Profile</a>
+        <a href='/product/cart'>Cart</a>";
 } else {
     echo "<a href='/login'>LogIn</a>";
 }
 
-echo "<br><a href='api.php'>Check PRoduct API</a>";
+echo "<br><a href='../api.php'>Check PRoduct API</a>";
 ?>
