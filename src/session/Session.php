@@ -35,12 +35,27 @@ class Session
     {
         $_SESSION['email'] = $email;
     }
+    public function getUserId(): ?int
+    {
+        return isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+    }
+
+    public function setUserId(int $userId): void
+    {
+        $_SESSION['user_id'] = $userId;
+    }
+    public function getCartId(): ?int
+    {
+        return isset($_SESSION['cart_id']) ? $_SESSION['cart_id'] : null;
+    }
+    public function setCartId(int $cartId): void
+    {
+        $_SESSION['cart_id'] = $cartId;
+    }
 
     public function logout(): void
     {
         unset($_SESSION['email']);
         session_destroy();
     }
-
-   
 }

@@ -76,10 +76,18 @@ class Product
     public function viewallProducts($loggedinemail): array
     {
         try {
-            $sql = "SELECT * FROM products WHERE created_by != ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(1, $loggedinemail, PDO::PARAM_STR);
-            $stmt->execute();
+
+            if ($loggedinemail == null) {
+                
+                $sql = "SELECT * FROM products";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+            } else {
+                $sql = "SELECT * FROM products WHERE created_by != ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindValue(1, $loggedinemail, PDO::PARAM_STR);
+                $stmt->execute();
+            }
 
             $products = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -150,6 +158,20 @@ class Product
             echo "An error occurred. Please try again later.";
             header("Refresh:2; url=/dashboard");
             exit();
+        }
+    }
+    public function getproductquantity(int $productID): int
+    {
+        try {
+            $sql = "SELECT quantity FROM products WHERE productID = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(1, $productID, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int)$row['quantity'];
+        } catch (Exception $excep) {
+            error_log($excep->getMessage());
+            throw new Exception("Error: " . $excep->getMessage());
         }
     }
 }

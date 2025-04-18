@@ -4,6 +4,7 @@ use Lattefront\FormHandeling\Controller\AuthController;
 use Lattefront\FormHandeling\Controller\UserController;
 use Lattefront\FormHandeling\Controller\ProductController;
 use Lattefront\FormHandeling\Middleware\Authmiddleware as loginCheck;
+use Lattefront\FormHandeling\Controller\CartController;
 
 return [
 
@@ -20,13 +21,18 @@ return [
         '/viewallproducts' => [ProductController::class, 'getallproduct'],
 
         '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproductpage']),
+        '/viewcart' => ([CartController::class, 'viewcart']),
+        '/updatecart' => ([CartController::class, 'updatecartpage']),
     ],
     'POST' => [
         '/signup' => [AuthController::class, 'insertUser'],
         '/login' => [AuthController::class, 'login'],
         '/addproduct' => loginCheck::wrap([ProductController::class, 'addproduct']),
-        '/updateproduct' =>loginCheck::wrap( [ProductController::class, 'updateproduct']),
+        '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproduct']),
         '/deleteproduct' => loginCheck::wrap([ProductController::class, 'deleteproduct']),
+        '/addtocart' => ([CartController::class, 'addproductCart']),
+        '/updatecart' => ([CartController::class, 'updateCart']),
+        '/deletecart' => ([CartController::class, 'removecartproduct']),
     ]
 
 ];

@@ -45,9 +45,10 @@ class ProductController
 
     public function getallproduct(): void
     {
+        $loggedinemail = $this->session->getLoggedInUser();
 
         $viewproduct = new Product(new DbConnection());
-        $row = $viewproduct->viewallProducts($this->session->getLoggedInUser());
+        $row = $viewproduct->viewallProducts($loggedinemail?$loggedinemail:null);
         require __DIR__ . '/../View/viewallproduct.php';
     }
     public function updateproductpage(): void

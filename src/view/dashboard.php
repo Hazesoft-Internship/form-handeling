@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +14,7 @@
         <p>Hello</p>
         <nav>
             <ul>
-              
+
                 <li><a href="/logout">Logout</a></li>
             </ul>
         </nav>
@@ -35,6 +33,7 @@
 
                 <li><a href="/productlist">My Products </a></li>
                 <li><a href="/viewallproducts"> ALL Products </a></li>
+                <li><a href="/viewcart">View Cart</a></li>
 
 
 

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +10,8 @@
 <body>
     <div class="container">
         <h1 style="text-align: center;"> ALL Products</h1>
-        <a href="/dashboard" class="btn">Dashboard</a>
+        <a style="margin-right: 10px;" href="/dashboard" class="btn">Dashboard</a>
+        <a href="/viewcart" class="btn">View Cart</a>
         <div class="product">
             <?php foreach ($row as $product) : ?>
                 <h2>Product Name: <?php echo htmlspecialchars($product['productName']); ?></h2>
@@ -20,6 +19,15 @@
                 <p><strong>Description:</strong> <?php echo htmlspecialchars($product['description']); ?></p>
                 <p><strong>Quantity:</strong> <?php echo htmlspecialchars($product['quantity']); ?></p>
                 <p><strong>Product ID:</strong> <?php echo htmlspecialchars($product['productID']); ?></p>
+
+                <form action="/addtocart" method="POST" style="display: inline;">
+                    <input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($product['productID']); ?>" readonly>
+                    <input type="hidden" id="name" name="name" value="<?php echo htmlspecialchars($product['productName']); ?>" readonly>
+                    <input type="hidden" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" readonly>
+                    <input type="hidden" id="description" name="description" value="<?php echo htmlspecialchars($product['description']); ?>" readonly>
+                    <input type="hidden" id="quantity" name="quantity" value="1" readonly>
+                    <button type="submit">Add to Cart </button>
+                </form>
 
             <?php endforeach; ?>
         </div>

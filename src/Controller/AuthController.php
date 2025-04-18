@@ -7,6 +7,9 @@ use Lattefront\FormHandeling\Session\Session;
 use Lattefront\FormHandeling\Model\UserModel;
 use Lattefront\FormHandeling\Db\DbConnection;
 use Lattefront\FormHandeling\Service\FormValidation;
+use Lattefront\FormHandeling\Model\CartMigration;
+use Lattefront\FormHandeling\Model\CartId;
+
 
 class AuthController
 {
@@ -72,8 +75,19 @@ class AuthController
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = $_POST['Email'];
             $password = $_POST['Password'];
+            $this->session = Session::getInstance();
             $login = new UserModel(new DbConnection());
             $login->loginUser($email, $password);
+            $cadtId = new CartId(new DbConnection());
+            $cartId = $cadtId->getCartId($this->session->getUserId());
+            $this->session->setCartId($cartId);
+
+            if ($_SESSION['cart']) {
+
+                $cartmigration = new CartMigration(new DbConnection());
+                $cartmigration->migrateFromSession($_SESSION['cart'], $cartId);
+            }
+            header("Location:/dashboard");
         }
     }
     public function logout(): void
