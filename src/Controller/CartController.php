@@ -28,7 +28,7 @@ class CartController
 
         // print_r($productId);
 
-        $this->cartModel->addProduct($productId, $quantity, $productName, $productPrice, $productDescription);
+        $this->cartModel->addProduct($productId, $quantity, $productName, $productDescription);
 
         header("Refresh:1; url=/viewallproducts");
     }
@@ -49,16 +49,16 @@ class CartController
         $cart_itemsId = $_POST['cartitemsId'];
 
         $prodquantity = new Product(new DbConnection());
-        $maxquantity = $prodquantity->getproductquantity($productId);
+        $maxquantity = $prodquantity->getproductdetails($productId);
+        // print_r($maxquantity);
 
-
-        $this->cartModel->updateCart($productId, $quantity, $cart_itemsId, $maxquantity);
+        $this->cartModel->updateCart($productId, $quantity, $cart_itemsId, $maxquantity[0]);
         header("Refresh:2; url=/viewcart");
     }
     public function viewcart()
     {
         $cartItems = $this->cartModel->viewCart();
-
+        //  print_r($cartItems);
         require __DIR__ . '/../View/cart.php';
     }
     public function removecartproduct()

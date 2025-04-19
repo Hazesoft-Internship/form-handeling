@@ -11,13 +11,7 @@
 <body>
     <h1>update Product</h1>
     <form action="/updateproduct" method="post">
-        <?php
-        // $product_id = $_GET['id'];
-        // $product_name = $_GET['name'];
-        // $product_description = $_GET['description'];
-        // $product_quantity = $_GET['quantity'];
-        // $product_price = $_GET['price'];
-        ?>
+        
         <label for="id">Product ID:</label>
         <input  style="cursor:none ;"type="number" id="id" name="id" value="<?php echo htmlspecialchars($product_id); ?>" readonly>
 
@@ -40,7 +34,13 @@
         <input type="number" id="product_quantity" name="product_quantity" value="<?php echo htmlspecialchars($product_quantity); ?>" required>
 
         <br><br>
+        <label for="productTypes">Product Type:</label>
+        <select id="productTypes" name="productTypes" required>
+            <option value="physical" <?php echo ($productTypes == 'physical') ? 'selected' : ''; ?>>Physical</option>
+            <option value="digital" <?php echo ($productTypes == 'digital') ? 'selected' : ''; ?>>Digital</option>
 
+        </select>
+        <br><br>
         <button type="submit">Update Product</button>
         <input type="reset" value="Reset">
     </form>

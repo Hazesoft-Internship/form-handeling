@@ -27,6 +27,13 @@
         <input type="number" id="product_quantity" name="product_quantity" required>
 
         <br><br>
+        <label for="productTypes">Product Type:</label>
+        <select id="productTypes" name="productTypes" required>
+            <option value="physical">Physical</option>
+            <option value="digital">DIgital</option>
+           
+        </select>
+        <br><br>
 
         <button type="submit">Add Product</button>
         <input type="reset" value="Reset">

@@ -23,9 +23,10 @@ class ProductController
     {
         // Sanitize and validate inputs
         $product_name = strip_tags($_POST['product_name']);
-        $product_quantity = filter_var($_POST['product_quantity'],FILTER_SANITIZE_NUMBER_INT);
+        $product_quantity = filter_var($_POST['product_quantity'], FILTER_SANITIZE_NUMBER_INT);
         $product_price = filter_var($_POST['product_price'], FILTER_SANITIZE_NUMBER_INT);
         $product_description = strip_tags($_POST['product_description']);
+        $productTypes = strip_tags($_POST['productTypes']);
 
         if ($errors = FormValidation::validateProduct([$product_name, $product_quantity, $product_price, $product_description])) {
             // Handle errors 
@@ -34,12 +35,13 @@ class ProductController
             }
         }
         $addproduct = new Product(new DbConnection());
-        $addproduct->insertProduct($product_name, $product_price, $product_description, $product_quantity);
+        $addproduct->insertProduct($product_name, $product_price, $product_description, $product_quantity, $productTypes);
     }
     public function myproductlist(): void
     {
         $viewproduct = new Product(new DbConnection());
         $row = $viewproduct->getmyProducts($this->session->getLoggedInUser());
+        // print_r($row);
         require __DIR__ . '/../View/Viewproduct.php';
     }
 
@@ -48,7 +50,7 @@ class ProductController
         $loggedinemail = $this->session->getLoggedInUser();
 
         $viewproduct = new Product(new DbConnection());
-        $row = $viewproduct->viewallProducts($loggedinemail?$loggedinemail:null);
+        $row = $viewproduct->viewallProducts($loggedinemail ? $loggedinemail : null);
         require __DIR__ . '/../View/viewallproduct.php';
     }
     public function updateproductpage(): void
@@ -59,6 +61,7 @@ class ProductController
         $product_description = $_GET['description'];
         $product_quantity = $_GET['quantity'];
         $product_price = $_GET['price'];
+        $productTypes = $_GET['productTypes'];
 
         require __DIR__ . '/../View/updateproduct.php';
     }
@@ -69,17 +72,17 @@ class ProductController
         $quantity = filter_var($_POST['product_quantity'], FILTER_SANITIZE_NUMBER_INT);
         $price = filter_var($_POST['product_price'], FILTER_SANITIZE_NUMBER_INT);
         $description = strip_tags($_POST['product_description']);
+        $productTypes = strip_tags($_POST['productTypes']);
 
         if ($errors[] = FormValidation::validateProduct([$name, $quantity, $price, $description])) {
-            
+
             // Handle errors 
             foreach ($errors as $error) {
                 echo $error . "<br>";
             }
         }
-            $updateproduct = new Product(new DbConnection());
-            $updateproduct->updateProduct($id, $name, $quantity, $price, $description);
-        
+        $updateproduct = new Product(new DbConnection());
+        $updateproduct->updateProduct($id, $name, $quantity, $price, $description, $productTypes);
     }
 
 

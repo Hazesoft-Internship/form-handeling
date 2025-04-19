@@ -19,19 +19,19 @@ class Product
     }
 
     // Insert new product into the database
-    public function insertProduct(string $product_name, int $product_price, string $product_description, int $product_quantity): void
+    public function insertProduct(string $product_name, int $product_price, string $product_description, int $product_quantity, string $productTypes): void
     {
         try {
 
-           
-            // Prepare SQL query
-            $sql = "INSERT INTO products (productName, price, description, quantity, created_by) VALUES (?, ?, ?, ?, ?)";
+
+            $sql = "INSERT INTO products (productName, price, description, quantity, created_by, productTypes) VALUES (?, ?, ?, ?, ?,?)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(1, $product_name, PDO::PARAM_STR);
             $stmt->bindValue(2, $product_price, PDO::PARAM_STR);
             $stmt->bindValue(3, $product_description, PDO::PARAM_STR);
             $stmt->bindValue(4, $product_quantity, PDO::PARAM_INT);
-            $stmt->bindValue(5, $this->session->getLoggedInUser(), PDO::PARAM_STR);
+            $stmt->bindValue(5, $this->session->getUserId(), PDO::PARAM_STR);
+            $stmt->bindValue(6, $productTypes, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
                 echo "Product inserted successfully.";
@@ -50,14 +50,14 @@ class Product
         }
     }
 
-    // Get products created by the logged-in user
+    //  products created by the logged-in user
     public function getmyProducts($loggedinemail): array
     {
         try {
 
             $sql = "SELECT * FROM products WHERE created_by = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(1, $loggedinemail, PDO::PARAM_STR);
+            $stmt->bindValue(1, $this->session->getUserId(), PDO::PARAM_STR);
             $stmt->execute();
 
             $products = [];
@@ -78,14 +78,14 @@ class Product
         try {
 
             if ($loggedinemail == null) {
-                
+
                 $sql = "SELECT * FROM products";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute();
             } else {
                 $sql = "SELECT * FROM products WHERE created_by != ?";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindValue(1, $loggedinemail, PDO::PARAM_STR);
+                $stmt->bindValue(1, $this->session->getUserId(), PDO::PARAM_STR);
                 $stmt->execute();
             }
 
@@ -102,19 +102,20 @@ class Product
     }
 
     // Update an existing product
-    public function updateProduct(int $id, string $name, int $quantity, int $price, string $description): void
+    public function updateProduct(int $id, string $name, int $quantity, int $price, string $description, string $productTypes): void
     {
         try {
-        
+
             // Prepare SQL query
-            $sql = "UPDATE products SET productName = ?, quantity = ?, price = ?, description = ?, updated_by = ? WHERE productID = ?";
+            $sql = "UPDATE products SET productName = ?, quantity = ?, price = ?, description = ?, updated_by = ?,productTypes=? WHERE productID = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(1, $name, PDO::PARAM_STR);
             $stmt->bindValue(2, $quantity, PDO::PARAM_INT);
             $stmt->bindValue(3, $price, PDO::PARAM_STR);
             $stmt->bindValue(4, $description, PDO::PARAM_STR);
-            $stmt->bindValue(5, $this->session->getLoggedInUser(), PDO::PARAM_STR);
-            $stmt->bindValue(6, $id, PDO::PARAM_INT);
+            $stmt->bindValue(5, $this->session->getUserId(), PDO::PARAM_STR);
+            $stmt->bindValue(6, $productTypes, PDO::PARAM_STR);
+            $stmt->bindValue(7, $id, PDO::PARAM_INT);
             // Execute the query
             if ($stmt->execute()) {
                 echo "Product {$id} updated successfully.";
@@ -160,15 +161,15 @@ class Product
             exit();
         }
     }
-    public function getproductquantity(int $productID): int
+    public function getproductdetails(int $productID): array
     {
         try {
-            $sql = "SELECT quantity FROM products WHERE productID = ?";
+            $sql = "SELECT quantity , created_by FROM products WHERE productID = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(1, $productID, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return (int)$row['quantity'];
+            return [(int)$row['quantity'], (string)$row['created_by']];
         } catch (Exception $excep) {
             error_log($excep->getMessage());
             throw new Exception("Error: " . $excep->getMessage());

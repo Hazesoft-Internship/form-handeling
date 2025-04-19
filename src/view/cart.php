@@ -52,9 +52,9 @@
 
                         <td><?php echo htmlspecialchars($item['name']); ?></td>
                         <td><?php echo htmlspecialchars($item['description']); ?></td>
-                        <td><?php echo number_format($item['price']); ?></td>
+                        <td><?php echo number_format($item['price'], decimals: 2); ?></td>
                         <td><?php echo $item['quantity']; ?></td>
-                        <td><?php echo number_format($item['price'] * $item['quantity']); ?></td>
+                        <td><?php echo number_format($item['price'] * $item['quantity'], decimals: 2); ?></td>
                         <td>
                             <form action="/deletecart" method="POST" style="display: inline;">
                                 <input type="hidden" name="productID" value="<?php echo htmlspecialchars((string) ($item['productID'] ?? '')); ?>">
@@ -82,6 +82,8 @@
     <?php endif; ?>
 
     <a href="/">Continue Shopping</a>
+
+    <a href="/dashboard">Dashboard</a>
 </body>
 
 </html>

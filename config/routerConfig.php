@@ -22,7 +22,7 @@ return [
 
         '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproductpage']),
         '/viewcart' => ([CartController::class, 'viewcart']),
-        '/updatecart' => ([CartController::class, 'updatecartpage']),
+        '/updatecart' => loginCheck::wrap([CartController::class, 'updatecartpage']),
     ],
     'POST' => [
         '/signup' => [AuthController::class, 'insertUser'],
@@ -31,7 +31,7 @@ return [
         '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproduct']),
         '/deleteproduct' => loginCheck::wrap([ProductController::class, 'deleteproduct']),
         '/addtocart' => ([CartController::class, 'addproductCart']),
-        '/updatecart' => ([CartController::class, 'updateCart']),
+        '/updatecart' => loginCheck::wrap([CartController::class, 'updateCart']),
         '/deletecart' => ([CartController::class, 'removecartproduct']),
     ]
 

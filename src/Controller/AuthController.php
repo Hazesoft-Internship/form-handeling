@@ -7,8 +7,7 @@ use Lattefront\FormHandeling\Session\Session;
 use Lattefront\FormHandeling\Model\UserModel;
 use Lattefront\FormHandeling\Db\DbConnection;
 use Lattefront\FormHandeling\Service\FormValidation;
-use Lattefront\FormHandeling\Model\CartMigration;
-use Lattefront\FormHandeling\Model\CartId;
+use Lattefront\FormHandeling\Service\CartService;
 
 
 class AuthController
@@ -30,37 +29,43 @@ class AuthController
     public function insertUser(): void
     {
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $First_name = strip_tags($_POST['First_name'],);
-            $Middle_name = strip_tags($_POST['Middle_name']);
-            $Last_name = strip_tags($_POST['Last_name']);
-            $Address = strip_tags($_POST['Address']);
-            $Email = filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
-            $Password = password_hash($_POST['Password'], PASSWORD_BCRYPT); // Hash the password
+                $First_name = strip_tags($_POST['First_name'],);
+                $Middle_name = strip_tags($_POST['Middle_name']);
+                $Last_name = strip_tags($_POST['Last_name']);
+                $Address = strip_tags($_POST['Address']);
+                $Email = filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
+                $Password = password_hash($_POST['Password'], PASSWORD_BCRYPT); // Hash the password
 
 
-            $userModel = new UserModel(new DbConnection());
 
-            $errors = FormValidation::validateUser([$First_name, $Middle_name, $Last_name, $Address, $Email, $Password]);
-            if ($errors) {
-                foreach ($errors as $error) {
-                    echo $error . "<br>";
+                $userModel = new UserModel(new DbConnection());
+
+                $errors = FormValidation::validateUser([$First_name, $Middle_name, $Last_name, $Address, $Email, $Password]);
+                if ($errors) {
+                    foreach ($errors as $error) {
+                        echo $error . "<br>";
+                    }
+                    return;
                 }
-                return;
-            }
-            // Register user and handle response
-            $result = $userModel->registerUser($First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
+                // Register user and handle response
+                $result = $userModel->registerUser($First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
 
-            if ($result['success']) {
-                echo $result['message'];
-                header("Refresh:2; url=/login");
+                if ($result['success']) {
+                    echo $result['message'];
+                    header("Refresh:2; url=/login");
+                } else {
+                    echo $result['message'];
+                }
             } else {
-                echo $result['message'];
+
+                echo "Invalid request method. Redirecting to signup page... ";
+                header("Refresh:2; url=/signup");
             }
-        } else {
-            // If it's not a POST request, show the registration form
-            echo "Invalid request method. Redirecting to signup page... ";
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
             header("Refresh:2; url=/signup");
         }
     }
@@ -72,22 +77,22 @@ class AuthController
     }
     public function login(): void
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = $_POST['Email'];
-            $password = $_POST['Password'];
-            $this->session = Session::getInstance();
-            $login = new UserModel(new DbConnection());
-            $login->loginUser($email, $password);
-            $cadtId = new CartId(new DbConnection());
-            $cartId = $cadtId->getCartId($this->session->getUserId());
-            $this->session->setCartId($cartId);
+        try {
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $email = $_POST['Email'];
+                $password = $_POST['Password'];
+                $this->session = Session::getInstance();
+                $login = new UserModel(new DbConnection());
+                $login->loginUser($email, $password);
 
-            if ($_SESSION['cart']) {
+                $cartservice = new CartService(new DbConnection(), $this->session);
+                $cartservice->migrateFromSession();
 
-                $cartmigration = new CartMigration(new DbConnection());
-                $cartmigration->migrateFromSession($_SESSION['cart'], $cartId);
+                header("Refresh:1; url=/dashboard");
             }
-            header("Location:/dashboard");
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Refresh:2; url=/login");
         }
     }
     public function logout(): void
