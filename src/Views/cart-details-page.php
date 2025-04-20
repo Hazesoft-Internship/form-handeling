@@ -90,6 +90,10 @@ cursor: pointer; font-size: large">
             <br>
         <?php endforeach; ?>
     </div>
+    <div>
+        <h3>Total Price: Rs <?= $totalPrice ?></h3>
+        <a href="/order/checkout">Proceed to checkout</a>
+        </div>
     </div>
 </body>
 

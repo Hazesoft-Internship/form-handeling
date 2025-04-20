@@ -1,4 +1,6 @@
--- USE mydb;
+USE mydb;
+
+DROP TABLE IF EXISTS users;
 
 -- CREATE TABLE IF NOT EXISTS cart_items (
 --     user_id INT NOT NULL,
@@ -27,10 +29,10 @@
 --     id INT AUTO_INCREMENT PRIMARY KEY,
 --     user_id INT NOT NULL,
 --     name VARCHAR(255) NOT NULL,
---     price DECIMAL(12,2) NOT NULL,
+--     price DECIMAL(12, 2) NOT NULL,
 --     quantity INT NOT NULL,
+--     type ENUM('physical', 'digital') NOT NULL,
 --     created_at DATETIME,
 --     updated_at DATETIME,
 --     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 -- );
-

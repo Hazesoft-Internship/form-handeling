@@ -78,7 +78,8 @@ class ProductController
                 $inputArray = [
                     $_POST['productName'] ?? '',
                     $_POST['productPrice'] ?? '',
-                    $_POST['productQuantity'] ?? ''
+                    $_POST['productQuantity'] ?? '',
+                    $_POST['productType'] ?? ''
                 ];
             } catch (Exception $exception) {
                 echo($exception->getMessage());

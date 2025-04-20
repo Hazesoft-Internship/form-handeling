@@ -5,6 +5,7 @@ use Hazesoft\Backend\Controllers\UserController\LogInController;
 use Hazesoft\Backend\Controllers\ProductController\ProductController;
 use Hazesoft\Backend\Controllers\UserController\SignUpController;
 use Hazesoft\Backend\Controllers\Frontend\HomePageController;
+use Hazesoft\Backend\Controllers\OrderController\OrderController;
 
 return [
     "GET" => [
@@ -17,6 +18,7 @@ return [
         '/cart/insert' => [CartController::class, 'getInsertCartProductPage'],
         '/cart/update' => [CartController::class, 'getInsertCartProductPage'],
         '/cart/details' => [CartController::class, 'getCartDetailsPage'],
+        '/order/checkout' => [OrderController::class, 'getCheckoutPage']
         ],
         
     "POST" => [

@@ -105,4 +105,22 @@ class User
             return false;
         }
     }
+
+    public function getUserAddress($userId){
+        try {
+            $stmt = $this->conn->prepare("SELECT address FROM users WHERE id= :userId");
+            $stmt->bindParam(':userId', $userId);
+
+            $stmt->execute();
+
+            $row = $stmt->fetch();
+
+            $address = $row["address"] ?? null;
+
+            return $address;
+        } catch (Exception $exception){
+            echo($exception->getMessage());
+            return null;
+        }
+    }
 }

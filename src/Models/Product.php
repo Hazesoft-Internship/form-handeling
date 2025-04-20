@@ -18,13 +18,13 @@ class Product
     public function insertProductDetails($inputArray)
     {
         try {
-            [$productName, $productPrice, $productQuantity] = $inputArray;
+            [$productName, $productPrice, $productQuantity, $productType] = $inputArray;
             $session = Session::getInstance();
             $created_at = date('Y-m-d H:i:s');
             $updated_at = date('Y-m-d H:i:s');
             $user_id = (int)$session->getSession("userId") ?? '';
 
-            $sql = "INSERT INTO `products` (`user_id`, `name`, `price`, `quantity`, `created_at`, `updated_at`) VALUES (:user_id, :name, :price, :quantity, :created_at, :updated_at)";
+            $sql = "INSERT INTO `products` (`user_id`, `name`, `price`, `quantity`, `type`, `created_at`, `updated_at`) VALUES (:user_id, :name, :price, :quantity, :type, :created_at, :updated_at)";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -32,6 +32,7 @@ class Product
             $stmt->bindParam(':name', $productName);
             $stmt->bindParam(':price', $productPrice);
             $stmt->bindParam(':quantity', $productQuantity);
+            $stmt->bindParam(':type', $productType);
             $stmt->bindParam(':created_at', $created_at);
             $stmt->bindParam(':updated_at', $updated_at);
 

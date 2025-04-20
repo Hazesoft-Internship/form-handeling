@@ -55,6 +55,7 @@ class TableCreation
             name VARCHAR(255) NOT NULL,
             price DECIMAL(12,2) NOT NULL,
             quantity INT NOT NULL,
+            type ENUM('physical', 'digital') NOT NULL,
             created_at DATETIME,
             updated_at DATETIME,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
