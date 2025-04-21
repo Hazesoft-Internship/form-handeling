@@ -23,12 +23,9 @@
                     <strong>Last updated on:</strong> <?php echo $product['updated_at']; ?>
                 </div>
                 <?php if (!$getSession || $product["user_id"] === $getSession): ?>
-                <?php elseif ($product["inCart"]): ?>
-                    <p style=" color:green">already in cart</p>
                 <?php else: ?>
                     <form method="POST" action="/cart">
                         <input type="hidden" name="productId" value=<?php echo $product['id'] ?> />
-                        <input type="hidden" name="price" value=<?php echo $product['price'] ?> />
                         <button type="submit">add to cart</button>
                     </form>
 

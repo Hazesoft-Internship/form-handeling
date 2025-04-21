@@ -36,7 +36,6 @@ class ProductController extends Constructor
             $formattedProduct = [];
             $storeProduct = $this->productModel->getProducts();
             foreach ($storeProduct as $singleProduct) {
-                $singleProduct["inCart"] = $cart->productExistInCart($singleProduct["id"]);
                 $singleProduct["created_at"] = $this->convertDateTime($singleProduct["created_at"]);
                 $singleProduct["updated_at"] = $this->convertDateTime($singleProduct["updated_at"]);
                 $formattedProduct[] = $singleProduct;
@@ -59,8 +58,6 @@ class ProductController extends Constructor
         $session = Session::getInstance();
 
         $hasSession = $session->hasSession("user_id");
-
-
         $storeProduct = [];
         header("Content-Type: application/json");
 
@@ -111,11 +108,12 @@ class ProductController extends Constructor
         $name = $_POST["name"];
         $price = $_POST["price"];
         $quantity = $_POST["quantity"];
-        if (empty($name) || empty($price) || empty($quantity)) {
+        $type = $_POST["paymentType"];
+        if (empty($name) || empty($price) || empty($quantity || empty($type))) {
             echo "something went wrong while adding product";
             return;
         } else {
-            $this->productModel->addProduct($name, $price, $quantity, $userId);
+            $this->productModel->addProduct($name, $price, $quantity, $type, $userId);
         }
     }
 

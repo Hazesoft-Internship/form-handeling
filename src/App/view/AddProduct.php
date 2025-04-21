@@ -18,6 +18,10 @@
 
     <label>Product Price:</label>
     <input type="number" name="price" required /><br />
+      <select name="paymentType">
+        <option value="physical">physical</option>
+        <option value="digital">digital</option>
+      </select>
 
     <button type="submit">Add</button>
   </form>

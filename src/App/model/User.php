@@ -20,7 +20,6 @@ class User
 
     public function register(array $details)
     {
-        var_dump($details);
         $fetchEmail = "select * from users where email = :email";
         $emailStmt = $this->conn->prepare($fetchEmail);
         $emailStmt->bindValue(':email', $details["email"]);

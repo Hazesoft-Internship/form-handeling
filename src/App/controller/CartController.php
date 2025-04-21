@@ -7,12 +7,6 @@ use App\session\Session;
 
 class CartController extends Constructor
 {
-
-  public function displayCheckoutPage()
-  {
-    include(__DIR__ . "/../view/checkout.php");
-  }
-
   public function getOrCreateCart()
   {
     $userId = $this->getSession("user_id");
@@ -25,11 +19,10 @@ class CartController extends Constructor
     }
   }
 
-  public function addToCart()
+  public function addToCart($cartId,$productId)
   {
-    $cartId = $this->getOrCreateCart();
-    $productId = $_POST["productId"];
-    $price = $_POST["price"];
+    $unitPrice = $this->productModel->getSingleProduct($productId);
+    $price = $unitPrice["price"]; 
     if ($cartId) {
       $this->cartItemModel->addToCart($cartId, $productId, $price);
       header("Location:/cart");
@@ -44,24 +37,29 @@ class CartController extends Constructor
     return $userCartItems;
   }
 
-  public function productExistInCart($productId)
-  {
-    $userId = $this->getSession("user_id");
-    $cartItems = $this->cartItemModel->getCartItem($userId);
-    $cartExist = false;
-    foreach ($cartItems as $cartItem) {
-      if ($cartItem["product_id"] === $productId) {
-        $cartExist = true;
-        break;
-      }
-    }
-    return $cartExist;
-  }
+  public function productExistInCarts() {
+    $cartId = $this->getOrCreateCart();
+    $productId = (int)$_POST["productId"];
+    if($this->cartItemModel->ProductExistInCart($cartId,$productId)) {
+      $this->cartItemModel->incrementCartQuantity($cartId,$productId);
+      header("Location:/cart");
+      exit();
+    } else {
+      $this->addToCart($cartId,$productId);
 
+    }
+    
+  }
 
   public function updateCartQuantity()
   {
     $items = $_POST["items"];
     $this->cartItemModel->updateCartQuantity($items);
+  }
+  public function deleteCartItem()
+  {
+    $cartItemId = (int)$_POST["cartItemId"];
+    $this->cartItemModel->deleteCartItem($cartItemId);
+    header("Location: /cart");
   }
 }

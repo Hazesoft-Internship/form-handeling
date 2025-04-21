@@ -14,14 +14,15 @@ class Product
         $this->validate = new ProductValidation();
     }
 
-    public function addProduct(string $name, int $price, int $quantity, int $userId)
+    public function addProduct(string $name, int $price, int $quantity, string $type, int $userId)
     {
-        $query = "insert into products (user_id,name,price,quantity) values (:userId,:name,:price,:quantity)";
+        $query = "insert into products (user_id,name,price,quantity,type) values (:userId,:name,:price,:quantity,:type)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(":userId", $userId);
         $stmt->bindValue(":name", $name);
         $stmt->bindValue(":price", $price);
         $stmt->bindValue(":quantity", $quantity);
+        $stmt->bindValue(":type", $type);
         if ($stmt->execute()) {
             header("Location: /my-profile");
         } else {
@@ -83,9 +84,9 @@ class Product
 
     public function getSingleProduct(int $id): array
     {
-        $query = "select * from products where id = :userId";
+        $query = "select * from products where id = :productId";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(":userId", $id);
+        $stmt->bindValue(":productId", $id);
         $stmt->execute();
 
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -114,4 +115,23 @@ class Product
             var_dump($exception->getTheError());
         }
     }
+
+    public function reduceStock($productId, $purchasedQuantity)
+    {
+        try {
+            $query = "update products
+                      set quantity = quantity - :purchased_quantity
+                      where id = :productId";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(":purchased_quantity", $purchasedQuantity);
+            $stmt->bindValue(":productId", $productId);
+            $stmt->execute();
+            
+        } catch(\Exception $exception) {
+            echo("something went wrong while reducing stock".$exception->getMessage());
+        }
+
+
+    }
+
 }
