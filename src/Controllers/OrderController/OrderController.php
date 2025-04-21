@@ -120,6 +120,13 @@ class OrderController
             $checkoutData = $this->handleCheckoutData();
             extract($checkoutData);
             
+            // for Orders table
+            $userId = $this->session->getSession("userId");
+
+            $cartId = $this->carts->getCartId($userId);
+            $address = $this->user->getUserAddress($userId);
+            $status = "pending"; // default status for now
+            
             $ordersArray = [$cartId, $address, $status, $paymentType, $tax, $total];
 
             // $orderItems = [$orderId, $productId, $quantity, $unitPrice, $totalPriceAfterTax]

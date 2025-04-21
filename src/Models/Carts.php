@@ -75,4 +75,24 @@ class Carts
             return false;
         }
     }
+
+    public function getCartId($userId){
+        try {
+
+            $query = "SELECT id FROM carts WHERE user_id = :userId";
+            $stmt = $this->conn->prepare($query);
+
+            $stmt->bindParam(':userId', $userId);
+            $stmt->execute();
+
+            $row = $stmt->fetch();
+            $cartId = $row["id"];
+
+            return $cartId;
+
+        } catch (Exception $exception) {
+            echo ("Error: " . $exception->getMessage());
+            return null;
+        }
+    }
 }
