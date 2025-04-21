@@ -144,7 +144,6 @@ class OrderController
                 [$tax, $total] = $item;
                 $totalTaxAmountForOrders += $tax;
                 $totalAmountForOrders += $total;
-                // $this->order->insertOrders($ordersArray);
             }
 
             // for shipping cost and discount calculation
