@@ -57,6 +57,9 @@ class OrderController
         // get payment methods
         $paymentMethods = $this->getPaymentMethods($productTypes);
 
+        // calculate price after shipping cost and discount
+        $totalPrice = $this->applyShippingCostAndDiscount($cartItems, $totalPrice);
+
         return [
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
@@ -164,8 +167,6 @@ class OrderController
 
                 $this->order->insertOrderItems($orderItemsArray);
             }
-            dump($cartItems);
-
             // order placed message
             echo("Order placed successfully");
             echo"
@@ -180,13 +181,32 @@ class OrderController
 
     public function applyShippingCostAndDiscount($cartItems, $totalPrice){
         try{
+            $shippingCost = 0;
+            $discountAmount = 0;
 
             foreach($cartItems as $item){
                 switch($item["product_type"]) {
                     case "physical":
-                        if($item["added_quantity"] >= 5)
+                        if(($item["added_quantity"] >= 5) && ($item["added_quantity"]) < 10) {
+                            $shippingCost += 100;
+                        } elseif($item["added_quantity"] >= 10){
+                            $shippingCost += 200;
+                        }
+                        break;
+                    
+                    case "digital":
+                        if (($item["added_quantity"] >= 6) && ($item["added_quantity"]) < 12) {
+                            $discount = ($item["item_grand_total"] * 10) / 100;
+                            $discountAmount += $discount;
+                        } elseif ($item["added_quantity"] >= 12) {
+                            $discount = ($item["item_grand_total"] * 20) / 100;
+                            $discountAmount += $discount;
+                        }
+                        break;
                 }
             }
+            $totalPrice = $totalPrice - $discountAmount + $shippingCost;
+            return $totalPrice;
 
         } catch (Exception $exception) {
             echo ($exception->getMessage());
