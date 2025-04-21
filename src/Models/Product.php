@@ -162,4 +162,20 @@ class Product
             echo($exception->getMessage());
         }
     }
+
+    public function getProductTax($productId){
+        try {
+            $query = "SELECT tax from products WHERE id = :product_id";
+
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':product_id', $productId);
+            $stmt->execute();
+
+            $result = $stmt->fetch();
+            return $result['tax'];
+        } catch (Exception $exception) {
+            echo ($exception->getMessage());
+            return null;
+        }
+    }
 }

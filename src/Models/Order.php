@@ -68,4 +68,21 @@ class Order
             return false;
         }
     }
+
+    public function getOrderId($cardId){
+        try {
+            $query = "SELECT id FROM orders WHERE cart_id = :cartId";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':cartId', $cardId);
+            $stmt->execute();
+
+            $row = $stmt->fetch();
+            $orderId = $row["id"];
+
+            return $orderId;
+        } catch (Exception $exception) {
+            echo ("Error: " . $exception->getMessage());
+            return null;
+        }
+    }
 }

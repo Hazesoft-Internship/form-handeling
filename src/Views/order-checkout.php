@@ -14,49 +14,61 @@
     <h4>
         Address: <?= $address; ?>
     </h4>
-    <div class="cart-items">
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th>Total Price after Tax</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($cartItems as $product): ?>
+    <form action="/order/checkout" method="POST">
+        <div>
+            Payment type:
+            <select name="paymentType">
+                <?php foreach ($paymentMethods as $key => $method): ?>
+                    <option><?= $method ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="cart-items">
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            <?= $product['product_name'] ?>
-                        </td>
-                        <td>
-                            <?= $product['product_price'] ?>
-                        </td>
-                        <td>
-                            <?= $product['added_quantity'] ?>
-                        </td>
-                        <td>
-                            <?= $product['item_total_price'] ?>
-                        </td>
-                        <td>
-                            <?= round($product['item_grand_total'], 2) ?>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Total Price after Tax</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cartItems as $product): ?>
+                        <tr>
+                            <td>
+                                <?= $product['product_name'] ?>
+                            </td>
+                            <td>
+                                <?= $product['product_price'] ?>
+                            </td>
+                            <td>
+                                <?= $product['added_quantity'] ?>
+                            </td>
+                            <td>
+                                <?= $product['item_total_price'] ?>
+                            </td>
+                            <td>
+                                <?= round($product['item_grand_total'], 2) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td colspan="5">
+                            Grand total: <?= $totalPrice ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-                <tr>
-                    <td colspan="5">
-                        Grand total: <?= $totalPrice ?>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <form action="/order/checkout" method="POST">
+                </tbody>
+            </table>
+            <br>
             <input type="submit" name="orderSubmit" value="Submit">
-        </form>
-    </div>
+        </div>
+    </form>
+
 </body>
 
 </html>

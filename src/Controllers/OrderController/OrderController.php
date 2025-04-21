@@ -8,6 +8,7 @@ use Hazesoft\Backend\Models\User;
 use Hazesoft\Backend\Services\Session;
 use Hazesoft\Backend\Models\Carts;
 use Hazesoft\Backend\Models\Order;
+use Hazesoft\Backend\Models\Product;
 
 class OrderController
 {
@@ -16,6 +17,7 @@ class OrderController
     private $cartItems;
     private $carts;
     private $order;
+    private $product;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class OrderController
         $this->cartItems = new CartItems();
         $this->carts = new Carts();
         $this->order = new Order();
+        $this->product = new Product();
     }
     public function getCheckoutPage()
     {
@@ -66,7 +69,6 @@ class OrderController
     {
         try {
             $typeArray = [];
-
             foreach($productTypes as $key => $type){
                 $typeArray[] = $type["type"];
             }
@@ -80,7 +82,6 @@ class OrderController
             } else {
                 $paymentMethods = [];
             }
-
             return $paymentMethods;
 
         } catch (Exception $exception) {
@@ -111,7 +112,6 @@ class OrderController
 
     public function handleCheckoutForm(){
         try{
-            echo("test");
             if (!isset($_POST['orderSubmit'])) {
                 echo ("Error processing checkout");
                 exit;
@@ -120,21 +120,76 @@ class OrderController
             $checkoutData = $this->handleCheckoutData();
             extract($checkoutData);
             
-            // for Orders table
             $userId = $this->session->getSession("userId");
 
+            $taxAndTotalPriceArray = []; // this array contains tax and itemTotalPrice in a array inside it
+            $taxAmount = [];
+
+            foreach($cartItems as $item){
+                $taxAmount = ($item["product_tax"] * $item["product_price"] * $item["added_quantity"]) / 100;
+                $taxAndTotalPriceArray[] = [$taxAmount, $item["item_grand_total"]];
+            }
+
+            // for Orders table
             $cartId = $this->carts->getCartId($userId);
             $address = $this->user->getUserAddress($userId);
             $status = "pending"; // default status for now
+            $paymentType = $_POST["paymentType"];
+            $totalTaxAmountForOrders = 0;
             
-            $ordersArray = [$cartId, $address, $status, $paymentType, $tax, $total];
+            foreach($taxAndTotalPriceArray as $item){
+                [$tax, $total] = $item;
+                $totalTaxAmountForOrders += $tax;
+                $totalAmountForOrders += $total;
+                // $this->order->insertOrders($ordersArray);
+            }
 
-            // $orderItems = [$orderId, $productId, $quantity, $unitPrice, $totalPriceAfterTax]
+            // for shipping cost and discount calculation
+            $totalAmountForOrders = $this->applyShippingCostAndDiscount($cartItems, $totalAmountForOrders);
 
-            // $isOrderItemsInserted = $this->order->insertOrderItems();
+            // for orders data insertion
+            $ordersArray = [$cartId, $address, $status, $paymentType, $totalTaxAmountForOrders, $totalAmountForOrders];
+            $this->order->insertOrders($ordersArray);
+
+            // for order_items data insertion 
+            $orderId = $this->order->getOrderId($cartId);
+            foreach($cartItems as $item){
+                $orderItemsArray = [
+                    $orderId,
+                    $item["product_id"],
+                    $item["added_quantity"],
+                    $item["product_price"],
+                    $item["item_grand_total"]
+                ];
+
+                $this->order->insertOrderItems($orderItemsArray);
+            }
+            dump($cartItems);
+
+            // order placed message
+            echo("Order placed successfully");
+            echo"
+            <br>
+                <a href='/products'>Go to products page</a>
+            ";
 
         } catch(Exception $exception){
             echo($exception->getMessage());
+        }
+    }
+
+    public function applyShippingCostAndDiscount($cartItems, $totalPrice){
+        try{
+
+            foreach($cartItems as $item){
+                switch($item["product_type"]) {
+                    case "physical":
+                        if($item["added_quantity"] >= 5)
+                }
+            }
+
+        } catch (Exception $exception) {
+            echo ($exception->getMessage());
         }
     }
 }

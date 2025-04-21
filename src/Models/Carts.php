@@ -14,7 +14,8 @@ class Carts
         $this->conn = Connection::getConnection();
     }
 
-    public function createCart($userId){
+    public function createCart($userId)
+    {
         try {
             $created_at = date('Y-m-d H:i:s');
             $updated_at = date('Y-m-d H:i:s');
@@ -26,14 +27,14 @@ class Carts
             $stmt->bindParam(':created_at', $created_at);
             $stmt->bindParam(':updated_at', $updated_at);
             return $stmt->execute();
-            
         } catch (Exception $exception) {
             echo ("Error: " . $exception->getMessage());
             return false;
         }
     }
-    
-    public function doesCartExists($userId){
+
+    public function doesCartExists($userId)
+    {
         try {
 
             $query = "SELECT id FROM carts WHERE user_id = :userId";
@@ -47,12 +48,11 @@ class Carts
 
             $cartId = $row["id"] ?? false;
 
-            if($cartId){
+            if ($cartId) {
                 return true;
             } else {
                 return false;
             }
-            
         } catch (Exception $exception) {
             echo ("Error: " . $exception->getMessage());
             return false;
@@ -76,7 +76,8 @@ class Carts
         }
     }
 
-    public function getCartId($userId){
+    public function getCartId($userId)
+    {
         try {
 
             $query = "SELECT id FROM carts WHERE user_id = :userId";
@@ -89,7 +90,6 @@ class Carts
             $cartId = $row["id"];
 
             return $cartId;
-
         } catch (Exception $exception) {
             echo ("Error: " . $exception->getMessage());
             return null;

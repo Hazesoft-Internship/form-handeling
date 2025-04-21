@@ -44,6 +44,7 @@ class CartItems
             $query = "SELECT 
                 p.id AS product_id,
                 p.name AS product_name,
+                p.type AS product_type,
                 ci.quantity AS added_quantity,
                 p.price AS product_price,
                 p.tax AS product_tax,
@@ -145,4 +146,6 @@ class CartItems
             return null;
         }
     }
+
+
 }
