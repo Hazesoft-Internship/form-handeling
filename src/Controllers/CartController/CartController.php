@@ -12,6 +12,7 @@ class CartController
     private $productObject;
     private $cartObject;
     private $session;
+    private $cartsObject;
 
     public function __construct()
     {

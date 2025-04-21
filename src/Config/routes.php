@@ -29,6 +29,7 @@ return [
         '/products/delete' => [ProductController::class, 'handleDeleteProduct'],
         '/logout' => [LogInController::class, 'handleLogout'],
         '/cart/insert' => [CartController::class, 'handleInsertCartProductPage'],
-        '/cart/delete' => [CartController::class, 'handleDeleteCartItem']
+        '/cart/delete' => [CartController::class, 'handleDeleteCartItem'],
+        '/order/checkout' => [OrderController::class, 'handleCheckoutForm']
     ],
 ];

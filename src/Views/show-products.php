@@ -63,7 +63,7 @@ cursor: pointer; font-size: large">
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="2">
                             <form action="/products/delete" method="POST">
                                 <input type="hidden" name="id" value="<?= $product['id'] ?>">
                                 <button type="submit" onclick="return confirm('Are you sure you want to delete this product?');" style="background:none; border:none; color:blue; text-decoration:none; cursor:pointer; padding:0; font:inherit;">
@@ -71,7 +71,7 @@ cursor: pointer; font-size: large">
                                 </button>
                             </form>
                         </td>
-                        <td colspan="3">
+                        <td colspan="2">
                             <form action="/products/update" method="GET">
                                 <input type="hidden" name="id" value="<?= $product['id'] ?>">
                                 <button type="submit" style="background:none; border:none; color:blue; text-decoration:none; cursor:pointer; padding:0; font:inherit;">

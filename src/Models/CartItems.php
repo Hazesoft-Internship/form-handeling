@@ -46,7 +46,9 @@ class CartItems
                 p.name AS product_name,
                 ci.quantity AS added_quantity,
                 p.price AS product_price,
-                (p.price * ci.quantity) AS item_total_price
+                p.tax AS product_tax,
+                (p.price * ci.quantity) AS item_total_price,
+                ((p.price * ci.quantity * tax)/100 + (p.price * ci.quantity)) AS item_grand_total
             FROM
                 products AS p
             JOIN 

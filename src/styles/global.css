@@ -19,3 +19,15 @@ a {
     cursor: pointer;
     font-size: large;
 }
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+}

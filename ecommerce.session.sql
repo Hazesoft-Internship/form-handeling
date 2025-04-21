@@ -1,6 +1,6 @@
 USE mydb;
 
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS carts;
 
 -- CREATE TABLE IF NOT EXISTS cart_items (
 --     user_id INT NOT NULL,

@@ -9,6 +9,7 @@ $table = TableCreation::getInstance();
 $table->createUsersTableIfNotExists();
 $table->createProductsTableIfNotExists();
 $table->createCartItemsTableIfNotExists();
+$table->createCartsTableIfNotExists();
 
 // $request = $_SERVER['REQUEST_URI'];
 

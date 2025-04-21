@@ -6,21 +6,32 @@ use Exception;
 use Hazesoft\Backend\Models\CartItems;
 use Hazesoft\Backend\Models\User;
 use Hazesoft\Backend\Services\Session;
+use Hazesoft\Backend\Models\Carts;
 
 class OrderController
 {
     private $user;
     private $session;
-    private $cart;
+    private $cartItems;
+    private $carts;
 
     public function __construct()
     {
         $this->user = new User();
         $this->session = Session::getInstance();
-        $this->cart = new CartItems();
+        $this->cartItems = new CartItems();
+        $this->carts = new Carts();
     }
     public function getCheckoutPage()
     {
+        $userId = $this->session->getSession("userId");
+        // insert new row in carts table
+        $doesCartExists = $this->carts->doesCartExists($userId);
+        
+        if ($doesCartExists == false) {
+            $result = $this->carts->createCart($userId);
+        }
+
         $viewData = $this->handleCheckoutData();
         extract($viewData);
         return require_once(__DIR__ . '/../../Views/order-checkout.php');
@@ -33,11 +44,11 @@ class OrderController
         $userId = $this->session->getSession("userId");
         $address = $this->user->getUserAddress($userId);
 
-        $productTypes = $this->cart->getProductType($userId);
+        $productTypes = $this->cartItems->getProductType($userId);
 
         // get payment methods
         $paymentMethods = $this->getPaymentMethods($productTypes);
-        
+
         return [
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
@@ -78,7 +89,7 @@ class OrderController
         try {
             $userId = $this->session->getSession("userId");
 
-            $cartItems = $this->cart->getCartItems($userId);
+            $cartItems = $this->cartItems->getCartItems($userId);
 
             $totalPrice = array_reduce($cartItems, [$this, 'addPrice'], 0);
 
@@ -88,8 +99,25 @@ class OrderController
             echo ("Error: " . $exception->getMessage());
         }
     }
-    public function addPrice($carry, $item2)
+    public function addPrice($carry, $item)
     {
-        return $carry + $item2["item_total_price"];
+        return ($carry + ($item["item_grand_total"]));
+    }
+
+    public function handleCheckoutForm(){
+        try{
+
+            echo("test");
+            
+            if(isset($_POST['orderSubmit'])){
+                $checkoutData = $this->handleCheckoutData();
+                extract($checkoutData);
+            }
+
+            
+
+        } catch(Exception $exception){
+            echo($exception->getMessage());
+        }
     }
 }
