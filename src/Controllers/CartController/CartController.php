@@ -4,21 +4,23 @@ namespace Hazesoft\Backend\Controllers\CartController;
 
 use Exception;
 use Hazesoft\Backend\Models\CartItems;
+use Hazesoft\Backend\Models\Carts;
 use Hazesoft\Backend\Models\Product;
 use Hazesoft\Backend\Services\Session;
 
 class CartController
 {
     private $productObject;
-    private $cartObject;
+    private $cartItems;
     private $session;
-    private $cartsObject;
+    private $carts;
 
     public function __construct()
     {
         $this->productObject = new Product();
-        $this->cartObject = new CartItems();
+        $this->cartItems = new CartItems();
         $this->session = Session::getInstance();
+        $this->carts = new Carts();
     }
 
     public function getCartDetailsPage()
@@ -51,14 +53,15 @@ class CartController
                     exit;
                 }
 
-                $existingItem = $this->cartObject->getItemById($productId, $userId);
+                $existingItem = $this->cartItems->getItemById($productId, $userId);
+                $cartId = $this->carts->getCartId($userId);
 
                 if ($existingItem) {
                     // Update quantity
-                    $isInsertionDone = $this->cartObject->updateCartItem($productId, $userId, $quantity);
+                    $isInsertionDone = $this->cartItems->updateCartItem($productId, $userId, $quantity);
                 } else {
                     // Insert new item
-                    $isInsertionDone = $this->cartObject->insertCartItems($productId, $quantity, $userId);
+                    $isInsertionDone = $this->cartItems->insertCartItems($productId, $quantity, $userId, $cartId);
                 }
 
                 if ($isInsertionDone) {
@@ -81,7 +84,7 @@ class CartController
                 $productId = $_POST['product_id'];
                 $userId = $this->session->getSession("userId");
 
-                $this->cartObject->deleteCartItem($productId, $userId);
+                $this->cartItems->deleteCartItem($productId, $userId);
                 header("Location: /cart/details");
             } else {
                 echo "Error deleting cart from CartController";
@@ -98,7 +101,7 @@ class CartController
             $userId = $this->session->getSession("userId");
 
             $product = $this->productObject->getProductById($productId);
-            $cart = $this->cartObject->getItemById($productId, $userId);
+            $cart = $this->cartItems->getItemById($productId, $userId);
 
             return [
                 'productId' => $productId,
@@ -115,7 +118,7 @@ class CartController
         try {
             $userId = $this->session->getSession("userId");
 
-            $cartItems = $this->cartObject->getCartItems($userId);
+            $cartItems = $this->cartItems->getCartItems($userId);
 
             $totalPrice = array_reduce($cartItems, [$this, 'addPrice'], 0);
 

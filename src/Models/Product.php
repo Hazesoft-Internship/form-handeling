@@ -163,6 +163,27 @@ class Product
         }
     }
 
+    public function decreaseProductQuantity($productId, $orderedQuantity){
+        try {
+            $updated_at = date('Y-m-d H:i:s');
+            $query = "UPDATE products SET quantity = quantity - :ordered_quantity, updated_at = :updated_at WHERE id = :product_id";
+
+            $stmt = $this->conn->prepare($query);
+
+            $stmt->bindParam(':ordered_quantity', $orderedQuantity);
+            $stmt->bindParam(':updated_at', $updated_at);
+            $stmt->bindParam(':product_id', $productId);
+
+            $result = $stmt->execute();
+
+            if (!$result) {
+                echo "Error reducing product quantity";
+            }
+        } catch (Exception $exception) {
+            echo ($exception->getMessage());
+        }
+    }
+
     public function getProductTax($productId){
         try {
             $query = "SELECT tax from products WHERE id = :product_id";

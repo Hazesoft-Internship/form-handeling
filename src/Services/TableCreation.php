@@ -76,12 +76,14 @@ class TableCreation
             CREATE TABLE IF NOT EXISTS cart_items (
             user_id INT NOT NULL,
             product_id INT NOT NULL,
+            cart_id INT NOT NULL,
             quantity INT NOT NULL,
             created_at DATETIME,
             updated_at DATETIME,
             PRIMARY KEY (user_id, product_id),
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+            FOREIGN KEY (cart_id) REFERENCES carts(id)
             );";
 
             $stmt = $this->conn->prepare($query);

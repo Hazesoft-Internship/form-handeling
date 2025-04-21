@@ -169,6 +169,19 @@ class OrderController
             }
             // order placed message
             echo("Order placed successfully");
+
+            // update product quantity and remove cartItems after checkout
+            foreach ($cartItems as $item) {
+                $productId = $item["product_id"];
+                $orderedQuantity = $item["added_quantity"];
+
+                // product quantity deducted after checkout
+                $this->product->decreaseProductQuantity($productId, $orderedQuantity);
+
+                // cartItems removed after checkout
+                $this->cartItems->deleteCartItem($productId, $userId);
+            }
+
             echo"
             <br>
                 <a href='/products'>Go to products page</a>

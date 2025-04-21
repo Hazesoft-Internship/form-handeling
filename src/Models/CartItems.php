@@ -14,19 +14,20 @@ class CartItems
         $this->conn = Connection::getConnection();
     }
 
-    public function insertCartItems($productId, $productQuantity, $userId)
+    public function insertCartItems($productId, $productQuantity, $userId, $cartId)
     {
 
         try {
             $created_at = date('Y-m-d H:i:s');
             $updated_at = date('Y-m-d H:i:s');
 
-            $query = "INSERT into cart_items (user_id, product_id, quantity, created_at, updated_at) VALUES (:user_id, :product_id, :quantity, :created_at, :updated_at)";
+            $query = "INSERT into cart_items (user_id, product_id, cart_id, quantity, created_at, updated_at) VALUES (:user_id, :product_id, :cart_id, :quantity, :created_at, :updated_at)";
 
             $stmt = $this->conn->prepare($query);
 
             $stmt->bindParam(':user_id', $userId);
             $stmt->bindParam(':product_id', $productId);
+            $stmt->bindParam(':cart_id', $cartId);
             $stmt->bindParam(':quantity', $productQuantity);
             $stmt->bindParam(':created_at', $created_at);
             $stmt->bindParam(':updated_at', $updated_at);
@@ -146,6 +147,5 @@ class CartItems
             return null;
         }
     }
-
 
 }
