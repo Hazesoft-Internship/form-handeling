@@ -35,7 +35,6 @@ class Order
             $stmt->bindParam(':updated_at', $updated_at);
 
             return $stmt->execute();
-
         } catch (Exception $exception) {
             echo ("Error: " . $exception->getMessage());
             return false;
@@ -57,7 +56,7 @@ class Order
             $stmt->bindParam(':cart_id', $cartId);
             $stmt->bindParam(':address', $address);
             $stmt->bindParam(':status', $status);
-            $stmt->bindParam(':payment_type', $paymentType,);
+            $stmt->bindParam(':payment_type', $paymentType);
             $stmt->bindParam(':tax', $tax);
             $stmt->bindParam(':total', $total);
             $stmt->bindParam(':created_at', $created_at);

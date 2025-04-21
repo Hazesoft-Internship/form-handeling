@@ -10,11 +10,8 @@ $table->createUsersTableIfNotExists();
 $table->createProductsTableIfNotExists();
 $table->createCartItemsTableIfNotExists();
 $table->createCartsTableIfNotExists();
-
-// $request = $_SERVER['REQUEST_URI'];
-
-// Remove any query string
-// $request = parse_url($request, PHP_URL_PATH);
+$table->createOrderItemsTableIfNotExists();
+$table->createOrdersTableIfNotExists();
 
 // Routing logic
 $routes = require_once(__DIR__ . '/Config/routes.php');

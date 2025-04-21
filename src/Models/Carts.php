@@ -58,4 +58,21 @@ class Carts
             return false;
         }
     }
+
+    public function updateCart($userId)
+    {
+        try {
+            $updated_at = date('Y-m-d H:i:s');
+
+            $query = "UPDATE carts SET updated_at = :updated_at WHERE user_id = :userId";
+            $stmt = $this->conn->prepare($query);
+
+            $stmt->bindParam(':updated_at', $updated_at);
+            $stmt->bindParam(':userId', $userId);
+            return $stmt->execute();
+        } catch (Exception $exception) {
+            echo ("Error: " . $exception->getMessage());
+            return false;
+        }
+    }
 }

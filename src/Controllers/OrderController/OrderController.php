@@ -7,6 +7,7 @@ use Hazesoft\Backend\Models\CartItems;
 use Hazesoft\Backend\Models\User;
 use Hazesoft\Backend\Services\Session;
 use Hazesoft\Backend\Models\Carts;
+use Hazesoft\Backend\Models\Order;
 
 class OrderController
 {
@@ -14,6 +15,7 @@ class OrderController
     private $session;
     private $cartItems;
     private $carts;
+    private $order;
 
     public function __construct()
     {
@@ -21,6 +23,7 @@ class OrderController
         $this->session = Session::getInstance();
         $this->cartItems = new CartItems();
         $this->carts = new Carts();
+        $this->order = new Order();
     }
     public function getCheckoutPage()
     {
@@ -30,6 +33,8 @@ class OrderController
         
         if ($doesCartExists == false) {
             $result = $this->carts->createCart($userId);
+        } else {
+            $result = $this->carts->updateCart($userId);
         }
 
         $viewData = $this->handleCheckoutData();
@@ -106,18 +111,24 @@ class OrderController
 
     public function handleCheckoutForm(){
         try{
-
             echo("test");
-            
-            if(isset($_POST['orderSubmit'])){
-                $checkoutData = $this->handleCheckoutData();
-                extract($checkoutData);
+            if (!isset($_POST['orderSubmit'])) {
+                echo ("Error processing checkout");
+                exit;
             }
-
             
+            $checkoutData = $this->handleCheckoutData();
+            extract($checkoutData);
+            
+            $ordersArray = [$cartId, $address, $status, $paymentType, $tax, $total];
+
+            // $orderItems = [$orderId, $productId, $quantity, $unitPrice, $totalPriceAfterTax]
+
+            // $isOrderItemsInserted = $this->order->insertOrderItems();
 
         } catch(Exception $exception){
             echo($exception->getMessage());
         }
     }
 }
+
