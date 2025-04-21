@@ -9,10 +9,10 @@ use PDOException;
 class Connection
 {
     private static ?Connection $instance = null;
-    private $host = '127.0.0.1';
-    private $username = 'root';
-    private $password = '';
-    private $dbname = 'mydb';
+    private $host;
+    private $username;
+    private $password;
+    private $dbname;
     private $charset = 'utf8mb4';
     private $connection;
     private $options = [
@@ -21,6 +21,11 @@ class Connection
 
     private function __construct()
     {
+        $this->host = $_ENV['HOST'];
+        $this->username = $_ENV['USERNAME'];
+        $this->password = $_ENV['PASSWORD'];
+        $this->dbname = $_ENV['DBNAME'];
+
         $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset={$this->charset}";
 
         try {
