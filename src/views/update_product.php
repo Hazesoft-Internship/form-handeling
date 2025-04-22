@@ -2,6 +2,18 @@
 
 $product = $product ?? null;
 $errors = $errors ?? [];
+
+use Hazesoft\Formhandeling\Services\Session;
+
+$session = Session::getInstance();
+
+$session->start();
+
+if (!Session::checkLogin()) {
+    header("Location: /login");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +46,13 @@ $errors = $errors ?? [];
 
         <label for="price">Price:</label>
         <input type="text" name="price" value="<?= htmlspecialchars($product['price'] ?? '') ?>" required>
+        <br><br>
+
+        <label for="types">Types</label>
+        <select name="types" id="types">
+            <option value="physical">Physical</option>
+            <option value="digital">Digital</option>
+        </select>
         <br><br>
 
         <button type="submit">Update Product</button>

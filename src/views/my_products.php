@@ -7,7 +7,7 @@ $session = Session::getInstance();
 $session->start();
 
 if (!Session::checkLogin()) {
-    header("Location: login_form.php");
+    header("Location: /login");
     exit();
 }
 

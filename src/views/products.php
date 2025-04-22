@@ -40,6 +40,7 @@ if (!Session::checkLogin()) {
         ?>
 
         <a href="/cart/<?php echo $cartId ?>">View cart</a>
+        <a href="/order/detail">View Order</a>
         <a href="/my_products">My Products</a>
     </div>
 </body>

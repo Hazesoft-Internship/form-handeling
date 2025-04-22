@@ -2,26 +2,12 @@
 
 namespace Hazesoft\Formhandeling\Controllers;
 
-use Hazesoft\Formhandeling\Services\Session;
 use Hazesoft\Formhandeling\Services\View;
-use Hazesoft\Formhandeling\Models\User;
-use Exception;
 use Hazesoft\Formhandeling\Validation\UserValidation;
 use Hazesoft\Formhandeling\Exception\ValidationException;
 
-$session = Session::getInstance();
-
-$session->start();
-
-class AuthController
+class AuthController extends BaseController
 {
-
-    private $user;
-
-    public function __construct()
-    {
-        $this->user = new User();
-    }
 
     public function register(): void
     {
@@ -44,7 +30,7 @@ class AuthController
                             header("Location: /login");
                             exit();
                         }
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         echo "Error: " . $e->getMessage();
                     }
                 } catch (ValidationException $validationException) {
@@ -54,7 +40,7 @@ class AuthController
             } else {
                 View::render('register_form');
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Unexpected error: " . $e->getMessage();
         }
     }
@@ -88,12 +74,8 @@ class AuthController
         }
     }
 
-
-    public function handleLogout()
+    public function handleLogout(): void
     {
-        $session = Session::getInstance();
-        $session->start();
-
         session_unset();
         session_destroy();
 

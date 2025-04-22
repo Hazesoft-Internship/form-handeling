@@ -7,7 +7,7 @@ $session = Session::getInstance();
 $session->start();
 
 if (!Session::checkLogin()) {
-  header("Location: login_form.php");
+  header("Location: /products");
   exit();
 }
 ?>
@@ -31,6 +31,12 @@ if (!Session::checkLogin()) {
 
     <label for="price">Price:</label>
     <input type="text" name="price" required><br><br>
+
+    <label for="types">Types</label>
+    <select name="types" id="types">
+      <option value="physical">Physical</option>
+      <option value="digital">Digital</option>
+    </select>
 
     <button type="submit">Submit</button>
   </form>

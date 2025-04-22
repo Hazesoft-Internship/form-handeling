@@ -9,7 +9,7 @@ use Hazesoft\Formhandeling\Validation\Validation;
 class UserValidation extends Validation
 {
 
-    public function validateEmail($data)
+    public function validateEmail($data): string
     {
         if (empty($data)) {
             throw new ValidationException("Field is required", 204);
@@ -20,7 +20,7 @@ class UserValidation extends Validation
         return $data;
     }
 
-    public function validatePassword($data)
+    public function validatePassword($data): string
     {
         if (empty($data)) {
             throw new ValidationException("Field is required", 204);
@@ -34,7 +34,7 @@ class UserValidation extends Validation
         return $this->test_input($data);
     }
 
-    public function validateForm($data)
+    public function validateForm($data): array
     {
         return [
             'fname' => $this->validateString($data['fname']),

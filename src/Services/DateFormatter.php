@@ -4,7 +4,7 @@ namespace Hazesoft\Formhandeling\Services;
 
 trait DateFormatter
 {
-    public static function convertDateTime($time)
+    public static function convertDateTime($time): string
     {
         $time = explode(" ", $time);
 

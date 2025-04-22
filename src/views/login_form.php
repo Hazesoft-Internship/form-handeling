@@ -7,7 +7,7 @@ $session = Session::getInstance();
 $session->start();
 
 if (Session::checkLogin()) {
-    header("Location: products.php");
+    header("Location: /products");
     exit();
 }
 

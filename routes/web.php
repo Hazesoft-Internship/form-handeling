@@ -4,6 +4,8 @@ use Hazesoft\Formhandeling\Controllers\ProductController;
 use Hazesoft\Formhandeling\Controllers\AuthController;
 use Hazesoft\Formhandeling\Controllers\CartController;
 use Hazesoft\Formhandeling\Controllers\CartItemController;
+use Hazesoft\Formhandeling\Controllers\CheckoutController;
+use Hazesoft\Formhandeling\Controllers\OrderController;
 
 //Authentication routes
 $router->get('/register', [AuthController::class, 'register']);
@@ -27,4 +29,12 @@ $router->get('/api/products', [ProductController::class, 'getAllProducts']);
 //Cart Routes
 $router->get('/cart/{id}', [CartController::class, 'viewCart']);
 $router->post('/cart/addItems', [CartItemController::class, 'addtoCart']);
-$router->get('/cartitem/{id}', [CartItemController::class, 'cartItemDetail']);
+$router->post('/cart/update-all', [CartItemController::class, 'updateAllCartItems']);
+$router->post('/cart/delete', [CartItemController::class, 'deleteCartItem']);
+
+//checkout
+$router->get('/checkout', [CheckoutController::class, 'viewCheckout']);
+
+//orders
+$router->get('/order/detail', [OrderController::class, 'displayOrder']);
+$router->post('/order', [OrderController::class, 'placeOrder']);

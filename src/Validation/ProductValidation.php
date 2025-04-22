@@ -8,7 +8,7 @@ use Hazesoft\Formhandeling\Validation\Validation;
 
 class ProductValidation extends Validation
 {
-    public function validateInteger($data)
+    public function validateInteger($data): int
     {
         if (empty($data)) {
             throw new ValidationException("Field is required", 204);
@@ -22,12 +22,13 @@ class ProductValidation extends Validation
     }
 
 
-    public function validateForm($data)
+    public function validateForm($data): array
     {
         return [
             'name' => $this->validateString($data['name']),
             'quantity' => $this->validateInteger($data['quantity']),
-            'price' => $this->validateInteger($data['price'])
+            'price' => $this->validateInteger($data['price']),
+            'types' => $this->validateString($data['types'])
         ];
     }
 }

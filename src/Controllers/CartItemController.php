@@ -2,42 +2,17 @@
 
 namespace Hazesoft\Formhandeling\Controllers;
 
-use Hazesoft\Formhandeling\Services\Session;
-use Hazesoft\Formhandeling\Models\Product;
-use Hazesoft\Formhandeling\Models\Cart;
-use Hazesoft\Formhandeling\Models\CartItem;
-use Hazesoft\Formhandeling\Services\View;
-use Hazesoft\Formhandeling\Services\DateFormatter;
 
-$session = Session::getInstance();
-
-$session->start();
-
-
-class CartItemController
+class CartItemController extends BaseController
 {
-    use DateFormatter;
-    private $productModel;
-    private $cartModel;
-    private $cartItemModel;
-    public $userid;
-
-    public function __construct()
-    {
-        $this->cartModel = new Cart();
-        $this->cartItemModel = new CartItem();
-        $this->productModel = new Product();
-        $this->userid = $_SESSION['id'] ?? null;
-    }
-
-    public function addToCart()
+    public function addToCart(): void
     {
         $productId = $_POST['product_id'];
         $quantity = $_POST['quantity'];
 
         $product = $this->productModel->getProductById($productId);
 
-        if ($product && $product['quantity'] > $quantity) {
+        if ($product && $product['quantity'] >= $quantity) {
             $cartId = $this->cartModel->getOrCreateCart($this->userid);
 
             $cartItem = $this->cartItemModel->getCartItem($cartId, $productId);
@@ -51,16 +26,46 @@ class CartItemController
             }
 
             header("Location: /cart/$cartId");
+            exit;
         } else {
             echo "Not enough stock or product not found.";
         }
     }
 
-    public function cartItemDetail($id)
+    public function updateAllCartItems(): void
     {
-        $cartItem = $this->cartItemModel->getCartItemsById($id);
-        $cartItem['created_at'] = $this->convertDateTime($cartItem['created_at']);
-        $cartItem['updated_at'] = $this->convertDateTime($cartItem['updated_at']);
-        View::render('cart_item_detail', ['cartItem' => $cartItem]);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $cartId = $this->cartModel->getOrCreateCart($this->userid);
+            $quantities = $_POST['quantity'];
+
+            foreach ($quantities as $cartItemId => $newQty) {
+
+                $cartItem = $this->cartItemModel->getCartItemById($cartItemId);
+                $product = $this->productModel->getProductById($cartItem['product_id']);
+
+                if ($product && $newQty <= $product['quantity']) {
+                    $this->cartItemModel->updateCartItemQuantity($cartItemId, $newQty);
+                } else {
+                    echo "Not enough product";
+                }
+            }
+            header("Location: /cart/$cartId");
+            exit;
+        }
+    }
+
+    public function deleteCartItem(): void
+    {
+        $cartId = $this->cartModel->getOrCreateCart($this->userid);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $cartItemId = $_POST['cart_item_id'] ?? null;
+
+            if ($cartItemId) {
+                $this->cartItemModel->deleteCart($cartItemId);
+            }
+        }
+        header("Location: /cart/$cartId");
+        exit();
     }
 }

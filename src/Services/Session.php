@@ -17,7 +17,7 @@ class Session
         return self::$instance;
     }
 
-    public function start()
+    public function start(): void
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

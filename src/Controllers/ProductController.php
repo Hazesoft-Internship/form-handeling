@@ -3,33 +3,12 @@
 namespace Hazesoft\Formhandeling\Controllers;
 
 use Exception;
-use Hazesoft\Formhandeling\Models\Product;
-use Hazesoft\Formhandeling\Models\Cart;
-use Hazesoft\Formhandeling\Services\Session;
 use Hazesoft\Formhandeling\Services\View;
-use Hazesoft\Formhandeling\Services\DateFormatter;
 use Hazesoft\Formhandeling\Validation\ProductValidation;
 use Hazesoft\Formhandeling\Exception\ValidationException;
 
-
-$session = Session::getInstance();
-
-$session->start();
-
-class ProductController
+class ProductController extends BaseController
 {
-    use DateFormatter;
-    private $productModel;
-    private $cartModel;
-    public $userid;
-
-    public function __construct()
-    {
-        $this->productModel = new Product();
-        $this->cartModel = new Cart();
-        $this->userid = $_SESSION['id'] ?? null;
-    }
-
     public function addProduct(): void
     {
         try {
@@ -41,8 +20,9 @@ class ProductController
                     $product_name = $validateData['name'];
                     $product_quantity = $validateData['quantity'];
                     $product_price = $validateData['price'];
+                    $types = $validateData['types'];
                     try {
-                        $this->productModel->addProduct($product_name, $product_quantity, $product_price);
+                        $this->productModel->addProduct($product_name, $product_quantity, $product_price, $types);
                         header("Location: /my_products");
                         exit();
                     } catch (Exception $e) {
@@ -62,7 +42,7 @@ class ProductController
         }
     }
 
-    public function dashboard()
+    public function dashboard(): void
     {
 
         $products = $this->productModel->getProductsForDashboard();
@@ -73,20 +53,20 @@ class ProductController
         View::render('dashboard', ['products' => $products]);
     }
 
-    public function products()
+    public function products(): void
     {
         $products = $this->productModel->getOtherUsersProducts();
         $cartId =  $this->cartModel->getOrCreateCart($this->userid);
         View::render('products', ['products' => $products, 'cartId' => $cartId]);
     }
 
-    public function myProducts()
+    public function myProducts(): void
     {
         $products = $this->productModel->getUserProducts();
         View::render('my_products', ['products' => $products]);
     }
 
-    public function productDetail($id)
+    public function productDetail($id): void
     {
         $product = $this->productModel->getProductById($id);
 
@@ -114,8 +94,9 @@ class ProductController
                     $product_name = $validateData['name'];
                     $product_quantity = $validateData['quantity'];
                     $product_price = $validateData['price'];
+                    $types = $validateData['types'];
 
-                    $this->productModel->updateProduct($id, $product_name, $product_quantity, $product_price);
+                    $this->productModel->updateProduct($id, $product_name, $product_quantity, $product_price, $types);
 
                     header("Location: /product/{$id}");
                     exit();
@@ -148,13 +129,19 @@ class ProductController
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-            $this->productModel->deleteProduct($id);
-            header("Location: /my_products");
-            exit();
+            $idFromForm = $_POST['id'];
+
+            if ($idFromForm === $id) {
+                $this->productModel->deleteProduct($id);
+                header("Location: /my_products");
+                exit();
+            } else {
+                echo "Product Delete Unsuccesful";
+            }
         }
     }
 
-    public function getAllProducts()
+    public function getAllProducts(): void
     {
         $products = $this->productModel->getProductsForDashboard();
 

@@ -11,12 +11,19 @@ class Database
     private static ?Database $instance = null;
     private PDO $connection;
 
-    private function __construct(
-        private string $servername = "localhost",
-        private string $username = "root",
-        private string $password = "Prakash@123$",
-        private string $dbname = "mydb"
-    ) {
+    private string $servername;
+    private string $username;
+    private string $password;
+    private string $dbname;
+
+    private function __construct()
+    {
+
+        $this->servername = $_ENV['DB_HOST'];
+        $this->username = $_ENV['DB_USERNAME'];
+        $this->password = $_ENV['DB_PASSWORD'];
+        $this->dbname = $_ENV['DB_NAME'];
+
         $data = "mysql:host={$this->servername};dbname={$this->dbname};charset=utf8mb4";
 
         try {

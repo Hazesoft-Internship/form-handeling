@@ -24,7 +24,7 @@ if (!Session::checkLogin()) {
 <body>
   <h1>Product Detail</h1>
   <a href="/my_products">Back to My Products</a> |
-  <a href="../Controllers/Logout.php">Logout</a>
+  <a href="/logout">Logout</a>
 
   <div class="product-details">
     <?php
@@ -32,6 +32,7 @@ if (!Session::checkLogin()) {
       echo "<h2>" . htmlspecialchars($product['name']) . "</h2>";
       echo "<p><strong>Price:</strong> $" . htmlspecialchars($product['price']) . "</p>";
       echo "<p><strong>Quantity:</strong> " . htmlspecialchars($product['quantity']) . "</p>";
+      echo "<p><strong>Type:</strong> " . htmlspecialchars($product['types']) . "</p>";
       echo "<p><strong>Created:</strong> " . htmlspecialchars($product['created_at']) . "</p>";
       echo "<p><strong>Updated:</strong> " . htmlspecialchars($product['updated_at']) . "</p>";
 
@@ -58,16 +59,17 @@ if (!Session::checkLogin()) {
       echo "<p>Invalid product ID.</p>";
     }
     ?>
-    <script>
-      const showQuantityBtn = document.getElementById('showQuantityBtn');
-      const cartForm = document.getElementById('cartForm');
-      showQuantityBtn.addEventListener('click', function() {
-        cartForm.style.display = 'block';
-        showQuantityBtn.style.display = 'none';
-      });
-    </script>
+
 
   </div>
+  <script>
+    const showQuantityBtn = document.getElementById('showQuantityBtn');
+    const cartForm = document.getElementById('cartForm');
+    showQuantityBtn.addEventListener('click', function() {
+      cartForm.style.display = 'block';
+      showQuantityBtn.style.display = 'none';
+    });
+  </script>
 </body>
 
 </html>

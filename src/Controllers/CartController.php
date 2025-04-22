@@ -2,33 +2,20 @@
 
 namespace Hazesoft\Formhandeling\Controllers;
 
-use Hazesoft\Formhandeling\Services\Session;
-use Hazesoft\Formhandeling\Models\CartItem;
 use Hazesoft\Formhandeling\Services\View;
-use Hazesoft\Formhandeling\Services\DateFormatter;
+use Hazesoft\Formhandeling\Services\ProductTypes\ProductFactory;
 
-$session = Session::getInstance();
-
-$session->start();
-
-
-class CartController
+class CartController extends BaseController
 {
-    use DateFormatter;
-    private $productModel;
-    private $cartModel;
-    private $cartItemModel;
-    public $userid;
-
-    public function __construct()
+    public function viewCart($id): void
     {
-        $this->cartItemModel = new CartItem();
-        $this->userid = $_SESSION['id'] ?? null;
-    }
-
-    public function viewCart($id)
-    {
-        $cartItems = $this->cartItemModel->getCartItemsName($id);
-        View::render('view_cart', ['cartItems' => $cartItems]);
+        $cartItems = $this->cartItemModel->getCartItems($id);
+        $totalPrice = 0;
+        foreach ($cartItems as &$cartItem) {
+            $product = ProductFactory::create($cartItem['types'], $cartItem['price'], $cartItem['cartItemQuantity']);
+            $cartItem['total'] = $product->calculateTotal();
+            $totalPrice += $product->calculateTotal();
+        }
+        View::render('view_cart', ['cartItems' => $cartItems, 'totalPrice' => $totalPrice]);
     }
 }

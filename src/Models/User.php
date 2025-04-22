@@ -2,20 +2,8 @@
 
 namespace Hazesoft\Formhandeling\Models;
 
-use Hazesoft\Formhandeling\Services\Database;
-
-use Exception;
-use PDO;
-use PDOException;
-
-class User
+class User extends BaseModel
 {
-    private $connection;
-
-    public function __construct()
-    {
-        $this->connection = Database::getInstance()->getConnection();
-    }
 
     public function register($fName, $mName, $lName, $address, $email, $password): bool
     {
@@ -36,33 +24,33 @@ class User
 
             $stmt->execute();
             return true;
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             //23000 means for duplication 
             if ($e->getCode() === '23000') {
-                throw new Exception("Email already exists. Please use a different email.");
+                throw new \Exception("Email already exists. Please use a different email.");
             } else {
-                throw new Exception("Database error: " . $e->getMessage());
+                throw new \Exception("Database error: " . $e->getMessage());
             }
         }
     }
 
 
-    public function login($email, $password)
+    public function login($email, $password): array|bool
     {
         try {
             $stmt = $this->connection->prepare("SELECT id, first_name, password FROM users WHERE email = :email");
             $stmt->bindParam(':email', $email);
             $stmt->execute();
 
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password'])) {
                 return $user;
             }
 
             return false;
-        } catch (PDOException $e) {
-            throw new Exception("Database error: " . $e->getMessage());
+        } catch (\PDOException $e) {
+            throw new \Exception("Database error: " . $e->getMessage());
         }
     }
 }

@@ -2,18 +2,9 @@
 
 namespace Hazesoft\Formhandeling\Models;
 
-use PDOException;
-use Hazesoft\Formhandeling\Services\Database;
 
-class InsertUser
+class InsertUser extends BaseModel
 {
-    private $connection;
-
-    public function __construct()
-    {
-        $this->connection = Database::getInstance()->getConnection();
-    }
-
     public function parseAndInsert(string $csvFile): void
     {
         if (($handle = fopen($csvFile, 'r')) !== false) {
@@ -64,7 +55,7 @@ class InsertUser
             } else {
                 return 'Error inserting record.';
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             return 'Error inserting record: ' . $e->getMessage();
         }
     }

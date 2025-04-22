@@ -6,7 +6,7 @@ $session = Session::getInstance();
 $session->start();
 
 if (Session::checkLogin()) {
-    header("Location: products.php");
+    header("Location: /products");
     exit();
 }
 ?>
@@ -47,7 +47,7 @@ if (Session::checkLogin()) {
         <br><br>
 
         <label for="mname">Middle Name</label>
-        <input type="text" name="mname" id="mname" value="<?= htmlspecialchars($postData['mname'] ?? '') ?>" required>
+        <input type="text" name="mname" id="mname" value="<?= htmlspecialchars($postData['mname'] ?? '') ?>">
         <br><br>
 
         <label for="lname">Last Name</label>

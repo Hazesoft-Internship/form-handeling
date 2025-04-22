@@ -2,38 +2,27 @@
 
 namespace Hazesoft\Formhandeling\Models;
 
-use Hazesoft\Formhandeling\Services\Database;
-use Hazesoft\Formhandeling\Services\Session;
-use Exception;
-use PDO;
-use PDOException;
 
-$session = Session::getInstance();
-
-$session->start();
-
-class Cart
+class Cart extends BaseModel
 {
-    private $connection;
 
-    public function __construct()
+    public function getOrCreateCart($userid): int
     {
-        $this->connection = Database::getInstance()->getConnection();
-    }
+        try {
+            $stmt = $this->connection->prepare("SELECT id FROM cart WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userid, \PDO::PARAM_INT);
+            $stmt->execute();
+            $cart = $stmt->fetch();
 
-    public function getOrCreateCart($userid)
-    {
-        $stmt = $this->connection->prepare("SELECT id FROM cart WHERE user_id = :user_id");
-        $stmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
-        $stmt->execute();
-        $cart = $stmt->fetch();
-
-        if ($cart) {
-            return $cart['id'];
+            if ($cart) {
+                return $cart['id'];
+            }
+            $stmt = $this->connection->prepare("INSERT INTO cart (user_id) VALUES (:user_id)");
+            $stmt->bindParam(':user_id', $userid, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $this->connection->lastInsertId();
+        } catch (\PDOException $e) {
+            throw new \Exception("Failed to get or create cart: " . $e->getMessage());
         }
-        $stmt = $this->connection->prepare("INSERT INTO cart (user_id) VALUES (:user_id)");
-        $stmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
-        $stmt->execute();
-        return $this->connection->lastInsertId();
     }
 }

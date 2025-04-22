@@ -6,13 +6,12 @@ use Hazesoft\Formhandeling\Exception\ValidationException;
 
 class Validation
 {
-
     public function test_input($data): string
     {
         return htmlspecialchars(trim($data));
     }
 
-    public function validateString($data)
+    public function validateString($data): string
     {
 
         if (empty($data)) {
