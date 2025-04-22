@@ -166,10 +166,24 @@ class OrderController
 
                 $this->order->insertOrderItems($orderItemsArray);
             }
-            // order placed message
-            echo("Order placed successfully");
-
             // update product quantity and remove cartItems after checkout
+            $this->handleAfterCheckout($cartItems, $userId);
+
+            // order placed message
+            echo("Order placed successfully");       
+
+            echo"
+            <br>
+                <a href='/products'>Go to products page</a>
+            ";
+
+        } catch(Exception $exception){
+            echo($exception->getMessage());
+        }
+    }
+
+    public function handleAfterCheckout($cartItems, $userId){
+        try {
             foreach ($cartItems as $item) {
                 $productId = $item["product_id"];
                 $orderedQuantity = $item["added_quantity"];
@@ -180,14 +194,8 @@ class OrderController
                 // cartItems removed after checkout
                 $this->cartItems->deleteCartItem($productId, $userId);
             }
-
-            echo"
-            <br>
-                <a href='/products'>Go to products page</a>
-            ";
-
-        } catch(Exception $exception){
-            echo($exception->getMessage());
+        } catch (Exception $exception) {
+            echo ($exception->getMessage());
         }
     }
 
