@@ -67,7 +67,7 @@ final class CartItems extends ModelDBConnection
     public function updateCartProductQuantity(int $quantity, int $id): PDOStatement|string
     {
         try {
-            $updateQuery = 'UPDATE `cartItems` SET `quantity` = :quantity WHERE `id` = :id';
+            $updateQuery = 'UPDATE `cartItems` SET `quantity` = `quantity` + :quantity WHERE `id` = :id';
             $statement = $this->dbConnection->prepare($updateQuery);
             $statement->bindParam(':quantity', $quantity);
             $statement->bindParam(':id', $id);
