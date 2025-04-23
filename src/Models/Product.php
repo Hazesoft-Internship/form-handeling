@@ -7,14 +7,8 @@ use Hazesoft\Backend\Services\Connection;
 use Hazesoft\Backend\Services\Session;
 use Hazesoft\Backend\Services\TableCreation;
 
-class Product
+class Product extends BaseModel
 {
-    private $conn;
-
-    public function __construct()
-    {
-        $this->conn = Connection::getConnection();;
-    }
     public function insertProductDetails($inputArray)
     {
         try {

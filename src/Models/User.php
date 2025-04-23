@@ -7,15 +7,9 @@ use Hazesoft\Backend\Services\Connection;
 use Hazesoft\Backend\Services\Session;
 use Hazesoft\Backend\Services\TableCreation;
 
-class User
+class User extends BaseModel
 {
-    private $conn;
     private $hashedPassword;
-
-    public function __construct()
-    {
-        $this->conn = Connection::getConnection();
-    }
 
     public function checkUser($inputArray): bool
     {

@@ -32,6 +32,17 @@ class CartController
 
     public function getInsertCartProductPage()
     {
+        $userId = $this->session->getSession("userId");
+        
+        // insert new row in carts table
+        $doesCartExists = $this->carts->doesCartExists($userId);
+
+        if ($doesCartExists == false) {
+            $result = $this->carts->createCart($userId);
+        } else {
+            $result = $this->carts->updateCart($userId);
+        }
+
         $viewData = $this->handleInsertCartProductData();
         extract($viewData);
         return require_once(__DIR__ . '/../../Views/insert-cart-product.php');

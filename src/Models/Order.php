@@ -5,15 +5,8 @@ namespace Hazesoft\Backend\Models;
 use Hazesoft\Backend\Services\Connection;
 use Exception;
 
-class Order
+class Order extends BaseModel
 {
-    private $conn;
-
-    public function __construct()
-    {
-        $this->conn = Connection::getConnection();
-    }
-
     public function insertOrderItems($orderItemsArray)
     {
         try {

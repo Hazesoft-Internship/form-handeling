@@ -31,14 +31,6 @@ class OrderController
     public function getCheckoutPage()
     {
         $userId = $this->session->getSession("userId");
-        // insert new row in carts table
-        $doesCartExists = $this->carts->doesCartExists($userId);
-        
-        if ($doesCartExists == false) {
-            $result = $this->carts->createCart($userId);
-        } else {
-            $result = $this->carts->updateCart($userId);
-        }
 
         $viewData = $this->handleCheckoutData();
         extract($viewData);
@@ -182,6 +174,7 @@ class OrderController
         }
     }
 
+    // update product quantity and remove cartItems after checkout
     public function handleAfterCheckout($cartItems, $userId){
         try {
             foreach ($cartItems as $item) {

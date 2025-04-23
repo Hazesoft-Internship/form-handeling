@@ -5,15 +5,8 @@ namespace Hazesoft\Backend\Models;
 use Hazesoft\Backend\Services\Connection;
 use Exception;
 
-class Carts
+class Carts extends BaseModel
 {
-    private $conn;
-
-    public function __construct()
-    {
-        $this->conn = Connection::getConnection();
-    }
-
     public function createCart($userId)
     {
         try {

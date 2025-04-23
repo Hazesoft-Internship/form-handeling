@@ -5,18 +5,10 @@ namespace Hazesoft\Backend\Models;
 use Exception;
 use Hazesoft\Backend\Services\Connection;
 
-class CartItems
+class CartItems extends BaseModel
 {
-    private $conn;
-
-    public function __construct()
-    {
-        $this->conn = Connection::getConnection();
-    }
-
     public function insertCartItems($productId, $productQuantity, $userId, $cartId)
     {
-
         try {
             $created_at = date('Y-m-d H:i:s');
             $updated_at = date('Y-m-d H:i:s');
@@ -95,7 +87,7 @@ class CartItems
 
             $query = "UPDATE cart_items
             SET
-                quantity = :quantity,
+                quantity = quantity + :quantity,
                 updated_at = :updated_at
             WHERE 
                 user_id = :user_id AND product_id = :product_id";
