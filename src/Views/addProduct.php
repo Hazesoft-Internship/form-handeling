@@ -35,6 +35,8 @@
         }
 
         input,
+
+        select,
         textarea,
         button {
             width: 100%;
@@ -60,7 +62,7 @@
 
 <body>
     <h1>Add Product</h1>
-    <form action="/addproduct" method="post">
+    <form action="/add-product" method="post">
         <label for="name">Product Name:</label>
         <input type="text" id="name" name="name" required><br><br>
 
@@ -72,6 +74,12 @@
 
         <label for="quantity">Quantity:</label>
         <input type="number" id="quantity" name="quantity" required><br><br>
+
+        <label for="type">Type:</label>
+        <select name="type" id="type" required>
+            <option value="physical" selected>Physical</option>
+            <option value="digital">Digital</option>
+        </select>
 
         <button type="submit">Add Product</button>
     </form>

@@ -1,11 +1,11 @@
 <?php
 
-use App\Controllers\UserController;
-
-use App\Controllers\ViewController;
-use App\Controllers\ProductController;
+use App\Controllers\Product\ProductController;
 use App\Sessions\Sessions;
-use App\Controllers\CartController;
+use App\Controllers\Cart\CartController;
+use App\Controllers\Order\OrderController;
+use App\Controllers\User\UserController;
+
 
 function isAuthenticated()
 {
@@ -36,7 +36,10 @@ return [
         '/cart' => isAuthenticated() ? [CartController::class, 'cartPage'] : function () {
             header('Location:/login');
         },
-        '/api/product' => [ProductController::class, 'productJsonPage']
+        '/api/product' => [ProductController::class, 'productJsonPage'],
+        '/checkout' => isAuthenticated() ? [OrderController::class, 'checkoutPage'] : function () {
+            header('Location:/login');
+        },
 
     ],
     "POST" => [
@@ -63,7 +66,9 @@ return [
         '/update-cart' => isAuthenticated() ? [CartController::class, 'updateCartQuantity'] : function () {
             header('Location:/login');
         },
-
+        '/order' => isAuthenticated() ? [OrderController::class, 'createOrder'] : function () {
+            header('Location:/login');
+        },
     ]
 
 

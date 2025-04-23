@@ -1,34 +1,29 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Product;
 
 use App\Config\DataBase;
+use App\Models\Model;
 use App\Sessions\Sessions;
 use Exception;
 use PDO;
 
-class ProductModel
+class ProductModel extends Model
 {
-    public object $connection;
-    public Sessions $session;
 
-    public function __construct()
-    {
-        $this->connection = DataBase::connect();
-        $this->session = Sessions::getInstance();
-    }
 
-    public function insertProduct(string $name,  string $description, float $price, int $quantity, int $userId): void
+    public function insertProduct(string $name,  string $description, float $price, int $quantity, int $userId, string $type): void
     {
         try {
-            $sql = "INSERT INTO products (name, description, price,quantity,user_id) VALUES ( ?, ?,?,?,?)";
-            $statement = $this->connection->prepare($sql);
+            $insertProductQuery = "INSERT INTO products (name, description, price,quantity,user_id,type) VALUES ( ?, ?,?,?,?,?)";
+            $statement = $this->connection->prepare($insertProductQuery);
             // $statement->bind_param("ssdii", $name, $description, $price, $quantity, $userId);
             $statement->bindParam(1, $name, PDO::PARAM_STR);
             $statement->bindParam(2, $description, PDO::PARAM_STR);
             $statement->bindParam(3, $price, PDO::PARAM_INT);
             $statement->bindParam(4, $quantity, PDO::PARAM_INT);
             $statement->bindParam(5, $userId, PDO::PARAM_INT);
+            $statement->bindParam(6, $type, PDO::PARAM_STR);
 
             if ($statement->execute()) {
                 echo "Product added successfully!";
@@ -158,6 +153,26 @@ class ProductModel
         } catch (Exception $exception) {
             echo "Error: " . $exception->getMessage();
             return [];
+        }
+    }
+
+    public function reduceQuantity(int $product_id, int $quantity): bool
+    {
+        try {
+            $reduceProductQuantity = "UPDATE products SET quantity=quantity-? WHERE product_id=?";
+            $statement = $this->connection->prepare($reduceProductQuantity);
+            $statement->bindParam(1, $quantity, PDO::PARAM_STR);
+            $statement->bindParam(2, $product_id);
+            if ($statement->execute()) {
+                return true;
+            }
+            return false;
+        } catch (\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
+            return false;
+        } catch (Exception $exception) {
+            echo "Error: " . $exception->getMessage();
+            return false;
         }
     }
 }

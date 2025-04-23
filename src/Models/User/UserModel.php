@@ -1,26 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User;
 
 
 
-use App\Config\DataBase;
+use App\Models\Model;
 use App\Sessions\Sessions;
 use Exception;
 use PDO;
 
-class UserModel
+class UserModel extends Model
 {
-    public object $connection;
-    public object $session;
-
-    public function __construct()
-    {
-
-        $this->connection = DataBase::connect();
-        $this->session = new Sessions;
-    }
-
 
     public function signup(string $first_name, string $middle_name, string $last_name, string $email, string $address, string $password): void
     {

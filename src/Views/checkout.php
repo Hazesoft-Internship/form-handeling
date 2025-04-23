@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart</title>
-    <link rel="stylesheet" href="/public/css/cartPage.css">
+    <title>Checkout</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -14,8 +13,8 @@
             padding: 0;
         }
 
-        .cart-container {
-            max-width: 800px;
+        .checkout-container {
+            max-width: 900px;
             margin: 40px auto;
             background: #fff;
             border-radius: 10px;
@@ -59,24 +58,32 @@
             text-align: left;
         }
 
-        input[type="number"] {
-            width: 60px;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: center;
-        }
-
         .total-row td {
             font-weight: bold;
             background: #f1f3f6;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         button {
             background: #007bff;
             color: #fff;
             border: none;
-            padding: 6px 9px;
+            padding: 12px 32px;
             border-radius: 5px;
             font-size: 1rem;
             cursor: pointer;
@@ -90,7 +97,7 @@
         }
 
         @media (max-width: 600px) {
-            .cart-container {
+            .checkout-container {
                 padding: 10px;
             }
 
@@ -103,72 +110,67 @@
 </head>
 
 <body>
-    <div class="cart-container">
-        <h1>Your Cart</h1>
-
+    <div class="checkout-container">
+        <h1>Checkout</h1>
         <table>
             <thead>
                 <tr>
                     <th>Product</th>
+                    <th>Type</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Subtotal</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
 
                 foreach ($cartItems as $item):
+
                 ?>
                     <tr>
                         <td class="product-name"><?php echo htmlspecialchars($item['name']); ?></td>
+                        <td><?php echo htmlspecialchars($item['type']); ?></td>
                         <td>$<?php echo number_format($item['price'], 2); ?></td>
-                        <td>
-                            <form method="post" action="/update-cart">
-                                <input type="hidden" name="cart_item_id" value="<?php echo $item['id']; ?>">
-                                <input type="hidden" name="product_quantity" value="<?php echo $item['product_quantity']; ?>">
-                                <div style="display: flex; justify-content:space-evenly;margin-bottom:8px;">
-
-                                    <input
-                                        type="number"
-                                        name="next_cart_quantity"
-                                        value="<?php echo $item['cart_quantity']; ?>"
-                                        min="1"
-                                        max="<?php echo $item['product_quantity']; ?>" />
-                                    <button type="submit">Update</button>
-                                </div>
-                            </form>
-                        </td>
-                        <td>$<?php echo number_format($item['cart_quantity'] * $item['price'], 2); ?></td>
-                        <td>
-                            <form method="post" action="/remove-from-cart">
-                                <input type="hidden" name="cart_item_id" value="<?php echo $item['id']; ?>">
-                                <button type="submit">Remove</button>
-                            </form>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-
-                            <span style="font-size: 1em; color: #888;">/ <?php echo $item['product_quantity']; ?> in stock</span>
-                        </td>
+                        <td><?php echo $item['cart_quantity']; ?></td>
+                        <td>$<?php echo number_format($item['price'] * $item['cart_quantity'], 2); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
-
                 <tr class="total-row">
-                    <td colspan="3" style="text-align: right;">Total:</td>
-                    <td>$<?php echo number_format($total, 2); ?></td>
-                    <td>
-                        <button onclick="window.location.href='/checkout'">Checkout</button>
-                    </td>
+                    <td colspan="4" style="text-align: right;">Order:</td>
+                    <td>$<?php echo number_format($totalOrder, 2); ?></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="4" style="text-align: right;">Tax:</td>
+                    <td>$<?php echo number_format($tax, 2); ?></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="4" style="text-align: right;">Discount:</td>
+                    <td>$<?php echo number_format($discount); ?></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="4" style="text-align: right;">shipping:</td>
+                    <td>$<?php echo number_format($shipping); ?></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="4" style="text-align: right;">Grand Total:</td>
+                    <td>$<?php echo number_format($grandTotal, 2); ?></td>
                 </tr>
             </tfoot>
         </table>
-        <span style="font-size: 1em; color: #888;">Change the quantity and click update to update the quantity.</span>
+        <form action="/order" method="post">
+            <label for="Address">Address</label>
+            <input type="text" name="address" id="Address" required>
+            <label for="payment">Payment</label>
+            <select name="payment" id="payment" required>
+                <?php foreach ($payment_method as $method): ?>
+                    <option value="<?php echo htmlspecialchars($method); ?>"><?php echo htmlspecialchars($method); ?></option>
+                <?php endforeach ?>
+            </select>
+            <button type="submit">Buy now</button>
+        </form>
     </div>
 </body>
 

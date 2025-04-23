@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Cart;
 
-use App\Config\DataBase;
+
+use App\Models\Model;
 use Exception;
 use PDO;
 use PDOException;
 
-class CartModel
+class CartModel extends Model
 {
 
-    public object $connection;
-    public function __construct()
-    {
-        $this->connection = DataBase::connect();
-    }
 
 
 
-    public function isProductInCart(int $product_id)
+    public function isProductInCart(int $product_id): bool
     {
         try {
             $ifProductExistQuery = "SELECT * FROM cart_items WHERE product_id=? ";
@@ -85,7 +81,7 @@ class CartModel
         try {
 
 
-            $getCartItemQuery = "SELECT  p.name, p.price, p.quantity AS product_quantity, c.id, c.quantity AS cart_quantity  FROM cart_items AS c JOIN products AS p  ON p.product_id= c.product_id  WHERE c.cart_id = ?";
+            $getCartItemQuery = "SELECT  p.name, p.price, p.type,p.product_id, p.quantity AS product_quantity, c.id, c.quantity AS cart_quantity  FROM cart_items AS c JOIN products AS p  ON p.product_id= c.product_id  WHERE c.cart_id = ?";
             $statement = $this->connection->prepare($getCartItemQuery);
             $statement->bindParam(1, $cartId, PDO::PARAM_INT);
 
@@ -145,7 +141,7 @@ class CartModel
         }
     }
 
-    public function updateCart(int $cart_item_id, int $updatedQuantity)
+    public function updateCart(int $cart_item_id, int $updatedQuantity): bool
     {
         try {
             $updateCartQuery = "UPDATE  cart_items SET quantity=? WHERE id=?";
@@ -164,12 +160,12 @@ class CartModel
             return false;
         }
     }
-    public function emptyCart(int $user_id): bool
+    public function emptyCart(int $cart_id): bool
     {
         try {
-            $sql = "DELETE * FROM cart_items WHERE user_id:user_id";
+            $sql = "DELETE FROM cart_items WHERE cart_id=?";
             $statement = $this->connection->prepare($sql);
-            $statement->bindParam(1, $user_id, PDO::PARAM_INT);
+            $statement->bindParam(1, $cart_id, PDO::PARAM_INT);
             if ($statement->execute()) {
                 return true;
             }

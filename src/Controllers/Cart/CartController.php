@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Cart;
 
-use App\Models\CartModel;
+use App\Controllers\Controller;
+use App\Models\Cart\CartModel;
 use App\Sessions\Sessions;
 use Exception;
 
-class CartController
+class CartController extends Controller
 {
     public $cart;
-    public Sessions $session;
+
 
     public function __construct()
     {
-
+        parent::__construct();
         $this->cart = new CartModel();
-        $this->session = Sessions::getInstance();
     }
 
     public function cartPage()
@@ -27,7 +27,13 @@ class CartController
             exit();
         }
 
-        require_once __DIR__ . '/../Views/cartPage.php';
+        $total = 0;
+        foreach ($cartItems as $item) {
+
+            $subtotal = $item['price'] * $item['cart_quantity'];
+            $total += $subtotal;
+        }
+        require_once __DIR__ . '/../../Views/cartPage.php';
     }
 
     public function cartExist()
@@ -168,6 +174,4 @@ class CartController
             echo "Error:" . $exception->getMessage();
         }
     }
-
-    public function emptyCart(int $user_id): bool {}
 }

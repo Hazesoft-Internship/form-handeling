@@ -1,40 +1,41 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Product;
 
-
-use App\Models\ProductModel;
+use App\Controllers\Controller;
+use App\Models\Product\ProductModel;
+use App\Models\Product\PhysicalProduct;
+use App\Models\Product\DigitalProduct;
 use App\Sessions\Sessions;
 use App\Validation\ProductValidation;
 
-class ProductController
+
+class ProductController extends Controller
 {
 
-
-    public Sessions $session;
     public ProductValidation $validation;
 
     public function __construct()
     {
 
-        $this->session = Sessions::getInstance();
+        parent::__construct();
         $this->validation = new ProductValidation();
     }
 
     public function addProductPage()
     {
-        require_once __DIR__ . '/../Views/addProduct.php';
+        require_once __DIR__ . '/../../Views/addProduct.php';
     }
-    
+
     public function myProductsPage()
     {
         $products = (new ProductController())->userProducts();
 
-        require_once __DIR__ . '/../Views/myproducts.php';
+        require_once __DIR__ . '/../../Views/myproducts.php';
     }
     public function productJsonPage()
     {
-        require_once __DIR__ . '/../Views/productJson.php';
+        require_once __DIR__ . '/../../Views/productJson.php';
     }
 
     public function addProduct(): void
@@ -50,14 +51,23 @@ class ProductController
         $description = $_POST['description'] ?? '';
         $price = $_POST['price'] ?? '';
         $quantity = $_POST['quantity'] ?? '';
+        $type = $_POST['type'] ?? '';
 
         $userId = $this->session->getSession('user')['user_id'];
 
 
+
+
         $this->validation->insertProduct($name, $description, $price, $quantity, $userId);
 
+        if ($type == 'physical') {
+            $item = new PhysicalProduct($name, $quantity, $price, $description, $userId);
+        }
+        if ($type == 'digital') {
+            $item = new DigitalProduct($name, $quantity, $price, $userId, $description);
+        }
         $product = new ProductModel();
-        $product->insertProduct($name, $description, $price, $quantity, $userId);
+        $product->insertProduct($item->name, $item->description, $item->price, $item->quantity, $item->user_id, $item->getType());
     }
 
     public function updateProduct()

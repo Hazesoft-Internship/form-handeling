@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\User;
 
-use App\Models\UserModel;
+use App\Controllers\Controller;
+use App\Models\User\UserModel;
 use App\Sessions\Sessions;
 use App\Validation\UserValidation;
+use App\Controllers\Product\ProductController;
 
 
-class UserController
+class UserController extends Controller
 {
 
     public $validation;
-    public  $session;
     public function __construct()
 
     {
+        parent::__construct();
         $this->validation = new UserValidation();
-        $this->session = Sessions::getInstance();
     }
 
     public function homePage()
     {
-        require_once __DIR__ . '/../Views/home.php';
+        require_once __DIR__ . ' /../../Views/home.php';
     }
 
     public function landingPage()
@@ -33,15 +34,15 @@ class UserController
             echo "No products found.";
             return;
         }
-        require_once __DIR__ . '/../Views/landingPage.php';
+        require_once __DIR__ . '/../../Views/landingPage.php';
     }
     public function loginPage()
     {
-        require_once __DIR__ . '/../Views/login.php';
+        require_once __DIR__ . '/../../Views/login.php';
     }
     public function registerPage()
     {
-        require_once __DIR__ . '/../Views/signup.php';
+        require_once __DIR__ . '/../../Views/signup.php';
     }
 
     public function logout()
