@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,7 +67,7 @@
     <div class="product-form">
 
         <h1>Update Product</h1>
-        <form action="/update-product-submit?id=<?php echo htmlspecialchars($productID); ?>" method="post">
+        <form action="/update-product-submit?id=<?php echo htmlspecialchars($productByID['id']); ?>" method="post">
             <label for="productName">Product Name:</label>
             <input type="text" id="productName" name="productName" value=<?php echo $productByID['name'] ?>><br><br>
 
@@ -77,6 +76,12 @@
 
             <label for="productQuantity">Product Quantity:</label>
             <input type="number" id="productQuantity" name="productQuantity" value=<?php echo $productByID['quantity'] ?>><br><br>
+
+            <label for="productType">Product Type:</label>
+            <select id="productType" name="productType" required>
+                <option value="physical">Physical</option>
+                <option value="digital">Digital</option>
+            </select><br /><br />
 
             <input type="submit" id="button-update" name="product-update" value="Update" disabled>
         </form>

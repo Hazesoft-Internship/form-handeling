@@ -2,21 +2,13 @@
 
 namespace ECommerce\Models;
 
-use ECommerce\Models\Cart;
-use ECommerce\Services\DatabaseConnection;
+use ECommerce\Models\ModelDBConnection;
 use PDO;
+use PDOStatement;
 
-final class CartItems
+final class CartItems extends ModelDBConnection
 {
-    private $dbConnection;
-    private $cartModel;
-    public function __construct()
-    {
-        $this->dbConnection = DatabaseConnection::getInstance();
-        $this->cartModel = new Cart();
-    }
-
-    public function getCartItem($cartID, $productID)
+    public function getCartItem(int $cartID, int $productID): array|string
     {
         try {
             $query = 'SELECT * FROM cartItems WHERE `cartID` = :cartID AND `productID` = :productID';
@@ -24,85 +16,29 @@ final class CartItems
             $statement->bindParam(':cartID', $cartID);
             $statement->bindParam(':productID', $productID);
             $statement->execute();
+            
             return $statement->fetch(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            $e->getMessage();
-        }
-    }
-
-    public function checkProductStock($id, $quantity)
-    {
-        try {
-            $checkQuantityQuery = 'SELECT quantity FROM products WHERE id = :id';
-            $statement = $this->dbConnection->prepare($checkQuantityQuery);
-            $statement->bindParam(':id', $id);
-            $statement->execute();
-            $productStock = $statement->fetch(PDO::FETCH_ASSOC);
-            if ($productStock['quantity'] < $quantity) return false;
-            return true;
-        } catch (\PDOException $e) {
             return $e->getMessage();
         }
     }
 
-    public function updateProductQuantity($quantity, $id)
-    {
-        try {
-            $updateQuery = 'UPDATE `cartItems` SET `quantity` = :quantity WHERE `id` = :id';
-            $statement = $this->dbConnection->prepare($updateQuery);
-            $statement->bindParam(':quantity', $quantity);
-            $statement->bindParam(':id', $id);
-            return $statement->execute();
-        } catch (\PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function addItemToCart($userID, $productID, $quantity = 1)
-    {
-        try {
-            $cart = $this->cartModel->getCartByUserID($userID);
-            if (!$cart) {
-                $this->cartModel->createUserCart($userID);
-                $cart = $this->cartModel->getCartByUserID($userID);
-            }
-            $cartID = $cart['id'];
-            $existingItem = $this->getCartItem($cartID, $productID);
-            $id = $existingItem['id'];
-
-            if ($existingItem) {
-                $updationResult = $this->updateProductQuantity($quantity, $id);
-                return $updationResult;
-            } else {
-                $insertQuery = 'INSERT INTO `cartItems` (`cartID`, `productID`, `quantity`, `price`) 
-                            VALUES (:cartID, :productID, :quantity, (
-                                SELECT `price` FROM `products` WHERE `id` = :productID
-                            ))';
-                $statement = $this->dbConnection->prepare($insertQuery);
-                $statement->bindParam(':cartID', $cartID);
-                $statement->bindParam(':productID', $productID);
-                $statement->bindParam(':quantity', $quantity);
-                return $statement->execute();
-            }
-        } catch (\PDOException $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function getCartItems($userID)
+    public function getCartItemsDetail(int $userID): array|string
     {
         try {
             $getCartItemsQuery = 'SELECT 
-                                cartItems.id,
-                                products.name, 
-                                products.price, 
-                                cartItems.quantity, 
-                                (products.price * cartItems.quantity) AS totalPrice
-                              FROM carts
-                              INNER JOIN cartItems ON carts.id = cartItems.cartID
-                              INNER JOIN products ON cartItems.productID = products.id
-                              WHERE 
-                                carts.userID = :userID';
+                                        cartItems.id,
+                                        cartItems.cartID,
+                                        products.id as productID,
+                                        products.name, 
+                                        products.price,
+                                        products.type, 
+                                        cartItems.quantity
+                                  FROM carts
+                                  INNER JOIN cartItems ON carts.id = cartItems.cartID
+                                  INNER JOIN products ON cartItems.productID = products.id
+                                  WHERE 
+                                        carts.userID = :userID';
 
             $statement = $this->dbConnection->prepare($getCartItemsQuery);
             $statement->bindParam(':userID', $userID);
@@ -114,13 +50,71 @@ final class CartItems
         }
     }
 
-    public function deleteCartItem($cartItemID)
+    public function getProductStock(int $id): array|string
+    {
+        try {
+            $checkQuantityQuery = 'SELECT quantity FROM products WHERE id = :id';
+            $statement = $this->dbConnection->prepare($checkQuantityQuery);
+            $statement->bindParam(':id', $id);
+            $statement->execute();
+
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function updateCartProductQuantity(int $quantity, int $id): PDOStatement|string
+    {
+        try {
+            $updateQuery = 'UPDATE `cartItems` SET `quantity` = :quantity WHERE `id` = :id';
+            $statement = $this->dbConnection->prepare($updateQuery);
+            $statement->bindParam(':quantity', $quantity);
+            $statement->bindParam(':id', $id);
+
+            return $statement->execute();
+        } catch (\PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function addItemToCart(int $cartID, int $productID, int $quantity)
+    {
+        try {
+            $insertQuery = 'INSERT INTO `cartItems` (`cartID`, `productID`, `quantity`) 
+                            VALUES (:cartID, :productID, :quantity)';
+            $statement = $this->dbConnection->prepare($insertQuery);
+            $statement->bindParam(':cartID', $cartID);
+            $statement->bindParam(':productID', $productID);
+            $statement->bindParam(':quantity', $quantity);
+
+            return $statement->execute();
+        } catch (\PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function deleteCartItem(int $cartItemID): PDOStatement|string
     {
         try {
             $deleteCartItemQuery = 'DELETE FROM cartItems WHERE id = :cartItemID';
             $statement = $this->dbConnection->prepare($deleteCartItemQuery);
             $statement->bindParam(':cartItemID', $cartItemID);
+
             return $statement->execute();
+        } catch (\PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    public function deleteAllCartItems(int $cartID): PDOStatement|string
+    {
+        try {
+            $deleteCartItemsQuery = 'DELETE FROM cartItems WHERE cartID = :cartID';
+            $cartItemsStatement = $this->dbConnection->prepare($deleteCartItemsQuery);
+            $cartItemsStatement->bindParam(':cartID', $cartID);
+
+            return $cartItemsStatement->execute();
         } catch (\PDOException $e) {
             return $e->getMessage();
         }

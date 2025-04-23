@@ -1,6 +1,7 @@
 <?php
 
 use ECommerce\Controllers\CartController\CartController;
+use ECommerce\Controllers\OrderController\OrderController;
 use ECommerce\Controllers\ProductController\ProductController;
 use ECommerce\Controllers\UserController\LogInController;
 use ECommerce\Controllers\UserController\LogOutController;
@@ -9,7 +10,7 @@ use ECommerce\Middlewares\SessionMiddleware;
 
 return [
     "GET" => [
-        '/' => function () {
+        '/' => function (): void {
             echo "Hello from index";
         },
         '/login' => [LogInController::class, 'getLoginPage'],
@@ -33,6 +34,14 @@ return [
         '/mycart' => [
             "middleware" => [SessionMiddleware::class],
             "handler" => [CartController::class, 'getMyCartPage']
+        ],
+        '/checkout' => [
+            "middleware" => [SessionMiddleware::class],
+            "handler" => [OrderController::class, 'getOrderPage']
+        ],
+        '/orderHistory' => [
+            "middleware" => [SessionMiddleware::class],
+            "handler" => [OrderController::class, 'getOrderHistoryPage']
         ],
         '/api/get-allproducts' => [
             "middleware" => [SessionMiddleware::class],
@@ -69,6 +78,10 @@ return [
         '/delete-product-submit' => [
             "middleware" => [SessionMiddleware::class],
             "handler" => [ProductController::class, 'handleDeleteProduct']
+        ],
+        '/create-order-submit' => [
+            "middleware" => [SessionMiddleware::class],
+            "handler" => [OrderController::class, 'handleCreateOrder']
         ],
         '/logout-submit' => [
             "middleware" => [SessionMiddleware::class],

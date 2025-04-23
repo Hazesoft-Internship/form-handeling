@@ -16,11 +16,6 @@ class SignUpController
         $this->signupValidation = new ValidateSignup();
     }
 
-    public function getSignUpPage()
-    {
-        return require_once __DIR__ . '/../../Views/signup.html';
-    }
-
     public function handleSignUpForm()
     {
         if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['register'])) {
@@ -41,5 +36,10 @@ class SignUpController
             }
             echo "Failed to signup user";
         }
+    }
+
+    public function getSignUpPage()
+    {
+        return require_once __DIR__ . '/../../Views/signup.html';
     }
 }

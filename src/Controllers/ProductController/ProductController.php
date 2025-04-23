@@ -2,29 +2,25 @@
 
 namespace ECommerce\Controllers\ProductController;
 
-use ECommerce\Services\Session;
-use ECommerce\Models\Product;
+use ECommerce\Controllers\ModelParentClass;
 use ECommerce\Utils\Validation\ValidateProduct;
 
-class ProductController
+class ProductController extends ModelParentClass
 {
-    private $product;
-    private $session;
     private $validateProduct;
-
     public function __construct()
     {
-        $this->product = new Product();
-        $this->session = Session::getInstance();
+        parent::__construct();
         $this->validateProduct = new ValidateProduct();
     }
 
-    public function handleAddProductForm()
+    public function handleAddProductForm(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product-submit'])) {
             $productName = $_POST["productName"];
             $productPrice = $_POST["productPrice"];
             $productQuantity = $_POST["productQuantity"];
+            $productType = $_POST["productType"];
             $userID = $this->session->get("userID");
 
             $sanitizedUserInput = $this->validateProduct->validateUserInput([$productName, $productPrice, $productQuantity]);
@@ -32,7 +28,7 @@ class ProductController
             if (isset($sanitizedUserInput["error"])) {
                 echo $sanitizedUserInput["error"];
             }
-            $addProductResult = $this->product->addProduct($sanitizedUserInput[0], $sanitizedUserInput[1], $sanitizedUserInput[2], $userID);
+            $addProductResult = $this->product->addProduct($sanitizedUserInput[0], $sanitizedUserInput[1], $sanitizedUserInput[2], $productType, $userID);
             if ($addProductResult) {
                 echo "Product added successfully";
                 header('Location: /myproducts');
@@ -42,13 +38,14 @@ class ProductController
         }
     }
 
-    public function handleUpdateProductForm()
+    public function handleUpdateProductForm(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product-update'])) {
             $productID = $_GET['id'];
             $productName = $_POST['productName'] ?? null;
             $productPrice = $_POST['productPrice'] ?? null;
             $productQuantity = $_POST['productQuantity'] ?? null;
+            // $productType = $_POST["productType"] ?? null;
 
             $updateFields = [];
             $params = [];
@@ -117,13 +114,12 @@ class ProductController
             $productID = $_GET['id'];
             $deleteProductResult = $this->product->deleteProduct($productID);
             if ($deleteProductResult) {
-                echo "Product Deleted successfully";
                 header('Location: /myproducts');
             }
             return "Failed to delete product";
         }
     }
-    public function getProductByID($productID)
+    public function getProductByID(int $productID)
     {
         $productArray = $this->product->getUpdateProductByID($productID);
         if ($productArray) {
@@ -136,16 +132,19 @@ class ProductController
     {
         return require_once __DIR__ . '/../../Views/add-products.html';
     }
+
     public  function getUpdateProductPage()
     {
-        $productByID = $this->getProductByID($_GET['id']);
+        $productByID = $this->product->getUpdateProductByID($_GET['id']);
         return require_once __DIR__ . '/../../Views/update-products.php';
     }
+
     public  function getAllProductPage()
     {
         $products = $this->handleListAllProduct();
         return require_once __DIR__ . '/../../Views/view-allproducts.html';
     }
+
     public  function getMyProductPage()
     {
         $products = $this->handleListMyProduct();

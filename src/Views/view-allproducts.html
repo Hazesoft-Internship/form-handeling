@@ -103,6 +103,7 @@
         </div>
         <div>
           <a href="/mycart" class="my-cart">Carts</a>
+          <a href="/orderHistory" class="my-cart">Order History</a>
         </div>
       </div>
 
@@ -120,7 +121,15 @@
           <td><?php echo $row['id']; ?></td>
           <td><?php echo htmlspecialchars($row['name']); ?></td>
           <td>Rs.<?php echo number_format($row['price'], 2); ?></td>
-          <td><?php echo htmlspecialchars($row['quantity']); ?></td>
+            <td>
+            <?php 
+              if ($row['quantity'] == 0) {
+              echo '<span style="color: red;">Out of Stock</span>';
+              } else {
+              echo htmlspecialchars($row['quantity']);
+              }
+            ?>
+            </td>
           <td class="actions">
             <form
               action="/add-to-cart-submit?productID=<?php echo $row['id']; ?>"

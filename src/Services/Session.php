@@ -10,7 +10,7 @@ class Session
         if (session_status() === PHP_SESSION_NONE) session_start();
     }
 
-    public static function getInstance()
+    public static function getInstance(): object
     {
         if (self::$instance === null) {
             self::$instance = new Session();
@@ -18,17 +18,17 @@ class Session
         return self::$instance;
     }
 
-    public function set($key, $value)
+    public function set(string $key, string $value): void
     {
         $_SESSION[$key] = $value;
     }
 
-    public function get($key)
+    public function get(string $key): string|null
     {
         return $_SESSION[$key];
     }
 
-    public function destroy()
+    public function destroy(): bool
     {
         session_unset();
         session_destroy();

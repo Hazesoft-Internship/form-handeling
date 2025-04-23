@@ -17,11 +17,6 @@ class LogInController
         $this->loginValidation = new ValidateLogin();
     }
 
-    public function getLoginPage()
-    {
-        return require_once __DIR__ . '/../../Views/login.html';
-    }
-
     public function handleLoginForm()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
@@ -46,5 +41,10 @@ class LogInController
                 }
             }
         }
+    }
+
+    public function getLoginPage()
+    {
+        return require_once __DIR__ . '/../../Views/login.html';
     }
 }

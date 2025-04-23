@@ -91,12 +91,33 @@
         color: #333;
       }
 
+      .checkout-button {
+        display: block;
+        margin: 20px auto 0;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #28a745;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .checkout-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
       p {
         color: #666;
         font-size: 14px;
       }
     </style>
   </head>
+
   <body>
     <div class="cart-container">
       <div class="cart-header" onclick="window.location.href='/allproducts';">
@@ -113,9 +134,8 @@
         </svg>
         <h2>My Cart</h2>
       </div>
-      <?php 
-        $totalPrice = 0; 
-        if (!empty($cartItems)): ?>
+      <?php
+    if (!empty($cartItems)): ?>
       <?php foreach ($cartItems as $item): ?>
       <div class="cart-item">
         <div class="cart-item-details">
@@ -131,10 +151,6 @@
             Quantity:
             <?php echo htmlspecialchars($item['quantity']); ?>
           </p>
-        </div>
-        <div class="cart-item-price">
-          Rs.
-          <?php echo number_format($item['totalPrice'], 2); ?>
         </div>
         <div class="cart-item-delete">
           <form
@@ -156,12 +172,12 @@
           </form>
         </div>
       </div>
-      <?php $totalPrice += $item['totalPrice']; ?>
       <?php endforeach; ?>
-      <div class="cart-total">
-        Total: Rs.
-        <?php echo number_format($totalPrice, 2); ?>
-      </div>
+      <a
+        href="/checkout"
+        class="checkout-button"
+        >Proceed to Checkout</a
+      >
       <?php else: ?>
       <p>Your cart is empty.</p>
       <?php endif; ?>

@@ -7,25 +7,22 @@ use PDOException;
 
 class DatabaseConnection
 {
-    const SERVER_NAME = "127.0.0.1";
-    const USER_NAME = "root";
-    const DATABASE = "ecommerce";
-    const PASSWORD = "";
-
+    private static $configDB;
     private static $instance = null;
     private $pdoConnection;
 
     private  function  __construct()
     {
+        self::$configDB = require_once __DIR__ . '/../Utils/envConfig.php';
         try {
-            $dsn = "mysql:host=" . self::SERVER_NAME . ";dbname=" . self::DATABASE;
-            $this->pdoConnection = new PDO($dsn, self::USER_NAME, self::PASSWORD);
+            $dsn = "mysql:host=" . self::$configDB['SERVER'] . ";dbname=" . self::$configDB['DATABASE'];
+            $this->pdoConnection = new PDO($dsn, self::$configDB['USER_NAME'], self::$configDB['PASSWORD']);
         } catch (PDOException $e) {
             error_log("Database connection error: " . $e->getMessage());
             return "Failed to connect to database";
         }
     }
-    public static function getInstance()
+    public static function getInstance(): PDO|string
     {
         if (self::$instance === null) {
             self::$instance = new DatabaseConnection();

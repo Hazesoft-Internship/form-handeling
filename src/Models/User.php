@@ -2,20 +2,14 @@
 
 namespace ECommerce\Models;
 
-use ECommerce\Services\DatabaseConnection;
+use ECommerce\Models\ModelDBConnection;
 use PDO;
 use PDOException;
+use PDOStatement;
 
-final class User
+final class User extends ModelDBConnection
 {
-    private $dbConnection;
-
-    public function __construct()
-    {
-        $this->dbConnection = DatabaseConnection::getInstance();
-    }
-
-    public function signupUser($fullName, $email, $password)
+    public function signupUser(string $fullName, string $email, string $password): PDOStatement|string
     {
         try {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -32,7 +26,7 @@ final class User
     }
 
 
-    public function loginUser($email, $password)
+    public function loginUser(string $email, string $password): array|null|string
     {
         try {
             $userDataQuery = "SELECT * FROM users WHERE email = :email";
@@ -52,7 +46,7 @@ final class User
         }
     }
 
-    public function logOutUser($session)
+    public function logOutUser(object $session): bool
     {
         return $session->destroy();
     }

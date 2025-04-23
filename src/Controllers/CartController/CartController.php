@@ -2,34 +2,41 @@
 
 namespace ECommerce\Controllers\CartController;
 
-use ECommerce\Models\CartItems;
-use ECommerce\Services\Session;
+use ECommerce\Controllers\ModelParentClass;
 
-class CartController
+class CartController extends ModelParentClass
 {
-    private $cart;
-    private $session;
-    public function __construct()
-    {
-        $this->cart = new CartItems();
-        $this->session = Session::getInstance();
-    }
 
-    public function handleAddItemtoCart()
+    public function handleAddItemtoCart(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $userID = $this->session->get("userID");
             $productID = $_GET['productID'];
             $quantity = $_POST['quantity'];
+            $remainingQuantity = $this->cartItems->getProductStock($productID);
 
-            if ($this->cart->checkProductStock($productID, $quantity)) {
-                $result = $this->cart->addItemToCart($userID, $productID, $quantity);
+            if ($remainingQuantity['quantity'] >= $quantity) {
+                $cart = $this->cart->getCartByUserID($userID);
+
+                if (!$cart) {
+                    $this->cart->createUserCart($userID);
+                    $cart = $this->cart->getCartByUserID($userID);
+                }
+                $cartID = $cart['id'];
+                $existingItem = $this->cartItems->getCartItem($cartID, $productID);
+
+                if ($existingItem) {
+                    $id = $existingItem['id'];
+                    $result = $this->cartItems->updateCartProductQuantity($quantity, $id);
+                } else {
+                    $result = $this->cartItems->addItemToCart($cartID, $productID, $quantity);
+                }
             } else {
-                echo "Provide is out of stock";
+                echo "Product is out of stock";
                 return;
             }
 
-            if ($result) {
+            if (isset($result) && $result) {
                 header('Location: /mycart');
             } else {
                 echo "Failed to add to cart";
@@ -37,11 +44,11 @@ class CartController
         }
     }
 
-    public function handleDeleteCartItem()
+    public function handleDeleteCartItem(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $cartItemID = $_GET["cartItemID"];
-            $deletionResult = $this->cart->deleteCartItem($cartItemID);
+            $deletionResult = $this->cartItems->deleteCartItem($cartItemID);
             if ($deletionResult) {
                 header("Location: /mycart");
             } else {
@@ -50,10 +57,10 @@ class CartController
         }
     }
 
-    public function getMyCartPage()
+    public function getMyCartPage(): void
     {
         $userID = $this->session->get("userID");
-        $cartItems = $this->cart->getCartItems($userID);
+        $cartItems = $this->cartItems->getCartItemsDetail($userID);
         require_once __DIR__ . '/../../Views/my-cart.html';
     }
 }
