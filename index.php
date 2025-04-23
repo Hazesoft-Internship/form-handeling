@@ -1,22 +1,16 @@
 <?php
 
-require_once 'User.php';
-require_once 'Role.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$user = new User();
-// echo $user->index();
+use Dotenv\Dotenv;
+use ECommerce\Routers\Router;
 
-$role = new Role("Rupesh");
-echo Role::getManagementName();
+Dotenv::createUnsafeImmutable(__DIR__)->load();
 
-// echo $role->getManagementName();
+$request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$routes = require_once __DIR__ . '/src/Config/routes.php';
 
+$router = new Router();
 
-
-
-// echo $role->getRole();
-// echo $role->index();
-
-
-
-
+$router->loadRoutes($routes);
+$router->dispatch($request);

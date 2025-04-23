@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Cart</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+      }
+
+      .cart-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .cart-header {
+        display: flex;
+        align-items: start;
+        gap: 10px;
+      }
+
+      .cart-header h2 {
+        margin: 0;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        color: #333;
+        flex-grow: 1;
+      }
+
+      .back-arrow {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+
+      .cart-item-details h4 {
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .cart-item-details p {
+        margin: 5px 0 0;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .cart-item-quantity p {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .cart-item-price {
+        font-weight: bold;
+        color: #333;
+      }
+
+      .cart-item-delete {
+        color: red;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+      }
+
+      .cart-total {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: right;
+        color: #333;
+      }
+
+      .checkout-button {
+        display: block;
+        margin: 20px auto 0;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #28a745;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .checkout-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      p {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="cart-container">
+      <div class="cart-header" onclick="window.location.href='/allproducts';">
+        <svg
+          class="back-arrow"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 512 512"
+          xml:space="preserve"
+        >
+          <polygon
+            points="352,128.4 319.7,96 160,256 160,256 160,256 319.7,416 352,383.6 224.7,256"
+          />
+        </svg>
+        <h2>My Cart</h2>
+      </div>
+      <?php
+    if (!empty($cartItems)): ?>
+      <?php foreach ($cartItems as $item): ?>
+      <div class="cart-item">
+        <div class="cart-item-details">
+          <h4><?php echo htmlspecialchars($item['name']); ?></h4>
+          <p>
+            Rs.
+            <?php echo number_format($item['price'], 2); ?>
+            each
+          </p>
+        </div>
+        <div class="cart-item-quantity">
+          <p>
+            Quantity:
+            <?php echo htmlspecialchars($item['quantity']); ?>
+          </p>
+        </div>
+        <div class="cart-item-delete">
+          <form
+            method="POST"
+            action="/delete-cart-item?cartItemID=<?php echo htmlspecialchars($item['id']); ?>"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              style="
+                background: none;
+                border: none;
+                color: red;
+                cursor: pointer;
+              "
+            >
+              X
+            </button>
+          </form>
+        </div>
+      </div>
+      <?php endforeach; ?>
+      <a
+        href="/checkout"
+        class="checkout-button"
+        >Proceed to Checkout</a
+      >
+      <?php else: ?>
+      <p>Your cart is empty.</p>
+      <?php endif; ?>
+    </div>
+  </body>
+</html>
