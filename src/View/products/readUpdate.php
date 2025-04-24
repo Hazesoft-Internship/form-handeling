@@ -63,8 +63,8 @@
         <div class="container">
         <form action="/updateProduct" method="POST">
         <br>
-            <input type='number' required name="updatedQuantity" placeholder="Enter updated quantity of product"><br>
             <input type='number' required name="updatedPrice" placeholder="Enter updated price of your product"><br>
+            <input type='number' required name="updatedQuantity" placeholder="Enter updated quantity of product"><br>
             <input type="hidden" name="id" value = <?php echo $_GET['id']?>>
         <button type="submit" name="submitUpdate">Submit</button>
         </form>

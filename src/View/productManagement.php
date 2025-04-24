@@ -57,11 +57,14 @@
         <form action="/addProduct">
             <button class="button">Add Product</button>
         </form>
-        <form action="/viewAllProduct" method="POST">
-            <button class="button">View All Product</button>
+        <form action="/viewAllProduct" method="GET">
+            <button class="button">All Product</button>
         </form>
         <form action="/viewYourProduct" method="POST">
-            <button class="button">View your Product</button>
+            <button class="button">Your Product</button>
+        </form>
+        <form action="/viewYourCart" method="POST">
+            <button class="button">Your Carts</button>
         </form>
     </div>
 </body>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\connectDB;
+namespace App\Model;
 
 require_once __DIR__.'/../../vendor/autoload.php';
 use PDO;
@@ -24,11 +24,10 @@ class Database
                                     port={$this->port}",
                                     "{$this->userName}",
                                     "{$this->password}");
-        //this throws an error if anything were to wrong
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       }
 
-      public static function getInstance()
+      public static function getInstance(): object
       {
         if(self::$instance==null)
         {
@@ -37,7 +36,7 @@ class Database
         return self::$instance;
       }
 
-      public function getConnection()
+      public function getConnection(): PDO
       {
           return $this->connection;
       }

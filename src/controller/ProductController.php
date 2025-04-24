@@ -1,116 +1,77 @@
 <?php
 
 namespace App\controller;
-
 require_once __DIR__."/../../vendor/autoload.php";
 
-use App\connectDB\Database;
-use App\connectDB\UploadProduct;
+use App\Model\Database;
 use App\validation\ProductValidation;
 use App\session\session;
+use App\Model\Product;
 
 class ProductController
 {
-    private string $productName;
-    private int $quantity;
-    private float $price;
+    private $product1;
+    public function __construct()
+    {
+        $this->product1 = new Product();
+    }
 
     //this handles the get request for the add product page
-    public function getAddProduct()
+    public function getAddProduct(): pathinfo
     {
         $userName = strtoupper(session::getInstance()->get("userName"));
-        return require_once __DIR__."/../dashboard/products/addProduct.php";
+        return require_once __DIR__."/../View/products/addProduct.php";
     }
     
     // this handles the post request from the add product page
-    public function handleAddProduct()
+    public function handleAddProduct(): void
     {
-        $this->productName = htmlspecialchars(trim($_POST["productName"]));
-        $this->quantity = htmlspecialchars(trim($_POST["quantity"]));
-        $this->price = htmlspecialchars(trim($_POST["price"]));
-    
-        $prod1 = new UploadProduct();
-        $prod1->createProduct($this->productName, $this->quantity, $this->price);
+        $productName = htmlspecialchars(trim($_POST["productName"]));
+        $quantity = htmlspecialchars(trim($_POST["quantity"]));
+        $price = htmlspecialchars(trim($_POST["price"]));
+        $userID = session::getInstance()->get("userID");
+        $this->product1->addProduct($productName, $quantity, $price, $userID);
     }
 
     // this handles the get request for the view all products
-    public function handleViewAllProduct()
+    public function handleViewAllProduct(): int
     {
         $userID = session::getInstance()->get("userID");
-        try
-        {
-            $conn = Database::getInstance()->getConnection();
-        }
-        catch(PDOException $e)
-        {
-            die("Connection failed: " . $e->getMessage());
-        }
-        
-        $sql = "SELECT * FROM products where userID != '$userID'";
-        $result = $conn->prepare($sql);
-        $result->execute();
-        $data = $result->fetchAll();
-        return require_once __DIR__."/../dashboard/products/viewAllProduct.php";
+        $data = $this->product1->viewAllProduct($userID);
+        return require_once __DIR__."/../View/products/viewAllProduct.php";
     }
 
     //this handles the post request for the view your product page
-    public function handleViewYourProduct()
+    public function handleViewYourProduct(): int
     {
-        try
-        {
-            $conn = Database::getInstance()->getConnection();
-        }
-        catch(PDOException $e)
-        {
-            die("Connection failed: " . $e->getMessage());
-        }
         
         $userID = session::getInstance()->get("userID");
-        $sql = "SELECT * FROM products where userID='$userID'";
-        $result = $conn->prepare($sql);
-        $result->execute();
-        $data = $result->fetchAll();
-        return require_once __DIR__."/../dashboard/products/viewYourProduct.php";
+        $data = $this->product1->viewYourProduct($userID);
+        return require_once __DIR__."/../View/products/viewYourProduct.php";
     }
 
     //this handles the get request for the deletion fo the product
-    public function deleteProduct()
+    public function deleteProduct(): void
     {
-        return require_once __DIR__."/deleteProduct.php";
+        $id = $_GET["id"];
+        $this->product1->deleteProduct($id);
     }
 
     //this handles the post request for the update product
-    public function updateProduct()
+    public function updateProduct(): void
     {
-        return require_once __DIR__."/updateProduct.php";
+        $updatedPrice = $_POST['updatedPrice'];
+        $updatedQuantity = $_POST['updatedQuantity'];
+        $id = $_POST['id'];
+        $this->product1->updateProduct($updatedPrice, $updatedQuantity, $id);
     }
 
     //this handles the post request to read the update from the user
-    public function showReadUpdate()
+    public function showReadUpdate(): int
     {
         $id = $_GET['id'];
-        try
-        {
-            $conn = Database::getInstance()->getConnection();
-        }
-        catch(PDOException $e)
-        {
-            die("Connection Error" . $e->getMessage());
-        }
-        
-        $sql = "SELECT * FROM products WHERE id = $id";
-        $result = $conn->query($sql);
-        
-        if($result)
-        {
-            $product = $result->fetch();
-        }
-        else
-        {
-            echo "Product not found on database";
-        }
-        
+        $product =  $this->product1->readUpdate($id);
         $userName = strtoupper(session::getInstance()->get("userName"));
-        return require_once __DIR__."/../dashboard/products/readUpdate.php";
+        return require_once __DIR__."/../View/products/readUpdate.php";
     }
 }

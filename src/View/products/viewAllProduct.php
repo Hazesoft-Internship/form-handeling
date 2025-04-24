@@ -39,12 +39,16 @@
             <th>
                 Product Quantity
             </th>
+            <th>
+                Operations
+            </th>
         </tr>
         <?php
         if ($data)
         {
             foreach($data as $row)
             {
+                $productID = $row['id'];
                 echo
                     "<tr>
                         <td>"
@@ -55,6 +59,13 @@
                         </td>
                         <td>
                             ".$row["quantity"]."
+                        </td>
+                        <td>
+                            <div class = 'container'>
+                                <form method = 'POST' action = '/createCart?id=$productID'>
+                                    <button type='submit' name = 'addToCart'>Add to cart</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>";
             }

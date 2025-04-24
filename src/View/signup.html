@@ -65,12 +65,14 @@
 
 </body>
 <script>
+
+    let password = document.getElementById("password");
+    let confirmPassword = document.getElementById("passwordConfirmation");
     function validate(e) {
-        // e.preventDefault();
         const password = document.getElementById("password");
         const passwordConfirmation = document.getElementById("passwordConfirmation");
-        if (password.value == passwordConfirmation.value) {
-            // alert ("password match");
+        if (password.value == passwordConfirmation.value) 
+        {
             return true;
         }
         else {

@@ -4,7 +4,7 @@ namespace App\validation;
 
 require_once __DIR__."/../../vendor/autoload.php";
 
-use App\connectDB\Database;
+use App\Model\Database;
 
 abstract class Validation
 {

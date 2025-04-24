@@ -13,7 +13,7 @@ class session
         }
     }
 
-    public static function getInstance()
+    public static function getInstance(): object
     {
       if(self::$instance==null)
         {
@@ -22,7 +22,7 @@ class session
     return self::$instance;
     }
 
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $_SESSION[$key] = $value;
     }
@@ -31,7 +31,7 @@ class session
     {
         return $_SESSION[$key];
     }
-    public function destroySession()
+    public function destroySession(): void
     {
         if(session_status() == PHP_SESSION_NONE)
         {}

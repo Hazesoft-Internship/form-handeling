@@ -5,7 +5,8 @@ namespace App\validation;
 require_once __DIR__."/../../vendor/autoload.php";
 
 use App\validation\Validation;
-use App\connectDB\UploadUser;
+use App\Model\UploadUser;
+use App\Controller\UserController;
 
 class UserValidation extends Validation
 {
@@ -39,7 +40,7 @@ class UserValidation extends Validation
 
 
     //and creates and user object to upload it to db
-    public function validate($fieldName)
+    public function validate($fieldName): string
     {
             if($fieldName == "email") {
                 if(!empty($_POST[$fieldName]) && $this->validateEmail($_POST[$fieldName])) 
@@ -86,9 +87,9 @@ class UserValidation extends Validation
     
     public function upload(): void
     {
-    $user1 = new UploadUser();
-    $user1->createUser($this->firstName,$this->middleName,$this->lastName,$this->address,$this->email, $this->password);
-}
+        $user1 = new UserController();
+        $user1->uploadUser($this->firstName,$this->middleName,$this->lastName,$this->address,$this->email, $this->password);
+    }
 }
 
 
