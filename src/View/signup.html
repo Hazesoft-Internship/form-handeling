@@ -1,0 +1,85 @@
+
+<html>
+<html lang="en">    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Handling and Post</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: black;
+            color: white;
+        }
+
+        h1 {
+            padding-top: 10vh;
+        }
+        input {
+            margin: 5px;
+            border-radius: 10px;
+            text-align: left;
+            height: 40px;
+            width: 30%;
+            border: 10px double black;
+        }
+        
+        button {
+            text-align: center;
+            position: absolute;
+            left: 47vw;
+            margin: 1em;
+        }
+
+        .container {
+            height: 45vh;
+            width: 100vw;
+        }
+
+    </style>
+
+</head>
+<body>
+    <h1>Sign-up Page</h1>
+        <div class="container">
+        <form onsubmit="validate(event)" action="/signup" method="POST">
+        <br>
+        <input type="text" name="firstName" id="firstName" placeholder="Enter your first name" required>
+        <br>
+        <input type="text" name="middleName" id="middleName" placeholder="Enter your middle name" required>
+        <br>
+        <input type="text" name="lastName" id="lastName" placeholder="Enter your last name" required>
+        <br>
+        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+        <br>
+        <input type="text" name="address" id="address" placeholder="Enter your address" required>
+        <br>
+        <input type="password" id="password" name="password" placeholder="Create your password" required>
+        <br>
+        <input type="password" id="passwordConfirmation" name="passwordConfirmation" placeholder="Confirm your password" required>
+        <br>
+
+        <button type="submit">Submit</button>
+        </form>
+        </div>
+
+</body>
+<script>
+
+    let password = document.getElementById("password");
+    let confirmPassword = document.getElementById("passwordConfirmation");
+    function validate(e) {
+        const password = document.getElementById("password");
+        const passwordConfirmation = document.getElementById("passwordConfirmation");
+        if (password.value == passwordConfirmation.value) 
+        {
+            return true;
+        }
+        else {
+            alert ("password dont match");
+            e.preventDefault();
+            return false;
+        }
+    }
+</script>
+</html>
