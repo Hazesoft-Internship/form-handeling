@@ -12,10 +12,12 @@ class CartService
     private $conn;
     private Session $session;
 
-    function __construct(DbConnection $dbConnection, Session $session)
+    function __construct()
     {
-        $this->session = $session::getInstance();
-        $this->conn = $dbConnection->getConnection();
+        // $this->session = $session::getInstance();
+        $this->session = Session::getInstance();
+        $dbConnection=new DbConnection();
+        $this->conn =$dbConnection->getConnection();
     }
 
     public function migrateFromSession(): void
@@ -27,7 +29,7 @@ class CartService
             $sessionCart = $_SESSION['cart'];
             $loggedinId = $this->session->getUserId();
 
-            $prodquantity = new Product(new DbConnection());
+            $prodquantity = new Product();
 
 
             foreach ($sessionCart as $productId => $quantity) {
@@ -62,7 +64,7 @@ class CartService
             unset($_SESSION['cart']); // Clear the session cart after migration
         }
     }
-    public function getCartId()
+    protected function getCartId()
     {
         $stmt = $this->conn->prepare("SELECT cart_id FROM carts WHERE user_id = ?");
         $stmt->bindValue(1, $this->session->getUserId(), PDO::PARAM_INT);

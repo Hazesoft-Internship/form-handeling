@@ -7,63 +7,69 @@ use Lattefront\FormHandeling\Model\CartModel;
 use Lattefront\FormHandeling\Session\Session;
 use Lattefront\FormHandeling\Model\Product;
 
-class CartController
+class CartController extends Controller
 {
-    private Session $session;
+
     private CartModel $cartModel;
+    private Product $product;
 
     public function __construct()
     {
-        $this->session = Session::getInstance(); // Initialize the session instance
-        $this->cartModel = new CartModel(new DbConnection(), $this->session);
+        parent::__construct();
+        $this->cartModel = new CartModel();//new DbConnection(), $this->session
+        $this->product = new Product();
     }
-    public  function addproductCart()
+    public  function addproductCart(): void
     {
 
-        $productId = $_POST['id'];
-        $productName = $_POST['name'];
-        $productPrice = $_POST['price'];
-        $productDescription = $_POST['description'];
-        $quantity = $_POST['quantity'];
+        $productId = filter_var($_POST['id'], FILTER_VALIDATE_INT);
+        $productName = strip_tags($_POST['name']);
+        $productPrice = filter_var($_POST['price'], FILTER_VALIDATE_INT);
+        $productDescription = strip_tags($_POST['description']);
+        $quantity = filter_var($_POST['quantity'], FILTER_VALIDATE_INT);
 
         // print_r($productId);
-
-        $this->cartModel->addProduct($productId, $quantity, $productName, $productDescription);
+        $stock = $this->product->getproductdetails($productId);
+        $this->cartModel->addProduct($productId, $quantity, $productName, $productDescription, $stock[0]);
 
         header("Refresh:1; url=/viewallproducts");
     }
-    public function updatecartpage()
+    public function updatecartpage(): void
     {
-        $productId = $_GET['productID'];
-        $quantity = $_GET['quantity'];
-        $cart_itemsId = $_GET['cartitemsId'];
+        $productId = filter_var($_GET['productID'], FILTER_VALIDATE_INT);
+        $quantity = strip_tags($_GET['quantity']);
+        $cart_itemsId = filter_var($_GET['cartitemsId'], FILTER_VALIDATE_INT);
 
 
         require __DIR__ . '/../View/updatecart.php';
     }
-    public function updateCart()
+    public function updateCart(): void
     {
 
-        $productId = $_POST['productID'];
-        $quantity = $_POST['quantity'];
-        $cart_itemsId = $_POST['cartitemsId'];
-
-        $prodquantity = new Product(new DbConnection());
-        $maxquantity = $prodquantity->getproductdetails($productId);
+        $productId = filter_var($_POST['productID'],FILTER_VALIDATE_INT);
+        $quantity = strip_tags($_POST['quantity']);
+        $cart_itemsId = filter_var($_POST['cartitemsId'],FILTER_VALIDATE_INT);
+      
+        $maxquantity = $this->product->getproductdetails($productId);
         // print_r($maxquantity);
 
         $this->cartModel->updateCart($productId, $quantity, $cart_itemsId, $maxquantity[0]);
         header("Refresh:2; url=/viewcart");
     }
-    public function viewcart()
+    public function viewcart(): void
     {
         $cartItems = $this->cartModel->viewCart();
+        // Calculate total price
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
+            $totalPrice += $item['price'] * $item['quantity'];
+        }
         //  print_r($cartItems);
         require __DIR__ . '/../View/cart.php';
     }
-    public function removecartproduct()
+    public function removecartproduct(): void
     {
-        $productId = $_POST['productID'];
+        $productId = filter_var($_POST['productID'],FILTER_VALIDATE_INT);
         $this->cartModel->removeProduct($productId);
         header("Location: /viewcart");
     }

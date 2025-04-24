@@ -2,31 +2,30 @@
 
 namespace Lattefront\FormHandeling\Model;
 
-use Lattefront\FormHandeling\Db\DbConnection;
-use Lattefront\FormHandeling\session\Session;
+use Lattefront\FormHandeling\Model\Model;
+
 use PDO;
 use Exception;
 
-class CartModel
+class CartModel extends Model
 {
-    private $conn;
     private $cartId;
-    private Session $session; // Store the session instance
-    public function __construct(DbConnection $dbConnection, Session $session)
+    public function __construct()
     {
+        parent::__construct();
 
-        $this->conn = $dbConnection->getConnection();
-        $this->session = Session::getInstance();
         $this->cartId = $this->session->getCartId(); // Get the cart ID from the session
     }
 
-    public function addProduct($productId, $quantity, $productName, $description): void
+    public function addProduct($productId, $quantity, $productName, $description, $stock): void
     {
         // echo $this->cartId;
         try {
             if ($this->cartId) {
-
-
+                if ($stock == 0) {
+                    echo "Products not available";
+                    return;
+                }
                 // If logged in, add to DB
                 $stmt = $this->conn->prepare("SELECT quantity FROM cart_items WHERE cart_id = ? AND product_id = ?");
                 $stmt->bindValue(1, $this->cartId, PDO::PARAM_INT);
@@ -84,8 +83,6 @@ class CartModel
     public function viewCart()
     {
         try {
-
-
             if ($this->cartId) {
                 $stmt = $this->conn->prepare("
                 SELECT 
@@ -94,6 +91,7 @@ class CartModel
                     p.productName  AS name,
                     p.price,
                     p.description,
+                    p.productTypes,
                     ci.quantity
                 FROM cart_items ci
                 JOIN products p ON ci.product_id = p.productID
@@ -126,7 +124,7 @@ class CartModel
     }
 
 
-    public function updateCart($productId,  $quantity, $cart_itemsId, $Maxquantity): void
+    public function updateCart($productId, $quantity, $cart_itemsId, $Maxquantity): void
     {
         try {
             if ($quantity > $Maxquantity) {
@@ -173,5 +171,32 @@ class CartModel
         } catch (Exception $ex) {
             echo "Error: " . $ex->getMessage();
         }
+    }
+    public function removeCart($cartId): void
+    {
+        try {
+            $stmt = $this->conn->prepare("DELETE FROM cart_items WHERE cart_id = ?");
+            $stmt->bindValue(1, $this->cartId, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                echo "Cart removed   successfully.";
+            } else {
+                echo "Failed to remove  cart.";
+            }
+        } catch (Exception $ex) {
+            echo "Error: " . $ex->getMessage();
+        }
+    }
+
+    public function createCart($userId):array
+    {
+        $stmt = $this->conn->prepare("INSERT INTO carts (user_id, created_at, updated_at) VALUES (?, NOW(), NOW())");
+        $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'User registered successfully. Redirecting to login page.'];
+        }
+        else
+        return ['success' => false, 'message' => 'Failed to register user.'];
+
     }
 }

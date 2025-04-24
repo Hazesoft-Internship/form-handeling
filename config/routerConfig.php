@@ -5,6 +5,7 @@ use Lattefront\FormHandeling\Controller\UserController;
 use Lattefront\FormHandeling\Controller\ProductController;
 use Lattefront\FormHandeling\Middleware\Authmiddleware as loginCheck;
 use Lattefront\FormHandeling\Controller\CartController;
+use Lattefront\FormHandeling\Controller\OrderController;
 
 return [
 
@@ -23,6 +24,7 @@ return [
         '/updateproduct' => loginCheck::wrap([ProductController::class, 'updateproductpage']),
         '/viewcart' => ([CartController::class, 'viewcart']),
         '/updatecart' => loginCheck::wrap([CartController::class, 'updatecartpage']),
+        '/checkout' => loginCheck::wrap([OrderController::class, 'checkoutform']),
     ],
     'POST' => [
         '/signup' => [AuthController::class, 'insertUser'],
@@ -33,6 +35,7 @@ return [
         '/addtocart' => ([CartController::class, 'addproductCart']),
         '/updatecart' => loginCheck::wrap([CartController::class, 'updateCart']),
         '/deletecart' => ([CartController::class, 'removecartproduct']),
+        '/checkout'=>loginCheck::wrap([OrderController::class, 'checkout']),
     ]
 
 ];

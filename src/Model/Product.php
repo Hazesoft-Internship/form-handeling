@@ -2,28 +2,16 @@
 
 namespace Lattefront\FormHandeling\Model;
 
-use Lattefront\FormHandeling\Session\Session;
-use Lattefront\FormHandeling\Db\DbConnection;
 use Exception;
 use PDO;
 
-class Product
+class Product extends Model
 {
-    private PDO $conn; // Store the connection
-    private Session $session; // Store the session instance
-
-    public function __construct(DbConnection $dbConnection)
-    {
-        $this->session = Session::getInstance(); // Initialize the session instance
-        $this->conn = $dbConnection->getConnection(); // Get the mysqli connection
-    }
 
     // Insert new product into the database
     public function insertProduct(string $product_name, int $product_price, string $product_description, int $product_quantity, string $productTypes): void
     {
         try {
-
-
             $sql = "INSERT INTO products (productName, price, description, quantity, created_by, productTypes) VALUES (?, ?, ?, ?, ?,?)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(1, $product_name, PDO::PARAM_STR);
@@ -154,6 +142,21 @@ class Product
             } else {
                 throw new Exception("Failed to delete product.");
             }
+        } catch (Exception $excep) {
+            error_log($excep->getMessage());
+            echo "An error occurred. Please try again later.";
+            header("Refresh:2; url=/dashboard");
+            exit();
+        }
+    }
+    //reduce product quantity after orderplaced
+    public function reduceproductquantity($quantity, $productId): void
+    {
+        try {
+            $query = $this->conn->prepare("UPDATE products SET quantity = quantity - ? WHERE productID = ?");
+            $query->bindValue(1, $quantity, PDO::PARAM_INT);
+            $query->bindValue(2, $productId, PDO::PARAM_INT);
+            $query->execute();
         } catch (Exception $excep) {
             error_log($excep->getMessage());
             echo "An error occurred. Please try again later.";

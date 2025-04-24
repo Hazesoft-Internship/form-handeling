@@ -7,9 +7,9 @@ namespace Lattefront\FormHandeling\Service;
 class FormValidation
 {
 
-   public static function validateUser($data): array
+    public static function validateUser($data): array
     {
-        
+
         $errors = [];
 
         // Validate first name
@@ -41,11 +41,11 @@ class FormValidation
     }
 
     static function validateProduct($data): array
-    { 
-        $errors = []; 
+    {
+        $errors = [];
 
-       
-    
+
+
         // Validate product name
         if (preg_match('/[^a-zA-Z0-9 ]/', $data[0])) {
             $errors[] = 'Product name should be alphanumeric';

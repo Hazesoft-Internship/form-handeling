@@ -41,6 +41,7 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
+                    <th>Types</th>
                     <th>Quantity</th>
                     <th>Subtotal</th>
                     <th>Action</th>
@@ -53,6 +54,7 @@
                         <td><?php echo htmlspecialchars($item['name']); ?></td>
                         <td><?php echo htmlspecialchars($item['description']); ?></td>
                         <td><?php echo number_format($item['price'], decimals: 2); ?></td>
+                        <td><?php echo htmlspecialchars($item['productTypes']); ?></td>
                         <td><?php echo $item['quantity']; ?></td>
                         <td><?php echo number_format($item['price'] * $item['quantity'], decimals: 2); ?></td>
                         <td>
@@ -72,18 +74,15 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <?php
-        // Calculate total price
-        $totalPrice = 0;
-        foreach ($cartItems as $item) {
-            $totalPrice += $item['price'] * $item['quantity'];
-        } ?>
+       
         <p><strong>Total Price:</strong> RS <?php echo number_format($totalPrice, 2); ?></p>
     <?php endif; ?>
 
-    <a href="/">Continue Shopping</a>
+    <a href="/" style="display: inline-block; padding: 10px 15px; background-color:rgb(163, 91, 14); color: white; text-decoration: none; border-radius: 5px; margin-right: 10px;">Continue Shopping</a>
 
-    <a href="/dashboard">Dashboard</a>
+    <a href="/dashboard" style="display: inline-block; padding: 10px 15px; background-color:rgb(26, 129, 213); color: white; text-decoration: none; border-radius: 5px; margin-right: 10px;">Dashboard</a>
+    
+    <a href="/checkout" style="display: inline-block; padding: 10px 15px; background-color:rgb(5, 128, 40); color: white; text-decoration: none; border-radius: 5px;">Checkout</a>
 </body>
 
 </html>

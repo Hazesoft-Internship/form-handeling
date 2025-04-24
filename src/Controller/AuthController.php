@@ -3,14 +3,14 @@
 namespace Lattefront\FormHandeling\Controller;
 
 
+use Lattefront\FormHandeling\Model\CartModel;
 use Lattefront\FormHandeling\Session\Session;
 use Lattefront\FormHandeling\Model\UserModel;
-use Lattefront\FormHandeling\Db\DbConnection;
 use Lattefront\FormHandeling\Service\FormValidation;
 use Lattefront\FormHandeling\Service\CartService;
 
 
-class AuthController
+class AuthController 
 {
     private Session $session;
     private function checkLoggedIn(): void
@@ -41,7 +41,7 @@ class AuthController
 
 
 
-                $userModel = new UserModel(new DbConnection());
+                $userModel = new UserModel();
 
                 $errors = FormValidation::validateUser([$First_name, $Middle_name, $Last_name, $Address, $Email, $Password]);
                 if ($errors) {
@@ -53,6 +53,8 @@ class AuthController
                 // Register user and handle response
                 $result = $userModel->registerUser($First_name, $Middle_name, $Last_name, $Address, $Email, $Password);
 
+                $cart = new CartModel();
+                $result = $cart->createCart($result);
                 if ($result['success']) {
                     echo $result['message'];
                     header("Refresh:2; url=/login");
@@ -82,13 +84,13 @@ class AuthController
                 $email = $_POST['Email'];
                 $password = $_POST['Password'];
                 $this->session = Session::getInstance();
-                $login = new UserModel(new DbConnection());
+                $login = new UserModel();
                 $login->loginUser($email, $password);
 
-                $cartservice = new CartService(new DbConnection(), $this->session);
+                $cartservice = new CartService();
                 $cartservice->migrateFromSession();
 
-                header("Refresh:1; url=/dashboard");
+                header("location: /dashboard");
             }
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();

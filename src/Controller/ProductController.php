@@ -2,18 +2,19 @@
 
 namespace Lattefront\FormHandeling\Controller;
 
-use Lattefront\FormHandeling\Db\DbConnection;
 use Lattefront\FormHandeling\Model\Product;
 use Lattefront\FormHandeling\Service\FormValidation;
 use Lattefront\FormHandeling\Session\Session;
 
 
-class ProductController
+class ProductController extends Controller
 {
-    private Session $session;
+    private Product $product;
     public function __construct()
     {
-        $this->session = Session::getInstance(); // Initialize the session instance
+        parent::__construct();
+        $this->product=new Product();
+
     }
     public function addproductpage(): void
     {
@@ -34,13 +35,11 @@ class ProductController
                 echo $error . "<br>";
             }
         }
-        $addproduct = new Product(new DbConnection());
-        $addproduct->insertProduct($product_name, $product_price, $product_description, $product_quantity, $productTypes);
+        $this->product->insertProduct($product_name, $product_price, $product_description, $product_quantity, $productTypes);
     }
     public function myproductlist(): void
     {
-        $viewproduct = new Product(new DbConnection());
-        $row = $viewproduct->getmyProducts($this->session->getLoggedInUser());
+        $row = $this->product->getmyProducts($this->session->getLoggedInUser());
         // print_r($row);
         require __DIR__ . '/../View/Viewproduct.php';
     }
@@ -48,9 +47,7 @@ class ProductController
     public function getallproduct(): void
     {
         $loggedinemail = $this->session->getLoggedInUser();
-
-        $viewproduct = new Product(new DbConnection());
-        $row = $viewproduct->viewallProducts($loggedinemail ? $loggedinemail : null);
+        $row = $this->product->viewallProducts($loggedinemail ? $loggedinemail : null);
         require __DIR__ . '/../View/viewallproduct.php';
     }
     public function updateproductpage(): void
@@ -81,15 +78,13 @@ class ProductController
                 echo $error . "<br>";
             }
         }
-        $updateproduct = new Product(new DbConnection());
-        $updateproduct->updateProduct($id, $name, $quantity, $price, $description, $productTypes);
+        $this->product->updateProduct($id, $name, $quantity, $price, $description, $productTypes);
     }
 
 
     public function deleteproduct(): void
     {
         $id = filter_var($_POST['id']);
-        $deleteuser = new Product(new DbConnection());
-        $deleteuser->deleteproduct($id);
+        $this->product->deleteproduct($id);
     }
 }

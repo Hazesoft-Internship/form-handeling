@@ -15,10 +15,10 @@
         <div class="product">
             <?php foreach ($row as $product) : ?>
                 <h2>Product Name: <?php echo htmlspecialchars($product['productName']); ?></h2>
+                <p><strong>Product ID:</strong> <?php echo htmlspecialchars($product['productID']); ?></p>
                 <p><strong>Price:</strong> Rs <?php echo number_format($product['price'], 2); ?></p>
                 <p><strong>Description:</strong> <?php echo htmlspecialchars($product['description']); ?></p>
                 <p><strong>Quantity:</strong> <?php echo htmlspecialchars($product['quantity']); ?></p>
-                <p><strong>Product ID:</strong> <?php echo htmlspecialchars($product['productID']); ?></p>
                 <p><strong>Product Type:</strong> <?php echo htmlspecialchars($product['productTypes']); ?></p>
 
                 <form action="/addtocart" method="POST" style="display: inline;">
