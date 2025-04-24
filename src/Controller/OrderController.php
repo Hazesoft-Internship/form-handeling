@@ -49,31 +49,31 @@ class OrderController extends Controller
                 ]
             };
         }
-
-        
+        $totalData = [
+            "digital" => [
+                "totalPrice" => $digitalPrice,
+                "totalQuantity" => $digitalquantity,
+            ],
+            "physical" => [
+                "totalPrice" => $physicalPrice,
+                "totalQuantity" => $physicalquantity,
+            ],
+        ];
 
         $types = array_unique(array_column($cartItems, "productTypes"));
+        $totalPrice = 0;
+        foreach ($types as $item) {
+            $type = $totalData[$item];
+            $productTypes = ProductFactory::createTypes($item);
+            $paymentTypes = $productTypes::getPaymentMethod();
 
-        // $productTypes = ProductFactory::createTypes($types);
+            $totalPrice += $productTypes->getDiscountedPrice($type["totalQuantity"], $type["totalPrice"]);
+        }
 
-        // $paymentTypes = $productTypes::getPaymentMethod();
-        //need to sort totalprice calculation for Factory method
-        if (in_array("physical", $types)) {
-            $paymentTypes = Physicalproduct::getPaymentMethod();
-            // $paymentTypes = ProductFactory::createTypes();
-            $physicalPrice = Physicalproduct::getDiscountedPrice($physicalquantity, $physicalPrice);
-        }
-        if (in_array("digital", $types)) {
-            $paymentTypes = Digitalproduct::getPaymentMethod();
-            $digitalPrice = Digitalproduct::getDiscountedPrice($digitalquantity, $digitalPrice);
-        }
+       
         if (in_array("digital", $types) && (in_array("physical", $types))) {
             $paymentTypes = ["Esewa", "Khalti"];
         }
-
-
-        $totalPrice = $physicalPrice + $digitalPrice;
-        //  print_r($cartItems);
 
         require __DIR__ . '/../View/checkout.php';
         return $totalPrice;
