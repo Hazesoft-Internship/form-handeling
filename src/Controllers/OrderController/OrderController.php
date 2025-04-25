@@ -9,6 +9,8 @@ use Hazesoft\Backend\Services\Session;
 use Hazesoft\Backend\Models\Carts;
 use Hazesoft\Backend\Models\Order;
 use Hazesoft\Backend\Models\Product;
+use Hazesoft\Backend\Factories\ProductFactory;
+use Hazesoft\Backend\Factories\PaymentMethodFactory;
 
 class OrderController
 {
@@ -18,6 +20,9 @@ class OrderController
     private $carts;
     private $order;
     private $product;
+    private $physicalProduct;
+    private $digitalProduct;
+    private $paymentMethodFactory;
 
     public function __construct()
     {
@@ -27,6 +32,9 @@ class OrderController
         $this->carts = new Carts();
         $this->order = new Order();
         $this->product = new Product();
+        $this->physicalProduct = ProductFactory::createProductByType("physical");
+        $this->digitalProduct = ProductFactory::createProductByType("digital");
+        $this->paymentMethodFactory = new PaymentMethodFactory();
     }
     public function getCheckoutPage()
     {
@@ -47,10 +55,11 @@ class OrderController
         $productTypes = $this->cartItems->getProductType($userId);
 
         // get payment methods
-        $paymentMethods = $this->getPaymentMethods($productTypes);
+        $paymentMethods = $this->paymentMethodFactory->getPaymentMethods($productTypes);
 
         // calculate price after shipping cost and discount
-        $totalPrice = $this->applyShippingCostAndDiscount($cartItems, $totalPrice);
+        $totalPrice = $this->physicalProduct->addShippingCost($cartItems, $totalPrice);
+        $totalPrice = $this->digitalProduct->applyDiscount($cartItems, $totalPrice);
 
         return [
             'cartItems' => $cartItems,
@@ -58,31 +67,6 @@ class OrderController
             'address' => $address,
             'paymentMethods' => $paymentMethods
         ];
-    }
-
-    public function getPaymentMethods($productTypes)
-    {
-        try {
-            $typeArray = [];
-            foreach($productTypes as $key => $type){
-                $typeArray[] = $type["type"];
-            }
-
-            if ((in_array("physical", $typeArray)) && (in_array("digital", $typeArray))) {
-                $paymentMethods = ["eSewa", "Khalti"];
-            } elseif (in_array("physical", $typeArray)) {
-                $paymentMethods = ["Cash on Delivery", "eSewa"];
-            } elseif (in_array("digital", $typeArray)) {
-                $paymentMethods = ["Khalti"];
-            } else {
-                $paymentMethods = [];
-            }
-            return $paymentMethods;
-
-        } catch (Exception $exception) {
-            echo ($exception->getMessage());
-            return null;
-        }
     }
 
     public function handleCartDetailsData()
@@ -100,6 +84,7 @@ class OrderController
             echo ("Error: " . $exception->getMessage());
         }
     }
+
     public function addPrice($carry, $item)
     {
         return ($carry + ($item["item_grand_total"]));
@@ -113,51 +98,37 @@ class OrderController
             }
             
             $checkoutData = $this->handleCheckoutData();
-            extract($checkoutData);
+            // extract($checkoutData);
             
+            $cartItems = $checkoutData["cartItems"];
+            $address = $checkoutData["address"];
+
+            // This is total before tax but after shipping cost and discounts
+            $subTotalBeforeTax = $checkoutData["totalPrice"];
+
             $userId = $this->session->getSession("userId");
 
-            $taxAndTotalPriceArray = []; // this array contains tax and itemTotalPrice in a array inside it
-            $taxAmount = [];
+            $totalTaxAmountForOrders = $this->calculateTax($cartItems);
 
-            foreach($cartItems as $item){
-                $taxAmount = ($item["product_tax"] * $item["product_price"] * $item["added_quantity"]) / 100;
-                $taxAndTotalPriceArray[] = [$taxAmount, $item["item_grand_total"]];
-            }
+            // foreach($cartItems as $item){
+            //     $taxAmount = ($item["product_tax"] * $item["product_price"] * $item["added_quantity"]) / 100;
+            //     $totalTaxAmountForOrders += $taxAmount;
+            //     $totalAmountForOrders += $item["item_grand_total"];
+            // }
+
+            // Price including tax, discount and shipping charge
+            $totalAmountForOrders = $totalTaxAmountForOrders + $subTotalBeforeTax;
 
             // for Orders table
             $cartId = $this->carts->getCartId($userId);
-            $address = $this->user->getUserAddress($userId);
             $status = "pending"; // default status for now
             $paymentType = $_POST["paymentType"];
-            $totalTaxAmountForOrders = 0;
-            
-            foreach($taxAndTotalPriceArray as $item){
-                [$tax, $total] = $item;
-                $totalTaxAmountForOrders += $tax;
-                $totalAmountForOrders += $total;
-            }
-
-            // for shipping cost and discount calculation
-            $totalAmountForOrders = $this->applyShippingCostAndDiscount($cartItems, $totalAmountForOrders);
 
             // for orders data insertion
             $ordersArray = [$cartId, $address, $status, $paymentType, $totalTaxAmountForOrders, $totalAmountForOrders];
             $this->order->insertOrders($ordersArray);
-
-            // for order_items data insertion 
-            $orderId = $this->order->getOrderId($cartId);
-            foreach($cartItems as $item){
-                $orderItemsArray = [
-                    $orderId,
-                    $item["product_id"],
-                    $item["added_quantity"],
-                    $item["product_price"],
-                    $item["item_grand_total"]
-                ];
-
-                $this->order->insertOrderItems($orderItemsArray);
-            }
+            $this->insertOrderItems($cartItems);
+            
             // update product quantity and remove cartItems after checkout
             $this->handleAfterCheckout($cartItems, $userId);
 
@@ -174,6 +145,37 @@ class OrderController
         }
     }
 
+    public function calculateTax($cartItems){
+        $totalTaxAmountForOrders = 0;
+        foreach($cartItems as $item){
+            $taxPercent = $item["product_tax"];
+            $price = $item["product_price"];
+            $quantity = $item["added_quantity"];
+            $taxAmount = ($taxPercent * $price * $quantity) / 100;
+            $totalTaxAmountForOrders += $taxAmount;
+        }
+        return $totalTaxAmountForOrders;
+    }
+
+    public function insertOrderItems($cartItems)
+    {
+        // for order_items data insertion 
+        $userId = $this->session->getSession("userId");
+        $cartId = $this->carts->getCartId($userId);
+        $orderId = $this->order->getOrderId($cartId);
+        foreach ($cartItems as $item) {
+            $orderItemsArray = [
+                $orderId,
+                $item["product_id"],
+                $item["added_quantity"],
+                $item["product_price"],
+                $item["item_grand_total"]
+            ];
+
+            $this->order->insertOrderItems($orderItemsArray);
+        }
+    }
+    
     // update product quantity and remove cartItems after checkout
     public function handleAfterCheckout($cartItems, $userId){
         try {
@@ -187,40 +189,6 @@ class OrderController
                 // cartItems removed after checkout
                 $this->cartItems->deleteCartItem($productId, $userId);
             }
-        } catch (Exception $exception) {
-            echo ($exception->getMessage());
-        }
-    }
-
-    public function applyShippingCostAndDiscount($cartItems, $totalPrice){
-        try{
-            $shippingCost = 0;
-            $discountAmount = 0;
-
-            foreach($cartItems as $item){
-                switch($item["product_type"]) {
-                    case "physical":
-                        if(($item["added_quantity"] >= 5) && ($item["added_quantity"]) < 10) {
-                            $shippingCost += 100;
-                        } elseif($item["added_quantity"] >= 10){
-                            $shippingCost += 200;
-                        }
-                        break;
-                    
-                    case "digital":
-                        if (($item["added_quantity"] >= 6) && ($item["added_quantity"]) < 12) {
-                            $discount = ($item["item_grand_total"] * 10) / 100;
-                            $discountAmount += $discount;
-                        } elseif ($item["added_quantity"] >= 12) {
-                            $discount = ($item["item_grand_total"] * 20) / 100;
-                            $discountAmount += $discount;
-                        }
-                        break;
-                }
-            }
-            $totalPrice = $totalPrice - $discountAmount + $shippingCost;
-            return $totalPrice;
-
         } catch (Exception $exception) {
             echo ($exception->getMessage());
         }
