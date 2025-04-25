@@ -11,16 +11,16 @@ use PDO;
 class OrderModel extends Model
 {
 
-    public function insertOrder(string $address, string $payment_method, int $user_id, float $shipping, float $discount, float $tax, float $total): bool
+    public function insertOrder(string $address, string $payment_method, int $user_id, float $total_shipping, float $total_discount, float $tax, float $total): bool
     {
         try {
-            $insertOrderQuery = "INSERT INTO orders (address,payment_method,user_id,shipping,discount,tax,total) VALUES(?,?,?,?,?,?,?)";
+            $insertOrderQuery = "INSERT INTO orders (address,payment_method,user_id,total_shipping,total_discount,tax,total) VALUES(?,?,?,?,?,?,?)";
             $statement = $this->connection->prepare($insertOrderQuery);
             $statement->bindParam(1, $address, PDO::PARAM_STR);
             $statement->bindParam(2, $payment_method, PDO::PARAM_STR);
             $statement->bindParam(3, $user_id, PDO::PARAM_INT);
-            $statement->bindParam(4, $shipping);
-            $statement->bindParam(5, $discount);
+            $statement->bindParam(4, $total_shipping);
+            $statement->bindParam(5, $total_discount);
             $statement->bindParam(6, $tax);
             $statement->bindParam(7, $total);
 

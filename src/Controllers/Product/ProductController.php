@@ -4,9 +4,6 @@ namespace App\Controllers\Product;
 
 use App\Controllers\Controller;
 use App\Models\Product\ProductModel;
-use App\Models\Product\PhysicalProduct;
-use App\Models\Product\DigitalProduct;
-use App\Sessions\Sessions;
 use App\Validation\ProductValidation;
 
 
@@ -14,12 +11,14 @@ class ProductController extends Controller
 {
 
     public ProductValidation $validation;
+    public ProductModel $product;
 
     public function __construct()
     {
 
         parent::__construct();
         $this->validation = new ProductValidation();
+        $this->product = new ProductModel;
     }
 
     public function addProductPage()
@@ -57,17 +56,9 @@ class ProductController extends Controller
 
 
 
-
         $this->validation->insertProduct($name, $description, $price, $quantity, $userId);
 
-        if ($type == 'physical') {
-            $item = new PhysicalProduct($name, $quantity, $price, $description, $userId);
-        }
-        if ($type == 'digital') {
-            $item = new DigitalProduct($name, $quantity, $price, $userId, $description);
-        }
-        $product = new ProductModel();
-        $product->insertProduct($item->name, $item->description, $item->price, $item->quantity, $item->user_id, $item->getType());
+        $this->product->insertProduct($name, $description, $price, $quantity, $userId, $type);
     }
 
     public function updateProduct()
@@ -87,8 +78,8 @@ class ProductController extends Controller
 
         $this->validation->updateProduct($name, $description, $price, $quantity);
 
-        $product = new ProductModel();
-        if ($product->updateProduct($id, $name, $description, $price, $quantity)) {
+        // $product = new ProductModel();
+        if ($this->product->updateProduct($id, $name, $description, $price, $quantity)) {
             echo "Product updated successfully!";
         }
     }
@@ -103,8 +94,8 @@ class ProductController extends Controller
         }
         $id = $_POST['id'] ?? '';
 
-        $product = new ProductModel();
-        if ($product->deleteProduct($id)) {
+        // $product = new ProductModel();
+        if ($this->product->deleteProduct($id)) {
             echo "Product deleted successfully!";
         }
     }
@@ -112,8 +103,8 @@ class ProductController extends Controller
     public function listProducts(): array|null
     {
 
-        $product = new ProductModel();
-        $products = $product->getAllProducts();
+        // $product = new ProductModel();
+        $products = $this->product->getAllProducts();
         if (empty($products)) {
             echo "No products found.";
             return null;
@@ -133,8 +124,8 @@ class ProductController extends Controller
             echo "User not logged in.";
             return null;
         }
-        $product = new ProductModel();
-        $products = $product->getUserProducts($userId);
+        // $product = new ProductModel();
+        $products = $this->product->getUserProducts($userId);
         if (empty($products)) {
             echo "No products found.";
             return null;

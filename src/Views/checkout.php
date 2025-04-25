@@ -112,6 +112,15 @@
 <body>
     <div class="checkout-container">
         <h1>Checkout</h1>
+
+        <?php
+        if ($cartItems == null) {
+            echo "<h1>Cart Empty</h1>";
+            echo "<a href='/cart'> view cart</a>";
+            die();
+        }
+
+        ?>
         <table>
             <thead>
                 <tr>
@@ -119,13 +128,16 @@
                     <th>Type</th>
                     <th>Price</th>
                     <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>shipping</th>
                     <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
 
-                foreach ($cartItems as $item):
+
+                foreach ($newCartItems as $item):
 
                 ?>
                     <tr>
@@ -133,30 +145,32 @@
                         <td><?php echo htmlspecialchars($item['type']); ?></td>
                         <td>$<?php echo number_format($item['price'], 2); ?></td>
                         <td><?php echo $item['cart_quantity']; ?></td>
-                        <td>$<?php echo number_format($item['price'] * $item['cart_quantity'], 2); ?></td>
+                        <td>$<?php echo number_format($item['discount'], 2); ?></td>
+                        <td>$<?php echo number_format($item['shipping'], 2); ?></td>
+                        <td>$<?php echo number_format($item['price'] * $item['cart_quantity'] - $discount + $shipping, 2); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right;">Order:</td>
+                    <td colspan="6" style="text-align: right;">Order:</td>
                     <td>$<?php echo number_format($totalOrder, 2); ?></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right;">Tax:</td>
-                    <td>$<?php echo number_format($tax, 2); ?></td>
+                    <td colspan="6" style="text-align: right;">Tax:</td>
+                    <td>$<?php echo number_format($this->orderDetail['tax'], 2); ?></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right;">Discount:</td>
-                    <td>$<?php echo number_format($discount); ?></td>
+                    <td colspan="6" style="text-align: right;">Discount:</td>
+                    <td>$<?php echo number_format($this->orderDetail['discount']); ?></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right;">shipping:</td>
-                    <td>$<?php echo number_format($shipping); ?></td>
+                    <td colspan="6" style="text-align: right;">shipping:</td>
+                    <td>$<?php echo number_format($this->orderDetail['shipping']); ?></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right;">Grand Total:</td>
-                    <td>$<?php echo number_format($grandTotal, 2); ?></td>
+                    <td colspan="6" style="text-align: right;">Grand Total:</td>
+                    <td>$<?php echo number_format($this->orderDetail['grandTotal'], 2); ?></td>
                 </tr>
             </tfoot>
         </table>
