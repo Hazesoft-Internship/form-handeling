@@ -7,11 +7,6 @@ use Exception;
 
 class PhysicalProduct implements ProductInterface
 {
-    public function getPaymentMethod()
-    {
-        return ["Cash on Delivery", "eSewa"];
-    }
-
     public function addShippingCost($cartItems, $totalPrice)
     {
         try {

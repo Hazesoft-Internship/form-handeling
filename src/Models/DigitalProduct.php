@@ -8,10 +8,6 @@ use Exception;
 
 class DigitalProduct implements ProductInterface
 {
-    public function getPaymentMethod()
-    {
-        return ["Khalti"];
-    }
     public function applyDiscount($cartItems, $totalPrice)
     {
         try {
