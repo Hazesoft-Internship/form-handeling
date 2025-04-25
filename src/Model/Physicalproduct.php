@@ -4,26 +4,33 @@ namespace Lattefront\FormHandeling\Model;
 
 use Lattefront\FormHandeling\Model\ProductInterface;
 
-class Physicalproduct implements ProductInterface
+class Physicalproduct implements ProductInterface// need to extend products
 {
-
-    public static function getPaymentMethod(): array
+    private $price;
+    private $quantity;
+    private $totalprice = 0;
+    public function __construct(public  $product) {
+        $this->price = $product['price'];
+        $this->quantity = $product['quantity'];
+        $this->totalprice = $this->price * $this->quantity;
+    }
+    public  function getPaymentMethod(): array
     {
         return [(string) "COD", (string) "Esewa"];
     }
 
-    public  static function  getDiscountedPrice($quantity, $price): int
+    public function  getDiscountedPrice(): int
     {
-        if ($quantity >= 5 && $quantity < 10) {
-            $price += 100;
+        if ($this->quantity >= 5 && $this->quantity < 10) {
+            $this->totalprice += 100;
         }
-        if ($quantity >= 10) {
-            $price += 200;
+        if ($this->quantity >= 10) {
+            $this->totalprice += 200;
         }
-        return $price;
+        return $this->totalprice;
     }
 
-    public static function getProductTypes(): string
+    public  function getProductTypes(): string
     {
         return "Physical";
     }

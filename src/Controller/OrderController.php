@@ -3,13 +3,9 @@
 namespace Lattefront\FormHandeling\Controller;
 
 use Lattefront\FormHandeling\Model\CartModel;
-use Lattefront\FormHandeling\Db\DbConnection;
 use Lattefront\FormHandeling\FactoryDesign\ProductFactory;
-use Lattefront\FormHandeling\Model\Digitalproduct;
 use Lattefront\FormHandeling\Model\OrderItems;
 use Lattefront\FormHandeling\Model\OrderModel;
-use Lattefront\FormHandeling\Session\Session;
-use Lattefront\FormHandeling\Model\Physicalproduct;
 use Lattefront\FormHandeling\Model\Product;
 
 class OrderController extends Controller
@@ -30,49 +26,24 @@ class OrderController extends Controller
     public function checkoutform(): int
     {
         $cartItems = $this->cartModel->viewCart();
-        $physicalPrice = 0;
-        $digitalPrice = 0;
-        $physicalquantity = 0;
-        $digitalquantity = 0;
+
+        $paymentTypes = [];
+        $totalPrice = 0;
 
 
 
         foreach ($cartItems as $item) {
-            match ($item['productTypes']) {
-                "physical" => [
-                    $physicalPrice += $item['price'] * $item['quantity'],
-                    $physicalquantity += $item['quantity']
-                ],
-                "digital" => [
-                    $digitalPrice += $item['price'] * $item['quantity'],
-                    $digitalquantity += $item['quantity']
-                ]
-            };
-        }
-        $totalData = [
-            "digital" => [
-                "totalPrice" => $digitalPrice,
-                "totalQuantity" => $digitalquantity,
-            ],
-            "physical" => [
-                "totalPrice" => $physicalPrice,
-                "totalQuantity" => $physicalquantity,
-            ],
-        ];
-
-        $types = array_unique(array_column($cartItems, "productTypes"));
-        $totalPrice = 0;
-        foreach ($types as $item) {
-            $type = $totalData[$item];
-            $productTypes = ProductFactory::createTypes($item);
-            $paymentTypes = $productTypes::getPaymentMethod();
-
-            $totalPrice += $productTypes->getDiscountedPrice($type["totalQuantity"], $type["totalPrice"]);
+            $productTypes = ProductFactory::createTypes($item); // PhysicalProduct or DigitalProduct
+            $totalPrice += $productTypes->getDiscountedPrice();
+            $paymentTypes = array_unique(array_merge($paymentTypes, $productTypes->getPaymentMethod()));
         }
 
-       
-        if (in_array("digital", $types) && (in_array("physical", $types))) {
-            $paymentTypes = ["Esewa", "Khalti"];
+        // check if cartitems has both types of products, if yes then remove COD from $paymentMethods
+        $productTypes = array_unique(array_column($cartItems, "productTypes"));
+        if (in_array("digital", $productTypes) && in_array("physical", $productTypes)) {
+            $paymentTypes = array_filter($paymentTypes, function ($paymentType) {
+                return $paymentType !== "COD";
+            });
         }
 
         require __DIR__ . '/../View/checkout.php';

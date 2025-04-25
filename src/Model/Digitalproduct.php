@@ -4,31 +4,46 @@ namespace Lattefront\FormHandeling\Model;
 
 use Lattefront\FormHandeling\Model\ProductInterface;
 
-class Digitalproduct implements ProductInterface
+
+class Digitalproduct implements ProductInterface // need to extend products
 {
 
-    public static function  getPaymentMethod(): array
+    private $quantity;
+    private $price;
+    private $totalprice = 0;
+    public function __construct(public $product) {
+
+        print_r($product);
+
+        $this->quantity = $product['quantity'];
+        $this->price = $product['price'];
+        $this->totalprice = $this->price * $this->quantity;
+     // die();
+    }
+
+
+    public  function  getPaymentMethod(): array
     {
         return [(string) "Khalti"];
     }
 
-    public static function getDiscountedPrice($quantity, $price): int
+    public  function getDiscountedPrice(): int
     {
+        // if ($this->quantity >= 6 & $this->quantity < 12) {
+        if ($this->quantity >= 6 & $this->quantity < 12) {
 
-        if ($quantity >= 6 & $quantity < 12) {
-           
-            $price -= $price * 10/100;            
-            
-            return $price;
+            $this->totalprice -= $this->totalprice * 10 / 100;
+
+            return $this->totalprice;
         }
-        if ($quantity >= 12) {
-            $price -= $price * 20/100;
-            return $price;
+        if ($this->quantity >= 12) {
+            $this->totalprice -= $this->totalprice * 20 / 100;
+            return $this->totalprice;
         } else {
-            return $price;
+            return $this->totalprice;
         }
     }
-    public static function getProductTypes(): string
+    public  function getProductTypes(): string
     {
         return "Digital";
     }
