@@ -1,0 +1,11 @@
+{
+    "name": "lattefront/form-handeling",
+    "autoload": {
+        "psr-4": {
+            "Lattefront\\FormHandeling\\": "src/"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
